@@ -9,7 +9,7 @@ tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 let LeafIcon = Icon.extend({
     options: {
-        shadowUrl: 'dist/img/leaf-shadow.png',
+        shadowUrl: 'img/leaf-shadow.png',
         iconSize:     [38, 95],
         shadowSize:   [50, 64],
         iconAnchor:   [22, 94],
@@ -18,9 +18,9 @@ let LeafIcon = Icon.extend({
     }
 });
 
-let greenIcon = new LeafIcon({iconUrl: 'dist/img/leaf-green.png'}),
-    redIcon = new LeafIcon({iconUrl: 'dist/img/leaf-red.png'}),
-    orangeIcon = new LeafIcon({iconUrl: 'dist/img/leaf-orange.png'});
+let greenIcon = new LeafIcon({iconUrl: 'img/leaf-green.png'}),
+    redIcon = new LeafIcon({iconUrl: 'img/leaf-red.png'}),
+    orangeIcon = new LeafIcon({iconUrl: 'img/leaf-orange.png'});
 
 marker([47.86, 13.015], {icon: greenIcon}).bindPopup("I am a green leaf.").addTo(keanoMap);
 marker([47.81, 13.02], {icon: redIcon}).bindPopup("I am a red leaf.").addTo(keanoMap);

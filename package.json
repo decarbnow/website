@@ -1,0 +1,22 @@
+{
+  "name": "keano-map",
+  "version": "1.0.0",
+  "description": "map for keano",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-serve --open-path dist",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "leaflet": "^1.4.0",
+    "terser": "^3.14.1"
+  },
+  "author": "keano group",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1",
+    "webpack-serve": "^2.0.3"
+  }
+}

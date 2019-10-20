@@ -1,10 +1,9 @@
 import sqlite3
 import geohash
 
-conn = sqlite3.connect('keanomap.db')
-
 def exportto(filePath, conn):
     cursor = conn.execute('SELECT RAND_STR, GEOHASH, ORIGURL, TAG, TTEXT FROM KEANOMAP').fetchall()
+    print("exporting " + str(len(cursor)) + " entries")
 
     f = open(filePath, "w")
     f.write("{\"markers\":[")
@@ -20,3 +19,6 @@ def exportto(filePath, conn):
 
     f.write("]}")
     f.close()
+
+if __name__ == "__main__":
+    exportto("marker.json", sqlite3.connect('keanomap.db'))

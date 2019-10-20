@@ -1,38 +1,43 @@
 import { map, tileLayer, marker, Icon } from 'leaflet';
 import markers from './data/marker.json';
+import twemoji from 'twemoji';
+import TwitterWidgetsLoader from 'twitter-widgets';
+import $ from 'jquery';
+import { encode } from '@alexpavlov/geohash-js';
 
-// create map
-let keanoMap = map('map').setView([48.2084, 16.373], 11);
+//**************************************************************************
+// configuration and declaration
+//**************************************************************************
 
-//tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-//tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/}', {
-
-
-/*
-tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(keanoMap);
-
-/*
-*/
-L.tileLayer(
-    'https://api.mapbox.com/styles/v1/sweing/ck1xo0pmx1oqs1co74wlf0dkn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
-    tileSize: 512,
-    zoomOffset: -1,
-    attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(keanoMap);
-
-/*
-let videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm',
-    videoBounds = [[ 32, -130], [ 13, -100]];
-L.videoOverlay(videoUrl, videoBounds ).addTo(keanoMap);
-*/
-
-let videoUrl = 'dist/img/tropomi.mp4',
-    videoBounds = [[ 70, -180], [ -70, 180]],
-    videoOptions = {opacity: 0.5};
-L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(keanoMap);
-
+let keanoMap = map('map', {
+    zoomControl: false // manually added
+}).setView([48.2084, 16.373], 11);
+let markerInfo = {
+    "climateaction": {
+        "img": "dist/img/action.png",
+        "title": "Climate Action",
+        "question": "Who took action?",
+        "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
+    },
+    "pollution":  {
+        "img": "dist/img/pollution.png",
+        "title": "Pollution",
+        "question": "Who pollutes our planet?",
+        "desc": "Some do, some dont. We all want change. See who works against positive change!"
+    },
+    "transition": {
+        "img": "dist/img/transition.png",
+        "title": "Transitions",
+        "question": "Who takes the first step?",
+        "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
+    }
+};
+let currentMarkers = {
+    "climateaction": [],
+    "pollution": [],
+    "transition": []
+};
+let currentMarkerFilters = ["climateaction", "pollution", "transition"];
 
 let LeafIcon = Icon.extend({
     options: {
@@ -46,19 +51,195 @@ let LeafIcon = Icon.extend({
 });
 
 let icons = {
-    "climateaction": new LeafIcon({iconUrl: 'dist/img/action.png'}),
-    "pollution": new LeafIcon({iconUrl: 'dist/img/pollution.png'}),
-    "transition": new LeafIcon({iconUrl: 'dist/img/transition.png'})
+    "climateaction": new LeafIcon({iconUrl: markerInfo.climateaction.img}),
+    "pollution": new LeafIcon({iconUrl: markerInfo.pollution.img}),
+    "transition": new LeafIcon({iconUrl: markerInfo.transition.img})
+}
+
+let showGeoLoc = L.popup().setContent(
+    '<p>Tell the World!</p>'
+);
+// <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="#decarbnow yey" data-show-count="false">Tweet</a>
+
+//**************************************************************************
+// functions
+//**************************************************************************
+
+
+function createBackgroundMap() {
+    return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
+    //return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+}
+
+function pollutionStyle(feature) {
+    return {
+        fillColor: "#FF0000",
+        stroke: false,
+        //weight: 2,
+        //opacity: 1,
+        //color: 'white',
+        //dashArray: '3',
+        fillOpacity: getPollutionOpacity(feature.properties.value)
+    };
 }
 
 
-console.log(markers);
-markers.markers.forEach(function(item) {
-    let text = item.text;
-    if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
-        text += "<br/><a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>";
+function getPollutionOpacity(value) {
+
+    let max = 24009000000000000;
+    let min = 350000000000000;
+
+    return Math.max(0, (value - min ) / (max - min));
+}
+
+function createLayer1() {
+    return L.tileLayer(
+        'https://api.mapbox.com/styles/v1/sweing/ck1xo0pmx1oqs1co74wlf0dkn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
+        tileSize: 512,
+        zoomOffset: -1,
+        attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    });
+}
+
+/*
+let videoUrl = 'https://www.mapbox.com/bites/00188/patricia_nasa.webm',
+    videoBounds = [[ 32, -130], [ 13, -100]];
+L.videoOverlay(videoUrl, videoBounds ).addTo(keanoMap);
+*/
+
+/*
+let videoUrl = 'dist/img/tropomi.mp4',
+    videoBounds = [[ 70, -180], [ -70, 180]],
+    videoOptions = {opacity: 0.5};
+L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(keanoMap);
+*/
+
+
+//console.log(markers);
+
+
+function refreshMarkers() {
+    markers.markers.forEach(function(item) {
+        let text = item.text;
+        let twitterId = null;
+        if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
+            let tws = item.origurl.split("/");
+            twitterId = tws[tws.length-1];
+            text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+        }
+        let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
+        currentMarkers[item.tag].push(mm
+            .bindPopup(
+                twemoji.parse(text),
+                {className:"keanopopup"}
+            )
+            .addTo(keanoMap)
+        );
+
+        if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
+            mm.on("popupopen", () => {
+                TwitterWidgetsLoader.load(function(err, twttr) {
+                    if (err) {
+                        console.log("error not loading twitter");
+                        console.log(err);
+                        //do some graceful degradation / fallback
+                        return;
+                    }
+
+                    twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
+                });
+            })
+        }
+    });
+}
+
+L.Control.Markers = L.Control.extend({
+    onAdd: function(map) {
+        let markerControls = L.DomUtil.create('div');
+        markerControls.style.width = '400px';
+        markerControls.style.height = '45px';
+        markerControls.style.backgroundColor = '#fff';
+        markerControls.style.display = 'flex';
+        markerControls.style.flexDirection = 'row';
+        markerControls.style.justifyContent = 'space-evenly';
+        markerControls.style.alignItems = 'center';
+        markerControls.style.padding = "3px";
+        markerControls.classList.add("leaflet-bar");
+
+        Object.keys(markerInfo).forEach(markerKey => {
+            let marker = markerInfo[markerKey];
+            let markerContainer = L.DomUtil.create('div');
+            markerContainer.innerHTML = '<img src="' + marker.img + '" style="vertical-align:middle" /> ' + marker.title;
+            markerContainer.title = marker.question + " " + marker.desc;
+            markerControls.append(markerContainer);
+        });
+
+        return markerControls;
+    },
+
+    onRemove: function(map) {
+        // Nothing to do here
     }
-    marker([item.lat, item.lng], {icon: icons[item.tag]})
-        .bindPopup(text)
-        .addTo(keanoMap);
+});
+L.control.markers = function(opts) {
+    return new L.Control.Markers(opts);
+}
+
+//**************************************************************************
+// initiation
+//**************************************************************************
+
+refreshMarkers();
+
+
+$.getJSON("dist/Europe_rastered.geojson",function(data){
+
+    // add GeoJSON layer to the map once the file is loaded
+    //L.geoJson(data).addTo(keanoMap);
+    //var statesData = L.geoJson(data)
+
+    let baseLayers = {
+        "Background": createBackgroundMap().addTo(keanoMap)
+    };
+    let overlays = {
+        "NO2 Pollution": L.geoJson(data, {style: pollutionStyle}).addTo(keanoMap)
+    };
+
+    L.control.layers(baseLayers, overlays).addTo(keanoMap);
+});
+
+L.control.markers({ position: 'topleft' }).addTo(keanoMap);
+L.control.zoom({ position: 'topleft' }).addTo(keanoMap);
+
+
+//**************************************************************************
+// events
+//**************************************************************************
+
+keanoMap.on('contextmenu',function(e){
+    console.log(e);
+    let hash = encode(e.latlng.lat, e.latlng.lng);
+
+    let text = '<p>Decarbonize Now!</p>' +
+    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #climateaction @' + hash + '">#decarbnow #climateaction @' + hash + '</a> #decarbnow #climateaction @' + hash +'<br />'+
+    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #transition @' + hash + '">#decarbnow #transition @' + hash + '</a> #decarbnow #transition @' + hash + '<br />'+
+    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #pollution @' + hash + '">#decarbnow #pollution @' + hash + '</a> #decarbnow #pollution @' + hash;
+
+    showGeoLoc
+        .setLatLng(e.latlng)
+        .setContent(text)
+        .openOn(keanoMap);
+    console.log(e);
+    TwitterWidgetsLoader.load(function(err, twttr) {
+        if (err) {
+            console.log("error not loading twitter");
+            console.log(err);
+            //do some graceful degradation / fallback
+            return;
+        }
+
+        twttr.widgets.load();
+    });
 });

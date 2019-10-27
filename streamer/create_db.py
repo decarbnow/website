@@ -6,7 +6,7 @@ print("Creating database")
 conn = sqlite3.connect('data/keanomap.db')
 print("Opened database successfully")
 
-conn.execute('''CREATE TABLE KEANOMAP
+conn.execute('''CREATE TABLE IF NOT EXISTS KEANOMAP
          (RAND_STR      CHAR(50),
          GEOHASH        CHAR(50),
          ORIGURL        CHAR(256),

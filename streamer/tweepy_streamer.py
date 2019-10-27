@@ -18,6 +18,8 @@ from pathlib import Path
 import sqlite3
 import argparse
 
+import create_db
+
 with open('config.yaml', "r") as config:
     script_config = yaml.load(config)
 

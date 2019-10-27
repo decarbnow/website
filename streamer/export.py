@@ -21,4 +21,4 @@ def exportto(filePath, conn):
     f.close()
 
 if __name__ == "__main__":
-    exportto("marker.json", sqlite3.connect('data/keanomap.db'))
+    exportto("data/marker.json", sqlite3.connect('data/keanomap.db'))

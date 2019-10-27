@@ -1,5 +1,4 @@
 import { map, tileLayer, marker, Icon } from 'leaflet';
-import markers from './data/marker.json';
 import twemoji from 'twemoji';
 import TwitterWidgetsLoader from 'twitter-widgets';
 import $ from 'jquery';
@@ -14,29 +13,25 @@ let keanoMap = map('map', {
 }).setView([48.2084, 16.373], 11);
 let markerInfo = {
     "climateaction": {
-        "img": "/dist/img/action.png",
+        "img": "dist/img/action.png",
         "title": "Climate Action",
         "question": "Who took action?",
         "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
     },
     "pollution":  {
-        "img": "/dist/img/pollution.png",
+        "img": "dist/img/pollution.png",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
         "desc": "Some do, some dont. We all want change. See who works against positive change!"
     },
     "transition": {
-        "img": "/dist/img/transition.png",
+        "img": "dist/img/transition.png",
         "title": "Transitions",
         "question": "Who takes the first step?",
         "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
     }
 };
-let currentMarkers = {
-    "climateaction": [],
-    "pollution": [],
-    "transition": []
-};
+let currentMarkers = {};
 let currentMarkerFilters = ["climateaction", "pollution", "transition"];
 
 let LeafIcon = Icon.extend({
@@ -65,6 +60,13 @@ let showGeoLoc = L.popup().setContent(
 // functions
 //**************************************************************************
 
+function initializeMarkers() {
+    currentMarkers = {
+        "climateaction": [],
+        "pollution": [],
+        "transition": []
+    };
+}
 
 function createBackgroundMap() {
     return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
@@ -121,37 +123,45 @@ L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(keanoMap);
 
 
 function refreshMarkers() {
-    markers.markers.forEach(function(item) {
-        let text = item.text;
-        let twitterId = null;
-        if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
-            let tws = item.origurl.split("/");
-            twitterId = tws[tws.length-1];
-            text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+    $.get('/data/marker.json', function(data) {
+        for (var i in currentMarkers) {
+            for (var mi in currentMarkers[i]) {
+                keanoMap.removeLayer(currentMarkers[i][mi]);
+            }
         }
-        let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
-        currentMarkers[item.tag].push(mm
-            .bindPopup(
-                twemoji.parse(text),
-                {className:"keanopopup"}
-            )
-            .addTo(keanoMap)
-        );
+        initializeMarkers();
+        data.markers.forEach(function(item) {
+            let text = item.text;
+            let twitterId = null;
+            if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
+                let tws = item.origurl.split("/");
+                twitterId = tws[tws.length-1];
+                text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+            }
+            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
+            currentMarkers[item.tag].push(mm
+                .bindPopup(
+                    twemoji.parse(text),
+                    {className:"keanopopup"}
+                )
+                .addTo(keanoMap)
+            );
 
-        if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
-            mm.on("popupopen", () => {
-                TwitterWidgetsLoader.load(function(err, twttr) {
-                    if (err) {
-                        console.log("error not loading twitter");
-                        console.log(err);
-                        //do some graceful degradation / fallback
-                        return;
-                    }
+            if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
+                mm.on("popupopen", () => {
+                    TwitterWidgetsLoader.load(function(err, twttr) {
+                        if (err) {
+                            console.log("error not loading twitter");
+                            console.log(err);
+                            //do some graceful degradation / fallback
+                            return;
+                        }
 
-                    twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
-                });
-            })
-        }
+                        twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
+                    });
+                })
+            }
+        });
     });
 }
 
@@ -191,10 +201,11 @@ L.control.markers = function(opts) {
 // initiation
 //**************************************************************************
 
+initializeMarkers();
 refreshMarkers();
 
 
-$.getJSON("/dist/Europe_rastered.geojson",function(data){
+$.getJSON("dist/Europe_rastered.geojson",function(data){
 
     // add GeoJSON layer to the map once the file is loaded
     //L.geoJson(data).addTo(keanoMap);

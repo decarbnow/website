@@ -32,7 +32,6 @@ conn.execute('''INSERT INTO KEANOMAP VALUES('HUlglkrvvDzHTR31','u2edhws2bgcb','h
 conn.execute('''INSERT INTO KEANOMAP VALUES('lOYxnKTy21RSrbaa','u3jexubsghhp','https://twitter.com/keanospace/status/1183358469484826626','pollution','Belchatov is the biggest single CO2 polluter in Europe. SHUT IT DOWN!');''')
 conn.execute('''INSERT INTO KEANOMAP VALUES('7EqfK6i29XDAqJrr','u15pehj14wnn','https://twitter.com/ohboywhatashot/status/1184472809164152834','pollution','Dutch government ready to shut down farms to control NO2 pollution.');''')
 conn.execute('''INSERT INTO KEANOMAP VALUES('dqahsMeQuqy2z4eu','u2e9gffn8','','transition','#decarbnow developed at the Vienna Space Apps Challenge hosted at Factory Hub - T… https://t.co/vgJBX4MMrE');''')
-conn.execute('''INSERT INTO KEANOMAP VALUES('D4nhorVYLvp07Bcc','u2edhws2bgcb','https://twitter.com/Luisamneubauer/status/1134434633851035648','climateaction','35.000 Protesters!');''')
 
 conn.commit()
 

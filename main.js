@@ -54,12 +54,11 @@ let icons = {
     "climateaction": new LeafIcon({iconUrl: markerInfo.climateaction.img}),
     "pollution": new LeafIcon({iconUrl: markerInfo.pollution.img}),
     "transition": new LeafIcon({iconUrl: markerInfo.transition.img})
-}
+};
 
 let showGeoLoc = L.popup().setContent(
     '<p>Tell the World!</p>'
 );
-// <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-text="#decarbnow yey" data-show-count="false">Tweet</a>
 
 //**************************************************************************
 // functions
@@ -68,8 +67,7 @@ let showGeoLoc = L.popup().setContent(
 
 function createBackgroundMap() {
     return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
-    //return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://www.mapbox.com/legal/tos/">MapBox</a>'
     });
 }
 
@@ -99,8 +97,24 @@ function createLayer1() {
         'https://api.mapbox.com/styles/v1/sweing/ck1xo0pmx1oqs1co74wlf0dkn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
         tileSize: 512,
         zoomOffset: -1,
-        attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        attribution: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
+}
+
+function showError() {
+    alert('Please make sure, all blockers are disabled. Otherwise, tweets will not load.');
+    /*
+    modal(
+        { title: 'Disable Blockers'
+            , content: 'Please make sure, all blockers are disabled. Otherwise, tweets will not load.'
+            , buttons:
+                [
+                    { text: 'OK', event: 'cancel', keyCodes: [ 13, 27 ] }
+//                    , { text: 'Delete', event: 'confirm', className: 'button-danger', iconClassName: 'icon-delete' }
+                ]
+        });
+        //.on('confirm', deleteItem)
+    */
 }
 
 /*
@@ -142,9 +156,7 @@ function refreshMarkers() {
             mm.on("popupopen", () => {
                 TwitterWidgetsLoader.load(function(err, twttr) {
                     if (err) {
-                        console.log("error not loading twitter");
-                        console.log(err);
-                        //do some graceful degradation / fallback
+                        showError();
                         return;
                     }
 
@@ -185,7 +197,7 @@ L.Control.Markers = L.Control.extend({
 });
 L.control.markers = function(opts) {
     return new L.Control.Markers(opts);
-}
+};
 
 //**************************************************************************
 // initiation
@@ -234,8 +246,7 @@ keanoMap.on('contextmenu',function(e){
     console.log(e);
     TwitterWidgetsLoader.load(function(err, twttr) {
         if (err) {
-            console.log("error not loading twitter");
-            console.log(err);
+            showError();
             //do some graceful degradation / fallback
             return;
         }

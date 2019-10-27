@@ -13,19 +13,19 @@ let decarbnowMap = map('map', {
 }).setView([48.2084, 16.373], 11);
 let markerInfo = {
     "climateaction": {
-        "img": "dist/img/action.png",
+        "img": "/dist/img/action.png",
         "title": "Climate Action",
         "question": "Who took action?",
         "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
     },
     "pollution":  {
-        "img": "dist/img/pollution.png",
+        "img": "/dist/img/pollution.png",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
         "desc": "Some do, some dont. We all want change. See who works against positive change!!"
     },
     "transition": {
-        "img": "dist/img/transition.png",
+        "img": "/dist/img/transition.png",
         "title": "Transitions",
         "question": "Who takes the first step?",
         "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
@@ -251,7 +251,7 @@ initializeMarkers();
 refreshMarkers();
 
 
-$.getJSON("dist/Europe_rastered.geojson",function(data){
+$.getJSON("/dist/Europe_rastered.geojson",function(data){
 
     // add GeoJSON layer to the map once the file is loaded
     //L.geoJson(data).addTo(decarbnowMap);

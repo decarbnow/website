@@ -18,13 +18,15 @@ from pathlib import Path
 import sqlite3
 import argparse
 
+print("Starting streamer...")
+
 import create_db
 
 with open('config.yaml', "r") as config:
     script_config = yaml.load(config)
 
 conn = sqlite3.connect('data/keanomap.db')
-print("Opened database successfully");
+print("Opened database successfully")
 
 auth = OAuthHandler(credentials.CONSUMER_KEY, credentials.CONSUMER_SECRET)
 auth.set_access_token(credentials.ACCESS_TOKEN, credentials.ACCESS_TOKEN_SECRET)
@@ -90,7 +92,7 @@ class TwitterStreamer():
                 print("imported.")
                 print("---------")
 
-        print("Records created successfully");
+        print("Records created successfully")
         conn.close()
 
 class SQLiteListener(StreamListener):
@@ -165,3 +167,6 @@ if __name__ == "__main__":
     else:
         print("waiting for new tweets...")
         twitter_streamer.stream_tweets(hash_tag_list)
+
+else:
+    print("exiting.")

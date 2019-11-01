@@ -157,6 +157,10 @@ function refreshMarkers() {
         data.markers.forEach(function(item) {
             let text = item.text;
             let twitterId = null;
+            
+            if(currentMarkerFilters.indexOf(item.tag) === -1){
+                return;
+            }
             if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
                 let tws = item.origurl.split("/");
                 twitterId = tws[tws.length-1];
@@ -266,7 +270,6 @@ $.getJSON("/dist/Europe_rastered.geojson",function(data){
     // add GeoJSON layer to the map once the file is loaded
     //L.geoJson(data).addTo(decarbnowMap);
     //var statesData = L.geoJson(data)
-
     let baseLayers = {
         "Background": createBackgroundMap().addTo(decarbnowMap)
     };

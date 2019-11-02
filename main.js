@@ -57,7 +57,12 @@ let showGeoLoc = L.popup().setContent(
     '<p>Tell the World!</p>'
 );
 
-let markerClusters = L.markerClusterGroup();
+let markerClusters = L.markerClusterGroup(
+    {
+        disableClusteringAtZoom: 19,
+        maxClusterRadius: 100,
+        animatedAddingMarkers: false
+    });
 
 //**************************************************************************
 // functions
@@ -265,7 +270,7 @@ initializeMarkers();
 refreshMarkers();
 
 
-$.getJSON("/dist/Europe_rastered.geojson",function(data){
+$.getJSON("/dist/World_rastered.geojson",function(data){
 
     // add GeoJSON layer to the map once the file is loaded
     //L.geoJson(data).addTo(decarbnowMap);

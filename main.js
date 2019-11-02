@@ -171,7 +171,7 @@ function refreshMarkers() {
                 twitterId = tws[tws.length-1];
                 text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
             }
-            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
+            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]})
             
             //decarbnowMap.addLayer(markerClusters);
             currentMarkers[item.tag].push(mm
@@ -200,6 +200,7 @@ function refreshMarkers() {
     });
     
 }
+
 
 L.Control.Markers = L.Control.extend({
     onAdd: function(map) {
@@ -283,6 +284,7 @@ $.getJSON("/dist/World_rastered.geojson",function(data){
     };
     
     decarbnowMap.addLayer(markerClusters);
+
     L.control.layers(baseLayers, overlays).addTo(decarbnowMap);
 });
 

@@ -61,7 +61,9 @@ let markerClusters = L.markerClusterGroup(
     {
         disableClusteringAtZoom: 19,
         maxClusterRadius: 100,
-        animatedAddingMarkers: false
+        animatedAddingMarkers: false,
+        showCoverageOnHover: false
+        //removeOutsideVisibleBounds: true
     });
 
 //**************************************************************************

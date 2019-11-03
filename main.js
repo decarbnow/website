@@ -271,41 +271,32 @@ decarbnowMap.on('contextmenu',function(e){
 initializeMarkers();
 refreshMarkers();
 
-$.getJSON("/dist/World_rastered.geojson",function(data){
+// add GeoJSON layers to the map once all files are loaded
+$.getJSON("/dist/World_rastered.geojson",function(no2){
+    $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
 
-    // add GeoJSON layer to the map once the file is loaded
-    //L.geoJson(data).addTo(decarbnowMap);
-    //var statesData = L.geoJson(data)
-    let baseLayers = {
-        "Background": createBackgroundMap().addTo(decarbnowMap)
-    };
-    let overlays = {
-        "NO2 Pollution": L.geoJson(data, {style: pollutionStyle}).addTo(decarbnowMap)
-    };
-    
-    decarbnowMap.addLayer(markerClusters);
-    L.control.layers(baseLayers, overlays).addTo(decarbnowMap);
+        let baseLayers = {
+            "Background": createBackgroundMap().addTo(decarbnowMap)
+        };
+        let overlays = {
+            "NO2 Pollution": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),
+            "Coal Plants": L.geoJson(coalplants, {
+                style: function(feature) {
+                    return {color: '#000000'};
+                },
+                pointToLayer: function(feature, latlng) {
+                    return new L.CircleMarker(latlng, {radius: 1, fillOpacity: 0.85});
+                },
+                onEachFeature: function (feature, layer) {
+                    layer.bindPopup(feature.properties.name + ' (' + feature.properties.primary_fuel + ')');
+                }
+            }).addTo(decarbnowMap)
+        };
+        
+        decarbnowMap.addLayer(markerClusters);
+        L.control.layers(baseLayers, overlays).addTo(decarbnowMap);
+    });
 });
-
-/*
-$.getJSON("/dist/global_power_plant_database.geojson",function(data){
-
-    let coal_overlay = L.geoJson(data, {
-        style: function(feature) {
-            return {color: '#000000'};
-        },
-        pointToLayer: function(feature, latlng) {
-            return new L.CircleMarker(latlng, {radius: 1, fillOpacity: 0.85});
-        },
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties.name + ' (' + feature.properties.primary_fuel + ')');
-        }
-    }).addTo(decarbnowMap);
-    //decarbnowMap.addLayer(data);
-
-    // L.geoJson function is used to parse geojson file and load on to map
-});
-*/
 
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);

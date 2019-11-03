@@ -5,8 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-serve --host 0.0.0.0 --port 8080",
-    "help": "webpack-serve --help",
+    "start": "webpack-serve --host 0.0.0.0 --port 8080 --open --live-reload",
     "build": "NODE_ENV=production webpack"
   },
   "dependencies": {

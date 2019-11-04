@@ -88,6 +88,7 @@ function pollutionStyle(feature) {
     return {
         fillColor: "#FF0000",
         stroke: false,
+        interactive: false,
         //weight: 2,
         //opacity: 1,
         //color: 'white',

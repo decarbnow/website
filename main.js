@@ -4,6 +4,7 @@ import TwitterWidgetsLoader from 'twitter-widgets';
 import $ from 'jquery';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
+import leaflet_sidebar from 'leaflet-sidebar';
 
 //**************************************************************************
 // configuration and declaration
@@ -65,6 +66,11 @@ let markerClusters = L.markerClusterGroup(
         showCoverageOnHover: false
         //removeOutsideVisibleBounds: true
     });
+
+let sidebar = L.control.sidebar('sidebar', {
+    position: 'left'
+});
+
 
 //**************************************************************************
 // functions
@@ -173,20 +179,25 @@ function refreshMarkers() {
                 twitterId = tws[tws.length-1];
                 text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
             }
-            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]})
+            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
+
+            //mm.sidebar.setContent(twemoji.parse(text)).show()
             
             //decarbnowMap.addLayer(markerClusters);
             currentMarkers[item.tag].push(mm
-                .bindPopup(
-                    twemoji.parse(text),
-                    {className:"decarbnowpopup"}
-                )
+                
                 .addTo(markerClusters)
+                .on('click', function () {
+                    sidebar.show(); 
+                    sidebar.setContent(twemoji.parse(text));
+                })
                 //.addTo(decarbnowMap)
             );
-            
+
+            //sidebar.setContent(twemoji.parse(text));
+
             if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
-                mm.on("popupopen", () => {
+                mm.on("click", () => {
                     TwitterWidgetsLoader.load(function(err, twttr) {
                         if (err) {
                             showError();
@@ -264,6 +275,10 @@ decarbnowMap.on('contextmenu',function(e){
     });
 });
 
+decarbnowMap.on('click', function () {
+            sidebar.hide();
+})
+
 
 //**************************************************************************
 // initiation
@@ -301,6 +316,8 @@ $.getJSON("/dist/World_rastered.geojson",function(no2){
         
         decarbnowMap.addLayer(markerClusters);
         L.control.layers(baseLayers, overlays).addTo(decarbnowMap);
+        decarbnowMap.addControl(sidebar);
+
     });
 });
 

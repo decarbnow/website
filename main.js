@@ -121,7 +121,7 @@ function getPollutionOpacity(value) {
     let min = 0;
 
     //return Math.max(0, (value - min ) / (max - min) * 0.3);
-    return 0.2;
+    return 0.1;
 }
 
 function createLayer1() {

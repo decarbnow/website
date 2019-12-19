@@ -171,31 +171,39 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    $.get('/data/marker.json', function(data) {
+    $.get('https://decarbnow.space/api/poi/', function(data) {
+        console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
                 decarbnowMap.removeLayer(currentMarkers[i][mi]);
             }
         }
+
         initializeMarkers();
-        data.markers.forEach(function(item) {
-            let text = item.text;
+        data._embedded.poi.forEach(function(item) {
+
+            let text = item.message;
             let twitterId = null;
+            //"POINT (48.1229059305042 16.5587781183422)"
+            let p = item.position
+            let bp = p.substring(p.indexOf("(")+1,p.indexOf(")")).split(" ")
+            let long = parseFloat(bp[0])
+            let lat = parseFloat(bp[1])
             
-            if(currentMarkerFilters.indexOf(item.tag) === -1){
+            if(currentMarkerFilters.indexOf(item.type) === -1){
                 return;
             }
-            if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
-                let tws = item.origurl.split("/");
+            if (item.urlLinkedTweet) {
+                let tws = item.urlLinkedTweet.split("/");
                 twitterId = tws[tws.length-1];
                 text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
             }
-            let mm = marker([item.lat, item.lng], {icon: icons[item.tag]});
+            let mm = marker([long, lat], {icon: icons[item.type]});
 
             //mm.sidebar.setContent(twemoji.parse(text)).show()
             
             //decarbnowMap.addLayer(markerClusters);
-            currentMarkers[item.tag].push(mm
+            currentMarkers[item.type].push(mm
                 
                 .addTo(markerClusters)
                 .on('click', function () {
@@ -207,7 +215,7 @@ function refreshMarkers() {
 
             //sidebar.setContent(twemoji.parse(text));
 
-            if (item.hasOwnProperty("origurl") && item.origurl.length > 0) {
+            if (item.hasOwnProperty("urlLinkedTweet") && item.urlLinkedTweet.length > 0) {
                 mm.on("click", () => {
                     TwitterWidgetsLoader.load(function(err, twttr) {
                         if (err) {
@@ -220,7 +228,6 @@ function refreshMarkers() {
                 });
             }
         });
-        
     });
     
 }
@@ -262,7 +269,7 @@ L.control.markers = function(opts) {
 // events
 //**************************************************************************
 decarbnowMap.on('contextmenu',function(e){
-    console.log(e);
+    L.marker(e.latlng).addTo(decarbnowMap)
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
     let text = '<p>Tweet about'+

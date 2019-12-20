@@ -9,6 +9,7 @@ import leaflet_sidebar from 'leaflet-sidebar';
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
+var twittermarker;
 
 let decarbnowMap = map('map', {
     zoomControl: false // manually added
@@ -171,7 +172,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    $.get('https://decarbnow.space/api/poi/', function(data) {
+    $.get('https://decarbnow.space/api/poi', function(data) {
+    //$.get('poi.json', function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
@@ -215,7 +217,7 @@ function refreshMarkers() {
 
             //sidebar.setContent(twemoji.parse(text));
 
-            if (item.hasOwnProperty("urlLinkedTweet") && item.urlLinkedTweet.length > 0) {
+            if (item.urlLinkedTweet) {
                 mm.on("click", () => {
                     TwitterWidgetsLoader.load(function(err, twttr) {
                         if (err) {
@@ -269,7 +271,15 @@ L.control.markers = function(opts) {
 // events
 //**************************************************************************
 decarbnowMap.on('contextmenu',function(e){
-    L.marker(e.latlng).addTo(decarbnowMap)
+
+    if (typeof twittermarker !== 'undefined') { // check
+        decarbnowMap.removeLayer(twittermarker); // remove
+    }
+    
+    twittermarker = L.marker(e.latlng);
+       
+    decarbnowMap.addLayer(twittermarker);
+
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
     let text = '<p>Tweet about'+
@@ -305,7 +315,10 @@ decarbnowMap.on('contextmenu',function(e){
 });
 
 decarbnowMap.on('click', function () {
-            sidebar.hide();
+    sidebar.hide();
+    if (typeof twittermarker !== 'undefined') { // check
+        decarbnowMap.removeLayer(twittermarker); // remove
+    }
 })
 
 

@@ -180,8 +180,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    $.get('https://decarbnow.space/api/poi', function(data) {
-    //$.get('poi.json', function(data) {
+    //$.get('https://decarbnow.space/api/poi', function(data) {
+    $.get('poi.json', function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
@@ -192,7 +192,7 @@ function refreshMarkers() {
         initializeMarkers();
         data._embedded.poi.forEach(function(item) {
 
-            let text = item.message;
+            let text = '<h3>' + item.message + '</h3>';
             let twitterId = null;
             //"POINT (48.1229059305042 16.5587781183422)"
             let p = item.position
@@ -206,7 +206,7 @@ function refreshMarkers() {
             if (item.urlLinkedTweet) {
                 let tws = item.urlLinkedTweet.split("/");
                 twitterId = tws[tws.length-1];
-                text += '<br/><div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
             }
             let mm = marker([long, lat], {icon: icons[item.type]});
 

@@ -180,8 +180,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    //$.get('https://decarbnow.space/api/poi', function(data) {
-    $.get('poi.json', function(data) {
+    $.get('https://decarbnow.space/api/poi', function(data) {
+    //$.get('poi.json', function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {

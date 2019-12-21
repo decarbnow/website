@@ -13,7 +13,7 @@ var twittermarker;
 
 let decarbnowMap = map('map', {
     zoomControl: false // manually added
-}).setView([48.2084, 16.373], 11);
+}).setView([48.2084, 16.373], 5);
 
 let markerInfo = {
     "climateaction": {
@@ -47,8 +47,8 @@ let LeafIcon = Icon.extend({
         shadowUrl: '/dist/img/icon-shadow.png',
         iconSize:     [32, 37],
         shadowSize:   [37, 37],
-        iconAnchor:   [16, 16],
-        shadowAnchor: [18, 14],
+        iconAnchor:   [16, 37],
+        shadowAnchor: [19, 34],
         popupAnchor:  [0, -16]
     }
 });
@@ -109,7 +109,10 @@ function pollutionStyle(feature) {
     return {
         //fillColor: "#FF0000",
         fillColor: "#a1a1e4",
-        stroke: false,
+        stroke: true,
+        weight: 0.7,
+        opacity: 0.9,
+        color: "#343332",
         interactive: false,
         //weight: 2,
         //opacity: 1,
@@ -127,7 +130,7 @@ function getPollutionOpacity(value) {
     let min = 0;
 
     //return Math.max(0, (value - min ) / (max - min) * 0.3);
-    return 0.15;
+    return 0.10;
 }
 
 function createLayer1() {
@@ -339,8 +342,8 @@ $.getJSON("/dist/World_rastered.geojson",function(no2){
     $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
 
         let baseLayers = {
-            "Dark": createBackgroundMap(),
-            "Satellite": createBackgroundMapSat().addTo(decarbnowMap),
+            "Satellite": createBackgroundMapSat(),
+            "Dark": createBackgroundMap().addTo(decarbnowMap)
         };
         let overlays = {
             "NO2 Pollution by NASA OMI": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),

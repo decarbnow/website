@@ -17,19 +17,22 @@ let decarbnowMap = map('map', {
 
 let markerInfo = {
     "climateaction": {
-        "img": "/dist/img/action.png",
+        "img": "/dist/img/action_glow.png",
+        "icon_img": "/dist/img/action.png",
         "title": "Climate Action",
         "question": "Who took action?",
         "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
     },
     "pollution":  {
-        "img": "/dist/img/pollution.png",
+        "img": "/dist/img/pollution_glow.png", 
+        "icon_img": "/dist/img/pollution.png",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
         "desc": "Some do, some dont. We all want change. See who works against positive change!!"
     },
     "transition": {
-        "img": "/dist/img/transition.png",
+        "img": "/dist/img/transition_glow.png",
+        "icon_img": "/dist/img/transition.png",
         "title": "Transitions",
         "question": "Who takes the first step?",
         "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
@@ -41,10 +44,11 @@ let currentMarkerFilters = ["climateaction", "pollution", "transition"];
 let LeafIcon = Icon.extend({
     options: {
         //shadowUrl: 'dist/img/leaf-shadow.png',
-        iconSize:     [32, 32],
-        //shadowSize:   [50, 64],
+        shadowUrl: '/dist/img/icon-shadow.png',
+        iconSize:     [32, 37],
+        shadowSize:   [37, 37],
         iconAnchor:   [16, 16],
-        //shadowAnchor: [4, 62],
+        shadowAnchor: [18, 14],
         popupAnchor:  [0, -16]
     }
 });
@@ -103,7 +107,8 @@ function createBackgroundMapSat() {
 
 function pollutionStyle(feature) {
     return {
-        fillColor: "#FF0000",
+        //fillColor: "#FF0000",
+        fillColor: "#a1a1e4",
         stroke: false,
         interactive: false,
         //weight: 2,
@@ -122,7 +127,7 @@ function getPollutionOpacity(value) {
     let min = 0;
 
     //return Math.max(0, (value - min ) / (max - min) * 0.3);
-    return 0.1;
+    return 0.15;
 }
 
 function createLayer1() {
@@ -251,7 +256,7 @@ L.Control.Markers = L.Control.extend({
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<img src="' + marker.img + '" style="vertical-align:middle" /> ' + marker.title;
+            markerContainer.innerHTML = '<img src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
         });
@@ -284,9 +289,9 @@ decarbnowMap.on('contextmenu',function(e){
 
     let text = '<p>Tweet about'+
     '<dl>'+
-    '<dd><img src="/dist/img/action.png" width="14">climate action</dd>'+
-    '<dd><img src="/dist/img/pollution.png" width="14">pollution</dd>'+
-    '<dd><img src="/dist/img/transition.png" width="14">climate transition</dd>'+
+    '<dd><img src="/dist/img/action.png" width="16">climate action</dd>'+
+    '<dd><img src="/dist/img/pollution.png" width="16">pollution</dd>'+
+    '<dd><img src="/dist/img/transition.png" width="16">climate transition</dd>'+
     '</dl>'+
     'taking place here using the buttons below:</p>' +
 
@@ -334,8 +339,8 @@ $.getJSON("/dist/World_rastered.geojson",function(no2){
     $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
 
         let baseLayers = {
-            "Satellite": createBackgroundMapSat(),
-            "Dark": createBackgroundMap().addTo(decarbnowMap)
+            "Dark": createBackgroundMap(),
+            "Satellite": createBackgroundMapSat().addTo(decarbnowMap),
         };
         let overlays = {
             "NO2 Pollution by NASA OMI": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),

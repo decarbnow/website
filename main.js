@@ -107,8 +107,8 @@ function createBackgroundMapSat() {
 
 function pollutionStyle(feature) {
     return {
-        //fillColor: "#FF0000",
-        fillColor: "#a1a1e4",
+        fillColor: "#FF0000",
+        //fillColor: "#a1a1e4",
         stroke: true,
         weight: 0.7,
         opacity: 0.9,

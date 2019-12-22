@@ -123,7 +123,7 @@ function pollutionStyle(feature) {
         //fillColor: "#a1a1e4",
         stroke: true,
         weight: 0.5,
-        opacity: 0.8,
+        opacity: 0.7,
         color: "#F1EFE8",
         interactive: false,
         //weight: 2,
@@ -142,7 +142,7 @@ function getPollutionOpacity(value) {
     let min = 0;
 
     //return Math.max(0, (value - min ) / (max - min) * 0.3);
-    return 0.10;
+    return 0.05;
 }
 
 function createLayer1() {
@@ -192,8 +192,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    $.get('https://decarbnow.space/api/poi', function(data) {
-    //$.get('poi.json', function(data) {
+    //$.get('https://decarbnow.space/api/poi', function(data) {
+    $.get('poi.json', function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {

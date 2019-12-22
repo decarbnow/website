@@ -13,7 +13,8 @@ var twittermarker;
 
 let decarbnowMap = map('map', {
     zoomControl: false // manually added
-}).setView([48.2084, 16.373], 5);
+//}).setView([48.2084, 16.373], 5);
+}).setView([47, 16], 5);
 
 let markerInfo = {
     "climateaction": {
@@ -91,16 +92,27 @@ function initializeMarkers() {
 }
 
 function createBackgroundMap() {
-    return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
-        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://www.mapbox.com/legal/tos/">MapBox</a>'
+    return tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
 }
 
+
+function createBackgroundMapSat() {
+    return tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3'],
+        attribution: '© <a href="https://maps.google.com">Google Maps</a>'
+    });
+}
+/*
 function createBackgroundMapSat() {
     return tileLayer('https://api.mapbox.com/styles/v1/sweing/ck1xo0pmx1oqs1co74wlf0dkn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, © <a href="https://www.mapbox.com/legal/tos/">MapBox</a>'
     });
 }
+*/
 //https://api.mapbox.com/styles/v1/sweing/ck1xo0pmx1oqs1co74wlf0dkn/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig
 //https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig
 
@@ -110,9 +122,9 @@ function pollutionStyle(feature) {
         fillColor: "#FF0000",
         //fillColor: "#a1a1e4",
         stroke: true,
-        weight: 0.7,
-        opacity: 0.9,
-        color: "#343332",
+        weight: 0.5,
+        opacity: 0.8,
+        color: "#F1EFE8",
         interactive: false,
         //weight: 2,
         //opacity: 1,
@@ -343,13 +355,14 @@ $.getJSON("/dist/World_rastered.geojson",function(no2){
 
         let baseLayers = {
             "Satellite": createBackgroundMapSat(),
-            "Dark": createBackgroundMap().addTo(decarbnowMap)
+            "Streets": createBackgroundMap().addTo(decarbnowMap)
         };
         let overlays = {
-            "NO2 Pollution by NASA OMI": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),
-            "Coal-fired power stations > 1.000 MW": L.geoJson(coalplants, {
+            "NO<sub>2</sub> pollution (<a href='https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi' target = popup>NASA OMI</a>)": L.geoJson(no2, {style: pollutionStyle}).addTo(decarbnowMap),
+            "Big coal power stations": L.geoJson(coalplants, {
                 style: function(feature) {
-                    return {color: '#d8d4d4'};
+                    //return {color: '#d8d4d4'};
+                    return {color: '#FF0000'};
                 },
                 pointToLayer: function(feature, latlng) {
                     return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
@@ -366,7 +379,7 @@ $.getJSON("/dist/World_rastered.geojson",function(no2){
         };
         
         decarbnowMap.addLayer(markerClusters);
-        L.control.layers(baseLayers, overlays).addTo(decarbnowMap);
+        L.control.layers(baseLayers, overlays,{collapsed:false}).addTo(decarbnowMap);
         decarbnowMap.addControl(sidebar);
 
     });

@@ -92,7 +92,7 @@ function initializeMarkers() {
 }
 
 function createBackgroundMap() {
-    return tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     });
@@ -100,7 +100,7 @@ function createBackgroundMap() {
 
 
 function createBackgroundMapSat() {
-    return tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    return tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
         attribution: '© <a href="https://maps.google.com">Google Maps</a>'

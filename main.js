@@ -12,7 +12,8 @@ import leaflet_sidebar from 'leaflet-sidebar';
 var twittermarker;
 
 let decarbnowMap = map('map', {
-    zoomControl: false // manually added
+    zoomControl: false, // manually added
+    tap: true 
 //}).setView([48.2084, 16.373], 5);
 }).setView([47, 16], 5);
 
@@ -311,8 +312,6 @@ L.control.markers = function(opts) {
     return new L.Control.Markers(opts);
 };
 
-
-
 //**************************************************************************
 // events
 //**************************************************************************
@@ -376,8 +375,8 @@ initializeMarkers();
 refreshMarkers();
 
 // add GeoJSON layers to the map once all files are loaded
-$.getJSON("/dist/World_2008_rastered.geojson",function(no2_1){
-    $.getJSON("/dist/World_2018_rastered.geojson",function(no2_2){
+$.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
+    $.getJSON("/dist/no2layers/World_2018_rastered.geojson",function(no2_2){
 
         $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
 
@@ -414,7 +413,8 @@ $.getJSON("/dist/World_2008_rastered.geojson",function(no2_1){
             decarbnowMap.addLayer(markerClusters);
             L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
             L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-            
+            L.Control.geocoder({position: "bottomleft"}).addTo(decarbnowMap);      
+
             decarbnowMap.addControl(sidebar);
         });
     });

@@ -284,7 +284,7 @@ L.Control.Markers = L.Control.extend({
     onAdd: function(map) {
         let markerControls = L.DomUtil.create('div');
         markerControls.style.width = '400px';
-        markerControls.style.height = '45px';
+        markerControls.style.height = '25px';
         markerControls.style.backgroundColor = '#fff';
         markerControls.style.display = 'flex';
         markerControls.style.flexDirection = 'row';
@@ -296,7 +296,7 @@ L.Control.Markers = L.Control.extend({
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<img src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
+            markerContainer.innerHTML = '<img height="24" src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
         });
@@ -330,7 +330,7 @@ decarbnowMap.on('contextmenu',function(e){
     '<select id="icontype">'+
     '<option value="pollution" data-image="/dist/img/pollution.png">Pollution</option>'+
     '<option value="climateaction"  data-image="/dist/img/action.png">Climate Action</option>'+
-    '<option value="transition" data-image="/dist/img/transition.png">Climate Transition</option>'+
+    '<option value="transition" data-image="/dist/img/transition.png">Transition</option>'+
     '</select>'+
     '<form>'+
     '<textarea id="tweetText" ></textarea>' +
@@ -447,7 +447,7 @@ $.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
             decarbnowMap.addLayer(markerClusters);
             L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
             L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-            L.Control.geocoder({position: "bottomleft"}).addTo(decarbnowMap);      
+            L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
 
             decarbnowMap.addControl(sidebar);
 

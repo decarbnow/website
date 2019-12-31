@@ -11,7 +11,7 @@ import leaflet_sidebar from 'leaflet-sidebar';
 //**************************************************************************
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
-    tap: true 
+    tap: true
 //}).setView([48.2084, 16.373], 5);
 }).setView([47, 16], 5);
 

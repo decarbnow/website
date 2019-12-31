@@ -9,8 +9,6 @@ import leaflet_sidebar from 'leaflet-sidebar';
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
-var twittermarker;
-
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
     tap: true 
@@ -326,60 +324,44 @@ function setTweetMessage(variable){
 //**************************************************************************
 decarbnowMap.on('contextmenu',function(e){
 
-    if (typeof twittermarker !== 'undefined') { // check
-        decarbnowMap.removeLayer(twittermarker); // remove
-    }
-    
-    //twittermarker = L.marker(e.latlng);
-    //decarbnowMap.addLayer(twittermarker);
-
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
     let text = '<h3>Tweet about</h3>'+
-    //'<dl>'+
-    //'<dd><img src="/dist/img/pollution.png" width="16">pollution</dd>'+
-    //'<dd><img src="/dist/img/action.png" width="16">climate action</dd>'+
-    //'<dd><img src="/dist/img/transition.png" width="16">climate transition</dd>'+
-    //'</dl>'+
-    //'taking place here using the buttons below:</p>' +
     '<select id="icontype">'+
-    //'<option style="padding-left:0px;" value="">Select Marker</option>'+
     '<option value="pollution" data-image="/dist/img/pollution.png">Pollution</option>'+
     '<option value="climateaction"  data-image="/dist/img/action.png">Climate Action</option>'+
     '<option value="transition" data-image="/dist/img/transition.png">Climate Transition</option>'+
     '</select>'+
-    //'<a id="tweetlink" href="http://www.google.com" target="_blank" class="twitter-share-button">linky</a>';
-    //'<a id="tweetlink" href="#" target="_blank">Tweet</a>';
     '<form>'+
     '<textarea id="tweetText" ></textarea>' +
-    //'<label for="tweetText">Tweet text:</label>'+
-    //'<input type="text" name="tweetText" id="tweetText" />'+
     '</form>'+
     '<div id="tweetBtn">'+
-    '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="REPLACEME">Tweet</a>'+
+    '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>'+
     '</div>';
-    //'<div id="tweetlinkID"><a onclick="handleImageOnClick(this);" target="_blank" id="tweetlink" href="https://twitter.com/share" class="twitter-share-button">Tweet</a></div>';
-    
-    /*let tweetmsg = "this is the message";
-    let text = text1 +
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #climateaction @' + hash + tweetmsg +'">#decarbnow #climateaction @' + hash + '</a> #decarbnow #climateaction @' + hash +'<br />'+
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #transition @' + hash + '">#decarbnow #transition @' + hash + '</a> #decarbnow #transition @' + hash + '<br />'+
-    '<a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text="#decarbnow #pollution @' + hash + '">#decarbnow #pollution @' + hash + '</a> #decarbnow #pollution @' + hash + '<br />';
-    /*
-    showGeoLoc
-        .setLatLng(e.latlng)
-        .setContent(text)
-        .openOn(decarbnowMap);
-    */
 
-    //sidebar.show()
-    //sidebar.setContent(text)
     showGeoLoc
         .setLatLng(e.latlng)
         .setContent(text)
         .openOn(decarbnowMap);
-    //var link = document.getElementById("tweetlink");
-    //console.log(link)
+    
+    //here comes the uglyness
+    $('#icontype').on('change', function (e) { 
+        let tweettype = document.getElementById("icontype");
+        let strUser = tweettype.options[tweettype.selectedIndex].value;
+
+        // Remove existing iframe
+        $('#tweetBtn iframe').remove();
+        // Generate new markup
+        var tweetBtn = $('<a></a>')
+            .addClass('twitter-share-button')
+            .attr('href', 'http://twitter.com/share')
+            .attr('data-url', 'null')
+            .attr('data-text', '#decarbnow #' + strUser + ' @' + hash + ' ' + $('#tweetText').val());
+        $('#tweetBtn').append(tweetBtn);
+        
+        twttr.widgets.load();
+    });
+
     $('#tweetText').on('input', function (e) { 
         let tweettype = document.getElementById("icontype");
         let strUser = tweettype.options[tweettype.selectedIndex].value;

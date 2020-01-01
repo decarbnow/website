@@ -211,7 +211,7 @@ function refreshMarkers() {
         initializeMarkers();
         data._embedded.poi.forEach(function(item) {
 
-            let text = '<h3>' + item.message + '</h3>';
+            let text = replaceURLWithHTMLLinks('<h3>' + item.message + '</h3>');
             let twitterId = null;
             //"POINT (48.1229059305042 16.5587781183422)"
             let p = item.position
@@ -317,7 +317,10 @@ function setTweetMessage(variable){
         a.value = "new value";
 }   
 
-
+function replaceURLWithHTMLLinks(text){
+        var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+        return text.replace(exp,"<a href='$1'>$1</a>"); 
+}
 
 //**************************************************************************
 // events

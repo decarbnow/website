@@ -6,8 +6,7 @@ import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import leaflet_sidebar from 'leaflet-sidebar';
 
-//const API_URL = 'https://decarbnow.space/api/poi';
-const API_URL = 'http://localhost:8080/poi';
+const API_URL = 'https://decarbnow.space/api/poi';
 const DEBOUNCE_TIMEOUT = 200;
 
 //**************************************************************************
@@ -204,7 +203,7 @@ function refreshMarkers() {
         return;
     }
     console.log("refreshing markers from " + API_URL);
-    $.get(API_URL, function(data) {
+    $.get(API_URL + "?size=100", function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
@@ -236,22 +235,22 @@ function refreshMarkers() {
                 twitterIds.push(twitterId);
             } else {
                 text += replaceURLWithHTMLLinks('<h3>' + item.text + '</h3>');
-            }
 
-            // add the replied tweet to the panel
-            if (item.urlInReplyTweet) {
-                let tws = item.urlInReplyTweet.split("/");
-                let twitterId = tws[tws.length-1];
-                text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
-                twitterIds.push(twitterId);
-            }
+                // add the replied tweet to the panel
+                if (item.urlInReplyTweet) {
+                    let tws = item.urlInReplyTweet.split("/");
+                    let twitterId = tws[tws.length-1];
+                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                    twitterIds.push(twitterId);
+                }
 
-            // add the quoted tweet to the panel
-            if (item.urlQuotedTweet) {
-                let tws = item.urlQuotedTweet.split("/");
-                let twitterId = tws[tws.length-1];
-                text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
-                twitterIds.push(twitterId);
+                // add the quoted tweet to the panel
+                if (item.urlQuotedTweet) {
+                    let tws = item.urlQuotedTweet.split("/");
+                    let twitterId = tws[tws.length-1];
+                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                    twitterIds.push(twitterId);
+                }
             }
 
             let mm = marker([long, lat], {icon: icons[item.type]});
@@ -418,7 +417,7 @@ decarbnowMap.on('click', function () {
     if (typeof twittermarker !== 'undefined') { // check
         decarbnowMap.removeLayer(twittermarker); // remove
     }
-})
+});
 
 
 //**************************************************************************

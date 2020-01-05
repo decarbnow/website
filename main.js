@@ -381,7 +381,7 @@ decarbnowMap.on('contextmenu',function(e){
             .addClass('twitter-share-button')
             .attr('href', 'http://twitter.com/share')
             .attr('data-url', 'null')
-            .attr('data-text', '#decarbnow #' + strUser + ' @' + hash + ' ' + $('#tweetText').val());
+            .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
         $('#tweetBtn').append(tweetBtn);
         
         twttr.widgets.load();
@@ -399,7 +399,7 @@ decarbnowMap.on('contextmenu',function(e){
             .addClass('twitter-share-button')
             .attr('href', 'http://twitter.com/share')
             .attr('data-url', 'null')
-            .attr('data-text', '#decarbnow #' + strUser + ' @' + hash + ' ' + $('#tweetText').val());
+            .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
         $('#tweetBtn').append(tweetBtn);
         
         twttr.widgets.load();

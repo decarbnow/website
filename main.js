@@ -6,6 +6,10 @@ import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import leaflet_sidebar from 'leaflet-sidebar';
 
+//const API_URL = 'https://decarbnow.space/api/poi';
+const API_URL = 'http://localhost:8080/poi';
+const DEBOUNCE_TIMEOUT = 200;
+
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
@@ -199,8 +203,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    $.get('https://decarbnow.space/api/poi', function(data) {
-    //$.get('poi.json', function(data) {
+    console.log("refreshing markers from " + API_URL);
+    $.get(API_URL, function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
@@ -212,7 +216,7 @@ function refreshMarkers() {
         data._embedded.poi.forEach(function(item) {
 
             // create the text, that will be shown, when clicking on the poi
-            let text = ''; //replaceURLWithHTMLLinks('<h3>' + item.text + '</h3>');
+            let text = '';
             let twitterIds = [];
             //"POINT (48.1229059305042 16.5587781183422)"
             let p = item.position;
@@ -224,12 +228,14 @@ function refreshMarkers() {
                 return;
             }
 
-            // add the original tweet to the panel
+            // add the original tweet to the panel OR the text of the tweet, if no original URL is specified
             if (item.urlOriginalTweet) {
                 let tws = item.urlOriginalTweet.split("/");
                 let twitterId = tws[tws.length-1];
                 text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
                 twitterIds.push(twitterId);
+            } else {
+                text += replaceURLWithHTMLLinks('<h3>' + item.text + '</h3>');
             }
 
             // add the replied tweet to the panel
@@ -254,31 +260,23 @@ function refreshMarkers() {
 
             //decarbnowMap.addLayer(markerClusters);
             currentMarkers[item.type].push(mm
-                
                 .addTo(markerClusters)
                 .on('click', function () {
                     sidebar.show(); 
                     sidebar.setContent(twemoji.parse(text));
-                })
-                //.addTo(decarbnowMap)
-            );
-
-            //sidebar.setContent(twemoji.parse(text));
-
-            if (item.urlInReplyTweet || item.urlQuotedTweet) {
-                mm.on("click", () => {
                     TwitterWidgetsLoader.load(function(err, twttr) {
                         if (err) {
                             showError();
                             return;
                         }
 
-                        for (let twitterId in twitterIds) {
+                        for (let idx in twitterIds) {
+                            let twitterId = twitterIds[idx];
                             twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
                         }
                     });
-                });
-            }
+                })
+            );
         });
     });
 }
@@ -369,13 +367,13 @@ decarbnowMap.on('contextmenu',function(e){
         .setContent(text)
         .openOn(decarbnowMap);
     
-    //here comes the uglyness
-    $('#icontype').on('change', function (e) { 
+    //here comes the beauty
+    function onTweetSettingsChange (e) {
         let tweettype = document.getElementById("icontype");
         let strUser = tweettype.options[tweettype.selectedIndex].value;
 
         // Remove existing iframe
-        $('#tweetBtn iframe').remove();
+        $('#tweetBtn').html('');
         // Generate new markup
         var tweetBtn = $('<a></a>')
             .addClass('twitter-share-button')
@@ -383,26 +381,24 @@ decarbnowMap.on('contextmenu',function(e){
             .attr('data-url', 'null')
             .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
         $('#tweetBtn').append(tweetBtn);
-        
-        twttr.widgets.load();
-    });
 
-    $('#tweetText').on('input', function (e) { 
-        let tweettype = document.getElementById("icontype");
-        let strUser = tweettype.options[tweettype.selectedIndex].value;
-        e.preventDefault();
-        
-        // Remove existing iframe
-        $('#tweetBtn iframe').remove();
-        // Generate new markup
-        var tweetBtn = $('<a></a>')
-            .addClass('twitter-share-button')
-            .attr('href', 'http://twitter.com/share')
-            .attr('data-url', 'null')
-            .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
-        $('#tweetBtn').append(tweetBtn);
-        
         twttr.widgets.load();
+    }
+    function debounce(callback) {
+        // each call to debounce creates a new timeoutId
+        let timeoutId;
+        return function() {
+            // this inner function keeps a reference to
+            // timeoutId from the function outside of it
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(callback, DEBOUNCE_TIMEOUT);
+        }
+    }
+
+    $('#icontype').on('change', onTweetSettingsChange);
+
+    $('#tweetText').on('input', function() {
+        debounce(onTweetSettingsChange)();
     });
 
     console.log(e);

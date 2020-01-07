@@ -429,7 +429,7 @@ refreshMarkers();
 
 // add GeoJSON layers to the map once all files are loaded
 $.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
-    $.getJSON("/dist/no2layers/World_2018_rastered.geojson",function(no2_2){
+    $.getJSON("/dist/no2layers/World_2019_rastered.geojson",function(no2_2){
 
         $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
             
@@ -440,7 +440,7 @@ $.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
             };
             let overlays = {
                 "NO<sub>2</sub> 2008": L.geoJson(no2_1, {style: pollutionStyle}),
-                "NO<sub>2</sub> 2018": L.geoJson(no2_2, {style: pollutionStyle}).addTo(decarbnowMap),
+                "NO<sub>2</sub> 2019": L.geoJson(no2_2, {style: pollutionStyle}).addTo(decarbnowMap),
                 "No NO<sub>2</sub> layer": L.geoJson(null, {style: pollutionStyle})
                 
             };

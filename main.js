@@ -428,49 +428,53 @@ initializeMarkers();
 refreshMarkers();
 
 // add GeoJSON layers to the map once all files are loaded
-$.getJSON("/dist/no2layers/World_2008_rastered.geojson",function(no2_1){
-    $.getJSON("/dist/no2layers/World_2019_rastered.geojson",function(no2_2){
-
-        $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
-            
-            
-            let baseLayers = {
-                "Satellite": createBackgroundMapSat(),
-                "Streets": createBackgroundMap().addTo(decarbnowMap)
-            };
-            let overlays = {
-                "NO<sub>2</sub> 2008": L.geoJson(no2_1, {style: pollutionStyle}),
-                "NO<sub>2</sub> 2019": L.geoJson(no2_2, {style: pollutionStyle}).addTo(decarbnowMap),
-                "No NO<sub>2</sub> layer": L.geoJson(null, {style: pollutionStyle})
-                
-            };
-            let overlays_other = {
-                "Big coal power stations": L.geoJson(coalplants, {
-                    style: function(feature) {
-                        //return {color: '#d8d4d4'};
-                        return {color: '#FF0000'};
-                    },
-                    pointToLayer: function(feature, latlng) {
-                        return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
-                    },
-                    onEachFeature: function (feature, layer) {
-                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
-                                        '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-                                        '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-                                        '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-                                        '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-                                        '</table>');
+$.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
+    $.getJSON("/dist/no2layers/World_2011_rastered.geojson",function(no2_2011){
+        $.getJSON("/dist/no2layers/World_2015_rastered.geojson",function(no2_2015){
+            $.getJSON("/dist/no2layers/World_2019_rastered.geojson",function(no2_2019){
+                $.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
+                    
+                    let baseLayers = {
+                        "Satellite": createBackgroundMapSat(),
+                        "Streets": createBackgroundMap().addTo(decarbnowMap)
+                    };
+                    let overlays = {
+                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
+                        "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
+                        "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
+                        "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}).addTo(decarbnowMap),
+                        "Disable": L.geoJson(null, {style: pollutionStyle})
+                        
+                    };
+                    let overlays_other = {
+                        "Big coal power stations": L.geoJson(coalplants, {
+                            style: function(feature) {
+                                //return {color: '#d8d4d4'};
+                                return {color: '#FF0000'};
+                            },
+                            pointToLayer: function(feature, latlng) {
+                                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+                            },
+                            onEachFeature: function (feature, layer) {
+                                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
+                                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+                                                '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
+                                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+                                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                                '</table>');
+                            }
+                        }).addTo(decarbnowMap)
                     }
-                }).addTo(decarbnowMap)
-            }
-            
-            decarbnowMap.addLayer(markerClusters);
-            L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
-            L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
-            L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
+                    
+                    decarbnowMap.addLayer(markerClusters);
+                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
+                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
+                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
 
-            decarbnowMap.addControl(sidebar);
+                    decarbnowMap.addControl(sidebar);
 
+                });
+            });
         });
     });
 });

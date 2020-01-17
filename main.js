@@ -5,6 +5,7 @@ import $ from 'jquery';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import leaflet_sidebar from 'leaflet-sidebar';
+import InfiniteScroll from 'infinite-scroll'
 
 const API_URL = 'https://decarbnow.space/api/poi';
 const DEBOUNCE_TIMEOUT = 200;
@@ -196,7 +197,6 @@ L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(decarbnowMap);
 
 //console.log(markers);
 
-
 function refreshMarkers() {
     markerClusters.clearLayers()
     if ($('.decarbnowpopup').length > 0) {
@@ -232,8 +232,11 @@ function refreshMarkers() {
                 let tws = item.urlOriginalTweet.split("/");
                 let twitterId = tws[tws.length-1];
                 text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
-                twitterIds.push(twitterId);
+                if (status.isSameUserName && status.inReplyToTweetId) {
+                    text += '<a class="nextTweet" href="/api/rendered/' + status.inReplyToTweetId + '"></a>';
+                }
             } else {
+                // this is basically obsolete, as all tweets have an original url
                 text += replaceURLWithHTMLLinks('<h3>' + item.text + '</h3>');
 
                 // add the replied tweet to the panel
@@ -261,7 +264,7 @@ function refreshMarkers() {
             currentMarkers[item.type].push(mm
                 .addTo(markerClusters)
                 .on('click', function () {
-                    sidebar.show(); 
+                    sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
                     TwitterWidgetsLoader.load(function(err, twttr) {
                         if (err) {
@@ -483,5 +486,8 @@ L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
 
 
+new InfiniteScroll('#sidebar', {
+    path: '.nextTweet'
+});
 
 window.setInterval(refreshMarkers, 30000);

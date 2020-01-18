@@ -5,7 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-serve --host 0.0.0.0 --port 8080 --open --live-reload",
+    "start": "webpack-serve --host 127.0.0.1 --port 8080 --open --live-reload",
     "build": "NODE_ENV=production webpack"
   },
   "dependencies": {
@@ -13,11 +13,11 @@
     "infinite-scroll": "^3.0.6",
     "jquery": "^3.4.1",
     "leaflet": "^1.6.0",
+    "leaflet-control-geocoder": "^1.11.0",
     "leaflet-sidebar": "^0.2.0",
     "leaflet.markercluster": "^1.4.1",
     "terser": "^4.4.0",
-    "twemoji": "^12.1.4",
-    "twitter-widgets": "^2.0.0"
+    "twemoji": "^12.1.4"
   },
   "author": "keano group",
   "license": "MIT",

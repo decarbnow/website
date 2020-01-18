@@ -1,11 +1,11 @@
 import { map, tileLayer, marker, Icon } from 'leaflet';
 import twemoji from 'twemoji';
-import TwitterWidgetsLoader from 'twitter-widgets';
 import $ from 'jquery';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import leaflet_sidebar from 'leaflet-sidebar';
 import InfiniteScroll from 'infinite-scroll'
+import 'leaflet-control-geocoder';
 
 const API_URL = 'https://decarbnow.space/api/poi';
 const DEBOUNCE_TIMEOUT = 200;
@@ -79,6 +79,29 @@ let markerClusters = L.markerClusterGroup(
 let sidebar = L.control.sidebar('sidebar', {
     closeButton: true,
     position: 'left'
+});
+
+window.twttr = (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0],
+    t = window.twttr || {};
+    if (d.getElementById(id)) return t;
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "https://platform.twitter.com/widgets.js";
+    fjs.parentNode.insertBefore(js, fjs);
+
+    t._e = [];
+    console.debug("initialising ready function");
+    t.ready = function(f) {
+        console.debug("inside loading");
+        t._e.push(f);
+    };
+
+    return t;
+}(document, "script", "twitter-wjs"));
+
+window.twttr.ready(function() {
+    console.log('ready');
 });
 
 
@@ -229,10 +252,8 @@ function refreshMarkers() {
 
             // add the original tweet to the panel OR the text of the tweet, if no original URL is specified
             if (item.urlOriginalTweet) {
-                let tws = item.urlOriginalTweet.split("/");
-                let twitterId = tws[tws.length-1];
-                twitterIds.push(twitterId);
-                text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                text += '<div id="tweet-' + item.tweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                twitterIds.push(item.tweetId);
                 if (item.replyFromSameUser && item.nextTweetId) {
                     text += '<div id="tweet-' + item.nextTweetId + '"></div>';
                     twitterIds.push(item.nextTweetId);
@@ -269,22 +290,20 @@ function refreshMarkers() {
                 .on('click', function () {
                     sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
-                    TwitterWidgetsLoader.load(function(err, twttr) {
-                        if (err) {
-                            showError();
-                            return;
-                        }
-
                         for (let idx in twitterIds) {
                             let twitterId = twitterIds[idx];
-                            twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
+                            window.setTimeout(function() {
+                                console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
+                                window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
+                            }, idx * 5000);
                         }
+                        /*
                         window.setTimeout(function() {
                             new InfiniteScroll($('#sidebar'), {
                                 path: '.nextTweet'
                             });
                         }, 300);
-                    });
+                        */
                 })
             );
         });
@@ -392,7 +411,7 @@ decarbnowMap.on('contextmenu',function(e){
             .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
         $('#tweetBtn').append(tweetBtn);
 
-        twttr.widgets.load();
+        window.twttr.widgets.load();
     }
     function debounce(callback) {
         // each call to debounce creates a new timeoutId
@@ -412,15 +431,7 @@ decarbnowMap.on('contextmenu',function(e){
     });
 
     console.log(e);
-    TwitterWidgetsLoader.load(function(err, twttr) {
-        if (err) {
-            showError();
-            //do some graceful degradation / fallback
-            return;
-        }
-
-        twttr.widgets.load();
-    });
+    window.twttr.widgets.load();
 });
 
 decarbnowMap.on('click', function () {

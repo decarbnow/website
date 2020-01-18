@@ -7,7 +7,7 @@ import leaflet_sidebar from 'leaflet-sidebar';
 import InfiniteScroll from 'infinite-scroll'
 import 'leaflet-control-geocoder';
 
-const API_URL = 'https://decarbnow.space/api/poi';
+const API_URL = 'https://decarbnow.space/api';
 const DEBOUNCE_TIMEOUT = 200;
 
 //**************************************************************************
@@ -81,9 +81,20 @@ let sidebar = L.control.sidebar('sidebar', {
     position: 'left'
 });
 
+var infScroll = null;
+
+sidebar.on('shown', function () {
+    infScroll = new InfiniteScroll(document.getElementById('sidebar'), {
+        history: false,
+        path: '.nextTweet'
+        //function() {
+        //    return "https://decarbnow.space/api/render/1169366632000438272";
+        //} //'.nextTweet'
+    });
+});
+
 window.twttr = (function(d, s, id) {
-    var js, fjs = d.getElementsByTagName(s)[0],
-    t = window.twttr || {};
+    var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
     if (d.getElementById(id)) return t;
     js = d.createElement(s);
     js.id = id;
@@ -225,8 +236,8 @@ function refreshMarkers() {
     if ($('.decarbnowpopup').length > 0) {
         return;
     }
-    console.log("refreshing markers from " + API_URL);
-    $.get(API_URL + "?size=100", function(data) {
+    console.log("refreshing markers from " + API_URL + '/poi');
+    $.get(API_URL + "/poi?size=100", function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
             for (var mi in currentMarkers[i]) {
@@ -255,9 +266,9 @@ function refreshMarkers() {
                 text += '<div id="tweet-' + item.tweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
                 twitterIds.push(item.tweetId);
                 if (item.replyFromSameUser && item.nextTweetId) {
-                    text += '<div id="tweet-' + item.nextTweetId + '"></div>';
+                    text += '<div id="tweet-' + item.nextTweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
                     twitterIds.push(item.nextTweetId);
-                    text += '<a class="nextTweet" href="/api/rendered/' + item.nextTweetId + '"></a>';
+                    text += '<a class="nextTweet" href="' + API_URL + '/render/' + item.nextTweetId + '"></a>';
                 }
             } else {
                 // this is basically obsolete, as all tweets have an original url
@@ -290,20 +301,14 @@ function refreshMarkers() {
                 .on('click', function () {
                     sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
-                        for (let idx in twitterIds) {
-                            let twitterId = twitterIds[idx];
-                            window.setTimeout(function() {
-                                console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
-                                window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
-                            }, idx * 5000);
-                        }
-                        /*
-                        window.setTimeout(function() {
-                            new InfiniteScroll($('#sidebar'), {
-                                path: '.nextTweet'
-                            });
-                        }, 300);
-                        */
+                    for (let idx in twitterIds) {
+                        let twitterId = twitterIds[idx];
+                        //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
+                        window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
+                            //console.debug('created tweet');
+                            //infScroll.loadNextPage();
+                        });
+                    }
                 })
             );
         });

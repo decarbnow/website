@@ -234,6 +234,8 @@ function refreshMarkers() {
                 twitterIds.push(twitterId);
                 text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
                 if (item.replyFromSameUser && item.nextTweetId) {
+                    text += '<div id="tweet-' + item.nextTweetId + '"></div>';
+                    twitterIds.push(nextTweetId);
                     text += '<a class="nextTweet" href="/api/rendered/' + item.nextTweetId + '"></a>';
                 }
             } else {

@@ -231,9 +231,10 @@ function refreshMarkers() {
             if (item.urlOriginalTweet) {
                 let tws = item.urlOriginalTweet.split("/");
                 let twitterId = tws[tws.length-1];
+                twitterIds.push(twitterId);
                 text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
-                if (status.isSameUserName && status.inReplyToTweetId) {
-                    text += '<a class="nextTweet" href="/api/rendered/' + status.inReplyToTweetId + '"></a>';
+                if (item.replyFromSameUser && item.nextTweetId) {
+                    text += '<a class="nextTweet" href="/api/rendered/' + item.nextTweetId + '"></a>';
                 }
             } else {
                 // this is basically obsolete, as all tweets have an original url
@@ -276,6 +277,11 @@ function refreshMarkers() {
                             let twitterId = twitterIds[idx];
                             twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId));
                         }
+                        window.setTimeout(function() {
+                            new InfiniteScroll($('#sidebar'), {
+                                path: '.nextTweet'
+                            });
+                        }, 300);
                     });
                 })
             );
@@ -475,7 +481,6 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
                     L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
 
                     decarbnowMap.addControl(sidebar);
-
                 });
             });
         });
@@ -484,10 +489,5 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
 
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
-
-
-new InfiniteScroll('#sidebar', {
-    path: '.nextTweet'
-});
 
 window.setInterval(refreshMarkers, 30000);

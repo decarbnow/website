@@ -19,6 +19,9 @@ let decarbnowMap = map('map', {
 //}).setView([48.2084, 16.373], 5);
 }).setView([47, 16], 5);
 
+let imageUrl = '/dist/no2layers/no2_5.png',
+    imageBounds = [[85, -180], [-85, 180]];
+
 let markerInfo = {
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
@@ -119,7 +122,13 @@ window.twttr.ready(function() {
 //**************************************************************************
 // functions
 //**************************************************************************
-
+function centerLeafletMapOnMarker(map, marker) {
+  var markerLatLon = marker.getLatLng();
+  var lat = markerLatLon.lat;
+  var lng = markerLatLon.lng;
+  var zoom = 10;
+  map.setView([lat, lng], zoom);
+}
 
 function initializeMarkers() {
     currentMarkers = {
@@ -299,6 +308,7 @@ function refreshMarkers() {
             currentMarkers[item.type].push(mm
                 .addTo(markerClusters)
                 .on('click', function () {
+                    centerLeafletMapOnMarker(decarbnowMap, mm);
                     sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
                     for (let idx in twitterIds) {
@@ -470,6 +480,7 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
                         "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
                         "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
                         "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}).addTo(decarbnowMap),
+                        "NO<sub>2</sub> 5p":   L.imageOverlay(imageUrl, imageBounds),
                         "Disable": L.geoJson(null, {style: pollutionStyle})
                         
                     };

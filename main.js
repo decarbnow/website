@@ -123,11 +123,15 @@ window.twttr.ready(function() {
 // functions
 //**************************************************************************
 function centerLeafletMapOnMarker(map, marker) {
-  var markerLatLon = marker.getLatLng();
-  var lat = markerLatLon.lat;
-  var lng = markerLatLon.lng;
-  var zoom = map.getZoom()+3;
-  map.setView([lat, lng], zoom);
+    var markerLatLon = marker.getLatLng();
+    var lat = markerLatLon.lat;
+    var lng = markerLatLon.lng;
+    var zoom = map.getZoom()+2;
+    map.flyTo([lat, lng], zoom, {
+        animate: true,
+        duration: 1.5
+    });
+    //map.setView([lat, lng], zoom);
 }
 
 function initializeMarkers() {
@@ -308,7 +312,6 @@ function refreshMarkers() {
             currentMarkers[item.type].push(mm
                 .addTo(markerClusters)
                 .on('click', function () {
-                    centerLeafletMapOnMarker(decarbnowMap, mm);
                     sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
                     for (let idx in twitterIds) {
@@ -319,6 +322,7 @@ function refreshMarkers() {
                             //infScroll.loadNextPage();
                         });
                     }
+                    centerLeafletMapOnMarker(decarbnowMap, mm);
                 })
             );
         });

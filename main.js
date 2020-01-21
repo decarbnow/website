@@ -126,7 +126,7 @@ function centerLeafletMapOnMarker(map, marker) {
   var markerLatLon = marker.getLatLng();
   var lat = markerLatLon.lat;
   var lng = markerLatLon.lng;
-  var zoom = 10;
+  var zoom = map.getZoom()+3;
   map.setView([lat, lng], zoom);
 }
 

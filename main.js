@@ -26,6 +26,8 @@ let markerInfo = {
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
+        "fa_icon": "industry",
+        "bg_color": "blue",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
         "desc": "Some do, some dont. We all want change. See who works against positive change!!"
@@ -33,6 +35,8 @@ let markerInfo = {
     "climateaction": {
         "img": "/dist/img/action_glow.png",
         "icon_img": "/dist/img/action.png",
+        "fa_icon": "bullhorn",
+        "bg_color": "red",
         "title": "Climate Action",
         "question": "Who took action?",
         "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
@@ -40,6 +44,8 @@ let markerInfo = {
     "transition": {
         "img": "/dist/img/transition_glow.png",
         "icon_img": "/dist/img/transition.png",
+        "fa_icon": "lightbulb",
+        "bg_color": "black",
         "title": "Transition",
         "question": "Who takes the first step?",
         "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
@@ -61,9 +67,9 @@ let LeafIcon = Icon.extend({
 });
 
 let icons = {
-    "pollution": new LeafIcon({iconUrl: markerInfo.pollution.img}),
-    "climateaction": new LeafIcon({iconUrl: markerInfo.climateaction.img}),
-    "transition": new LeafIcon({iconUrl: markerInfo.transition.img})
+    "pollution": markerInfo.pollution.fa_icon,
+    "climateaction": markerInfo.climateaction.fa_icon,
+    "transition": markerInfo.transition.fa_icon
 };
 
 let showGeoLoc = L.popup().setContent(
@@ -122,11 +128,11 @@ window.twttr.ready(function() {
 //**************************************************************************
 // functions
 //**************************************************************************
-function centerLeafletMapOnMarker(map, marker) {
+function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var markerLatLon = marker.getLatLng();
     var lat = markerLatLon.lat;
     var lng = markerLatLon.lng;
-    var zoom = map.getZoom()+2;
+    var zoom = map.getZoom()+ d_zoom;
     map.flyTo([lat, lng], zoom, {
         animate: true,
         duration: 1.5
@@ -303,8 +309,19 @@ function refreshMarkers() {
                     twitterIds.push(twitterId);
                 }
             }
+            let icon = L.divIcon({
+                iconSize: [30, 42],
+                iconAnchor: [15, 42] // half of width + height
+            });
+            console.log(item.type);
+            icon = L.divIcon({
+                className: 'custom-div-icon',
+                html: "<div class='marker-pin " + icons[item.type] + "'></div><i class='fa fa-"+ icons[item.type] +" " + icons[item.type] +"'>",
+                iconSize: [30, 42],
+                iconAnchor: [15, 42]
+                });
 
-            let mm = marker([long, lat], {icon: icons[item.type]});
+            let mm = marker([long, lat], {icon: icon});
 
             //mm.sidebar.setContent(twemoji.parse(text)).show()
 
@@ -322,7 +339,7 @@ function refreshMarkers() {
                             //infScroll.loadNextPage();
                         });
                     }
-                    centerLeafletMapOnMarker(decarbnowMap, mm);
+                    centerLeafletMapOnMarker(decarbnowMap, mm, 2);
                 })
             );
         });
@@ -352,21 +369,22 @@ L.Control.Markers = L.Control.extend({
     onAdd: function(map) {
         let markerControls = L.DomUtil.create('div');
         markerControls.style.width = '400px';
-        markerControls.style.height = '25px';
+        markerControls.style.height = '24px';
         markerControls.style.backgroundColor = '#fff';
         markerControls.style.display = 'flex';
         markerControls.style.flexDirection = 'row';
         markerControls.style.justifyContent = 'space-evenly';
         markerControls.style.alignItems = 'center';
-        markerControls.style.padding = "3px";
+        markerControls.style.paddingTop = "3px";
         markerControls.classList.add("leaflet-bar");
 
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<img height="24" src="' + marker.icon_img + '" style="vertical-align:middle" /> ' + marker.title;
+            markerContainer.innerHTML = '<div class="bubble ' + marker.fa_icon +'"><i class="fa fa-' + marker.fa_icon + '"></i></div> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
+            console.log(markerContainer);
         });
 
         return markerControls;
@@ -484,7 +502,7 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
                         "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
                         "NO<sub>2</sub> 2015": L.geoJson(no2_2015, {style: pollutionStyle}),
                         "NO<sub>2</sub> 2019": L.geoJson(no2_2019, {style: pollutionStyle}).addTo(decarbnowMap),
-                        "NO<sub>2</sub> 5p":   L.imageOverlay(imageUrl, imageBounds),
+                        //"NO<sub>2</sub> 5p":   L.imageOverlay(imageUrl, imageBounds),
                         "Disable": L.geoJson(null, {style: pollutionStyle})
                         
                     };

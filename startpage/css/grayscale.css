@@ -3,6 +3,76 @@
  * Copyright 2013-2019 Start Bootstrap
  * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-grayscale/blob/master/LICENSE)
  */
+.bubble_o {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  -webkit-border-radius: 32px;
+  -moz-border-radius: 32px;
+  border-radius: 32px;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  text-align: center;
+  font-size: 13px;
+  padding-top: 7px;
+  display: inline-block;
+  background: rgb(42, 66, 64) !important;
+  color: white !important;
+}
+
+.bubble_o.bullhorn {
+  background: rgb(255, 239, 100);
+  color: rgb(255, 55, 55);
+}
+
+.bubble_o.lightbulb {
+  background: rgb(57, 219, 113);
+  padding-top: 7px;
+  color: rgb(255, 240, 20);
+  padding-left: 1px;
+}
+
+.bubble_o.lightbulb.big {
+  padding-top: 10px;
+}
+
+.bubble_o.industry {
+  background: rgb(251, 99, 107);
+  color: rgb(155, 155, 155);
+}
+
+
+.bubble_o::after {
+  content: '';
+  position: absolute;
+  border-style: solid;
+  border-width: 10px 7px 0;
+  border-color: white transparent;
+  display: block;
+  width: 0;
+  z-index: -1;
+  bottom: -9px;
+  left: 7px;
+}
+
+
+
+.bubble_o.big {
+  width: 70px;
+  height: 70px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  border-radius: 70px;
+  border-width: 2px;
+  font-size: 33px;
+  padding-top: 9px;
+  margin-bottom: 10px;
+}
+
+.bubble_o.big::after {
+  border-width: 0;
+}
 
 #mainNav {
   min-height: 56px;

@@ -27,28 +27,25 @@ let markerInfo = {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
         "fa_icon": "industry",
-        "bg_color": "blue",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
-        "desc": "Some do, some dont. We all want change. See who works against positive change!!"
+        "desc": "Register and pinpoint polluters."
     },
     "climateaction": {
         "img": "/dist/img/action_glow.png",
         "icon_img": "/dist/img/action.png",
         "fa_icon": "bullhorn",
-        "bg_color": "red",
         "title": "Climate Action",
         "question": "Who took action?",
-        "desc": "Some do, some dont. We all want change. See what others do and get inspired!"
+        "desc": "Locate climate action to accelerate change."
     },
     "transition": {
         "img": "/dist/img/transition_glow.png",
         "icon_img": "/dist/img/transition.png",
         "fa_icon": "lightbulb",
-        "bg_color": "black",
         "title": "Transition",
         "question": "Who takes the first step?",
-        "desc": "Switching to lower energy consuming machinery is the first step. See who is willing to make the first step."
+        "desc": "Making climate transition initiatives visible."
     }
 };
 let currentMarkers = {};
@@ -79,7 +76,7 @@ let showGeoLoc = L.popup().setContent(
 let markerClusters = L.markerClusterGroup(
     {
         disableClusteringAtZoom: 19,
-        maxClusterRadius: 100,
+        maxClusterRadius: 50,
         animatedAddingMarkers: false,
         showCoverageOnHover: false
         //removeOutsideVisibleBounds: true

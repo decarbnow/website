@@ -24,17 +24,17 @@
 
 .bubble.big{
   position: relative;
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 50px;
   -webkit-border-radius: 50px;
   -moz-border-radius: 50px;
   border-radius: 70px;
   border-color: white;
   border-width: 2px;
   border-style: solid;
-  font-size: 33px;
+  font-size: 25px;
   text-align: center;
-  padding-top: 11px;
+  padding-top: 6px;
   margin-bottom: 10px;
   display: inline-block;
   background: rgb(42, 66, 64) !important;

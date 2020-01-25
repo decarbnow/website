@@ -375,7 +375,7 @@ L.Control.Markers = L.Control.extend({
         markerControls.style.flexDirection = 'row';
         markerControls.style.justifyContent = 'space-evenly';
         markerControls.style.alignItems = 'center';
-        markerControls.style.paddingBottom = "3px";
+        markerControls.style.paddingBottom = "2px";
         markerControls.classList.add("leaflet-bar");
 
         Object.keys(markerInfo).forEach(markerKey => {

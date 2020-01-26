@@ -54,13 +54,13 @@
 
         
         .marker-pin {
-          width: 30px;
-          height: 30px;
+          width: 24px;
+          height: 24px;
           border-radius: 50% 50% 50% 0;
           background: #fff !important;
           position: absolute;
           transform: rotate(-45deg);
-          left: 50%;
+          left: 62%;
           top: 50%;
           margin: -15px 0 0 -15px;
           z-index: -1;
@@ -68,8 +68,8 @@
         /* to draw circle*/
         .marker-pin::after {
             content: '';
-            width: 26px;
-            height: 26px;
+            width: 20px;
+            height: 20px;
             margin: 2px 0 0 2px;
             background: rgb(251, 99, 107);
             position: absolute;
@@ -78,37 +78,33 @@
         /* o align icon*/
         .custom-div-icon i {
            position: absolute;
-           width: 22px;
-           font-size: 17px;
+           font-size: 14px;
            left: 0;
            right: 0;
-           margin: 10px auto;
+           margin: 8px auto !important;
            text-align: center;
-           padding-top: 1px !important;
         }
 
         .custom-div-icon i.action {
             color: rgba(234, 36, 97, 1) !important;
             margin: 12px auto;
-            padding-top: 2px;
+            padding-top: 0px;
         } 
         
         .custom-div-icon i.transition {
             color: rgb(255, 240, 20) !important;
             margin: 12px auto;
-            padding-top: 2px;
+            padding-top: 0px;
         } 
         
         .custom-div-icon i.pollution {
             color: rgba(210, 210, 210, 1) !important;
             margin: 12px auto;
-            padding-top: 2px;
+            padding-top: 0px;
         } 
 
         .marker-pin.action::after {
             content: '';
-            width: 26px;
-            height: 26px;
             margin: 2px 0 0 2px;
             background: rgba(255, 233, 46, 1) !important;
             position: absolute;
@@ -116,8 +112,6 @@
         }
         .marker-pin.transition::after {
             content: '';
-            width: 26px;
-            height: 26px;
             margin: 2px 0 0 2px;
             background: rgb(57, 219, 113) !important;
             position: absolute;
@@ -125,8 +119,6 @@
         }
         .marker-pin.pollution::after {
             content: '';
-            width: 26px;
-            height: 26px;
             margin: 2px 0 0 2px;
             background: rgba(226, 57, 66, 1) !important;
             position: absolute;

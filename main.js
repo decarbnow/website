@@ -58,9 +58,9 @@ let LeafIcon = Icon.extend({
     options: {
         //shadowUrl: 'dist/img/leaf-shadow.png',
         shadowUrl: '/dist/img/icon-shadow.png',
-        iconSize:     [32, 37],
-        shadowSize:   [37, 37],
-        iconAnchor:   [16, 37],
+        iconSize:     [24, 34],
+        shadowSize:   [34, 34],
+        iconAnchor:   [12, 34],
         shadowAnchor: [19, 34],
         popupAnchor:  [0, -16]
     }
@@ -322,8 +322,8 @@ function refreshMarkers() {
             icon = L.divIcon({
                 className: 'custom-div-icon',
                 html: "<div class='marker-pin " + icons[item.type].cssname + "'></div><i class='nf nf-"+ icons[item.type].fonticon +" " + icons[item.type].cssname +"'>",
-                iconSize: [30, 42],
-                iconAnchor: [15, 42]
+                iconSize: [24, 34],
+                iconAnchor: [12, 34]
                 });
 
             let mm = marker([long, lat], {icon: icon});

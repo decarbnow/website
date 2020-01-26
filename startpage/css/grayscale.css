@@ -15,8 +15,8 @@
   border-width: 2px;
   border-style: solid;
   text-align: center;
-  font-size: 14px;
-  padding-top: 6px;
+  font-size: 18px;
+  padding-top: 3px;
   display: inline-block;
   background: rgb(42, 66, 64) !important;
   color: white !important;
@@ -32,9 +32,9 @@
   border-color: white;
   border-width: 2px;
   border-style: solid;
-  font-size: 25px;
+  font-size: 30px;
   text-align: center;
-  padding-top: 6px;
+  padding-top: 1px;
   margin-bottom: 10px;
   display: inline-block;
   background: rgb(42, 66, 64) !important;

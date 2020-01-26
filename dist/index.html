@@ -3,7 +3,8 @@
 <head>
     <title>#decarbnow</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="/startpage/vendor/fontawesome-free/css/all.min.css" >
+    <link rel="stylesheet" href="/startpage/vendor/fontawesome-free/css/all.min.css">
+    <link href="/startpage/vendor/nerdfonts/css/bootstrap-grid.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/node_modules/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="/node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="/node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
@@ -78,32 +79,33 @@
         .custom-div-icon i {
            position: absolute;
            width: 22px;
-           font-size: 14px;
+           font-size: 17px;
            left: 0;
            right: 0;
            margin: 10px auto;
            text-align: center;
+           padding-top: 1px !important;
         }
 
-        .custom-div-icon i.bullhorn {
+        .custom-div-icon i.action {
             color: rgba(234, 36, 97, 1) !important;
             margin: 12px auto;
             padding-top: 2px;
         } 
         
-        .custom-div-icon i.lightbulb {
+        .custom-div-icon i.transition {
             color: rgb(255, 240, 20) !important;
             margin: 12px auto;
             padding-top: 2px;
         } 
         
-        .custom-div-icon i.industry {
+        .custom-div-icon i.pollution {
             color: rgba(210, 210, 210, 1) !important;
             margin: 12px auto;
             padding-top: 2px;
         } 
 
-        .marker-pin.bullhorn::after {
+        .marker-pin.action::after {
             content: '';
             width: 26px;
             height: 26px;
@@ -112,7 +114,7 @@
             position: absolute;
             border-radius: 50%;
         }
-        .marker-pin.lightbulb::after {
+        .marker-pin.transition::after {
             content: '';
             width: 26px;
             height: 26px;
@@ -121,7 +123,7 @@
             position: absolute;
             border-radius: 50%;
         }
-        .marker-pin.industry::after {
+        .marker-pin.pollution::after {
             content: '';
             width: 26px;
             height: 26px;
@@ -134,7 +136,7 @@
         .bubble{
             position: relative;
             width: 32px;
-            height: 27px;
+            height: 29px;
             -webkit-border-radius: 32px;
             -moz-border-radius: 32px;
             border-radius: 32px;
@@ -142,21 +144,21 @@
             border-width: 2px;
             border-style: solid;
             text-align: center;
-            font-size: 16px;
-            padding-top: 5px;
+            font-size: 18px;
+            padding-top: 3px;
             display: inline-block;
         }
 
-        .bubble.industry{
+        .bubble.pollution{
             background: rgba(226, 57, 66, 1) !important;
             color: rgba(210, 210, 210, 1) !important;
         }
 
-        .bubble.bullhorn {
+        .bubble.action {
             background: rgba(255, 233, 46, 1) !important;
             color: rgba(234, 36, 97, 1) !important;
         } 
-        .bubble.lightbulb {
+        .bubble.transition {
             background: rgb(57, 219, 113) !important;
             color: rgb(255, 240, 20) !important;
         } 

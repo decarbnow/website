@@ -26,7 +26,8 @@ let markerInfo = {
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
-        "fa_icon": "industry",
+        "fonticon": "weather-smog",
+        "cssname": "pollution",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
         "desc": "Register and pinpoint polluters."
@@ -34,7 +35,8 @@ let markerInfo = {
     "climateaction": {
         "img": "/dist/img/action_glow.png",
         "icon_img": "/dist/img/action.png",
-        "fa_icon": "bullhorn",
+        "fonticon": "mdi-bullhorn",
+        "cssname": "action",
         "title": "Climate Action",
         "question": "Who took action?",
         "desc": "Locate climate action to accelerate change."
@@ -42,7 +44,8 @@ let markerInfo = {
     "transition": {
         "img": "/dist/img/transition_glow.png",
         "icon_img": "/dist/img/transition.png",
-        "fa_icon": "lightbulb",
+        "fonticon": "mdi-lightbulb_on",
+        "cssname": "transition",
         "title": "Transition",
         "question": "Who takes the first step?",
         "desc": "Making climate transition initiatives visible."
@@ -64,9 +67,9 @@ let LeafIcon = Icon.extend({
 });
 
 let icons = {
-    "pollution": markerInfo.pollution.fa_icon,
-    "climateaction": markerInfo.climateaction.fa_icon,
-    "transition": markerInfo.transition.fa_icon
+    "pollution": markerInfo.pollution,
+    "climateaction": markerInfo.climateaction,
+    "transition": markerInfo.transition
 };
 
 let showGeoLoc = L.popup().setContent(
@@ -76,7 +79,7 @@ let showGeoLoc = L.popup().setContent(
 let markerClusters = L.markerClusterGroup(
     {
         disableClusteringAtZoom: 19,
-        maxClusterRadius: 50,
+        maxClusterRadius: 10,
         animatedAddingMarkers: false,
         showCoverageOnHover: false
         //removeOutsideVisibleBounds: true
@@ -125,6 +128,11 @@ window.twttr.ready(function() {
 //**************************************************************************
 // functions
 //**************************************************************************
+function locate() {
+      map.locate({setView: true});
+}
+
+
 function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var markerLatLon = marker.getLatLng();
     var lat = markerLatLon.lat;
@@ -313,7 +321,7 @@ function refreshMarkers() {
             console.log(item.type);
             icon = L.divIcon({
                 className: 'custom-div-icon',
-                html: "<div class='marker-pin " + icons[item.type] + "'></div><i class='fa fa-"+ icons[item.type] +" " + icons[item.type] +"'>",
+                html: "<div class='marker-pin " + icons[item.type].cssname + "'></div><i class='nf nf-"+ icons[item.type].fonticon +" " + icons[item.type].cssname +"'>",
                 iconSize: [30, 42],
                 iconAnchor: [15, 42]
                 });
@@ -378,7 +386,7 @@ L.Control.Markers = L.Control.extend({
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<div class="bubble ' + marker.fa_icon +'"><i class="fa fa-' + marker.fa_icon + '"></i></div> ' + marker.title;
+            markerContainer.innerHTML = '<div class="bubble ' + marker.cssname +'"><i class="nf nf-' + marker.fonticon + '"></i></div> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
             console.log(markerContainer);
@@ -504,7 +512,7 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
                         
                     };
                     let overlays_other = {
-                        "Big coal power stations": L.geoJson(coalplants, {
+                        "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
                             style: function(feature) {
                                 //return {color: '#d8d4d4'};
                                 return {color: '#FF0000'};
@@ -522,6 +530,7 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
                             }
                         }).addTo(decarbnowMap)
                     }
+
                     
                     decarbnowMap.addLayer(markerClusters);
                     L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);

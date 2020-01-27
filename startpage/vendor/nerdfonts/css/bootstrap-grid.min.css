@@ -26,6 +26,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.fa {
+  line-height: 1;
+  /* Better Font Rendering (from devicons, et al) */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .nf-custom-c:before {
   content: "\e61e";
 }

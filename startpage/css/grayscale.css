@@ -15,14 +15,28 @@
   border-width: 2px;
   border-style: solid;
   text-align: center;
-  font-size: 18px;
-  padding-top: 3px;
   display: inline-block;
   background: rgb(42, 66, 64) !important;
   color: white !important;
+  vertical-align: middle;
 }
 
-.bubble.big{
+.bubble.pollution{
+  font-size: 22px;
+  line-height: 28px;
+}
+
+.bubble.action{
+  font-size: 15px;
+  line-height: 28px;
+}
+
+.bubble.transition{
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.bbubble{
   position: relative;
   width: 50px;
   height: 50px;
@@ -32,13 +46,28 @@
   border-color: white;
   border-width: 2px;
   border-style: solid;
-  font-size: 30px;
   text-align: center;
-  padding-top: 1px;
   margin-bottom: 10px;
+  vertical-align: middle;
   display: inline-block;
   background: rgb(42, 66, 64) !important;
   color: white !important;
+}
+
+
+.bbubble.pollution{
+  font-size: 34px;
+  line-height: 48px;
+}
+
+.bbubble.action{
+  font-size: 22px;
+  line-height: 48px;
+}
+
+.bbubble.transition{
+  font-size: 28px;
+  line-height: 44px;
 }
 
 

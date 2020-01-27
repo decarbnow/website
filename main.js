@@ -26,7 +26,7 @@ let markerInfo = {
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
-        "fonticon": "weather-smog",
+        "fonticon": "nf nf-mdi-periodic_table_co2",
         "cssname": "pollution",
         "title": "Pollution",
         "question": "Who pollutes our planet?",
@@ -35,7 +35,8 @@ let markerInfo = {
     "climateaction": {
         "img": "/dist/img/action_glow.png",
         "icon_img": "/dist/img/action.png",
-        "fonticon": "mdi-bullhorn",
+        //"fonticon": "nf nf-mdi-bullhorn",
+        "fonticon": "fa fa-bullhorn",
         "cssname": "action",
         "title": "Climate Action",
         "question": "Who took action?",
@@ -44,7 +45,7 @@ let markerInfo = {
     "transition": {
         "img": "/dist/img/transition_glow.png",
         "icon_img": "/dist/img/transition.png",
-        "fonticon": "mdi-lightbulb_on",
+        "fonticon": "nf nf-mdi-lightbulb_on",
         "cssname": "transition",
         "title": "Transition",
         "question": "Who takes the first step?",
@@ -321,7 +322,7 @@ function refreshMarkers() {
             console.log(item.type);
             icon = L.divIcon({
                 className: 'custom-div-icon',
-                html: "<div class='marker-pin " + icons[item.type].cssname + "'></div><i class='nf nf-"+ icons[item.type].fonticon +" " + icons[item.type].cssname +"'>",
+                html: "<div class='marker-pin " + icons[item.type].cssname + "'></div><i class='"+ icons[item.type].fonticon +" " + icons[item.type].cssname +"'>",
                 iconSize: [24, 34],
                 iconAnchor: [12, 34]
                 });
@@ -386,7 +387,7 @@ L.Control.Markers = L.Control.extend({
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
             let markerContainer = L.DomUtil.create('div');
-            markerContainer.innerHTML = '<div class="bubble ' + marker.cssname +'"><i class="nf nf-' + marker.fonticon + '"></i></div> ' + marker.title;
+            markerContainer.innerHTML = '<div class="bubble ' + marker.cssname +'"><i class="' + marker.fonticon + '"></i></div> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
             console.log(markerContainer);

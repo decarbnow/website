@@ -26,6 +26,8 @@ let markerInfo = {
     "pollution":  {
         "img": "/dist/img/pollution_glow.png", 
         "icon_img": "/dist/img/pollution.png",
+        //"fonticon": "nf nf-mdi-periodic_table_co2",
+        //nf-mdi-thought_bubble, nf-fa-thumbs_down nf-mdi-flag
         "fonticon": "nf nf-mdi-periodic_table_co2",
         "cssname": "pollution",
         "title": "Pollution",
@@ -36,6 +38,7 @@ let markerInfo = {
         "img": "/dist/img/action_glow.png",
         "icon_img": "/dist/img/action.png",
         //"fonticon": "nf nf-mdi-bullhorn",
+        //nf-mdi-guy_fawkes_mask
         "fonticon": "fa fa-bullhorn",
         "cssname": "action",
         "title": "Climate Action",
@@ -135,15 +138,19 @@ function locate() {
 
 
 function centerLeafletMapOnMarker(map, marker, d_zoom) {
+    var sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
     var markerLatLon = marker.getLatLng();
-    var lat = markerLatLon.lat;
-    var lng = markerLatLon.lng;
-    var zoom = map.getZoom()+ d_zoom;
-    map.flyTo([lat, lng], zoom, {
+    //var lat = markerLatLon.lat;
+    //var lng = markerLatLon.lng;
+    var targetZoom = map.getZoom()+ d_zoom;
+
+    var targetPoint = map.project(markerLatLon, targetZoom).subtract([sidebarOffset / 2, 0]),
+        targetLatLng = map.unproject(targetPoint, targetZoom);
+
+    map.flyTo(targetLatLng, targetZoom, {
         animate: true,
         duration: 1.5
     });
-    //map.setView([lat, lng], zoom);
 }
 
 function initializeMarkers() {
@@ -319,7 +326,7 @@ function refreshMarkers() {
                 iconSize: [30, 42],
                 iconAnchor: [15, 42] // half of width + height
             });
-            console.log(item.type);
+            //console.log(item.type);
             icon = L.divIcon({
                 className: 'custom-div-icon',
                 html: "<div class='marker-pin " + icons[item.type].cssname + "'></div><i class='"+ icons[item.type].fonticon +" " + icons[item.type].cssname +"'>",
@@ -381,8 +388,9 @@ L.Control.Markers = L.Control.extend({
         markerControls.style.flexDirection = 'row';
         markerControls.style.justifyContent = 'space-evenly';
         markerControls.style.alignItems = 'center';
-        markerControls.style.paddingBottom = "2px";
+        markerControls.style.paddingBottom = "0px";
         markerControls.classList.add("leaflet-bar");
+        
 
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
@@ -390,7 +398,7 @@ L.Control.Markers = L.Control.extend({
             markerContainer.innerHTML = '<div class="bubble ' + marker.cssname +'"><i class="' + marker.fonticon + '"></i></div> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
-            console.log(markerContainer);
+            //console.log(markerContainer);
         });
 
         return markerControls;
@@ -473,7 +481,7 @@ decarbnowMap.on('contextmenu',function(e){
         debounce(onTweetSettingsChange)();
     });
 
-    console.log(e);
+    //console.log(e);
     window.twttr.widgets.load();
 });
 

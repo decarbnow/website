@@ -148,7 +148,12 @@ function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var markerLatLon = marker.getLatLng();
     //var lat = markerLatLon.lat;
     //var lng = markerLatLon.lng;
-    var targetZoom = map.getZoom()+ d_zoom;
+    
+    if (map.getZoom() >= 7) {
+        var targetZoom = map.getZoom();
+    } else {
+        var targetZoom = map.getZoom() + d_zoom;
+    }
 
     var targetPoint = map.project(markerLatLon, targetZoom).subtract([sidebarOffset / 2, 0]),
         targetLatLng = map.unproject(targetPoint, targetZoom);

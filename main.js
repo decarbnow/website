@@ -17,7 +17,13 @@ let decarbnowMap = map('map', {
     zoomControl: false, // manually added
     tap: true
 //}).setView([48.2084, 16.373], 5);
+//}).setView([, L.GeoIP.getPosition().lon], 12);
+//}).setView([L.GeoIP.getPosition().lat, L.GeoIP.getPosition().lng], 15);
 }).setView([47, 16], 5);
+
+let toggleZoom = true;
+
+let zoomState = 0;
 
 let imageUrl = '/dist/no2layers/no2_5.png',
     imageBounds = [[85, -180], [-85, 180]];
@@ -352,7 +358,9 @@ function refreshMarkers() {
                             //infScroll.loadNextPage();
                         });
                     }
+                    
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
+                    
                 })
             );
         });
@@ -376,6 +384,39 @@ L.Control.Layers.TogglerIcon = L.Control.Layers.extend({
 L.control.layers.TogglerIcon = function(opts) {
     return new L.Control.Layers.TogglerIcon(opts);
 };
+
+L.GeoIP = L.extend({
+  getPosition: function (ip) {
+    var url = "https://freegeoip.app/json/";
+    var result = L.latLng(0, 0);
+
+    if (ip !== undefined) {
+      url = url + ip;
+    } else {
+      //url = url + "143.130.30.36";
+    }
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, false);
+    xhr.onload = function () {
+      var status = xhr.status;
+      if (status == 200) {
+        var geoip_response = JSON.parse(xhr.responseText);
+        result.lat = geoip_response.latitude;
+        result.lng = geoip_response.longitude;
+      } else {
+        console.log("Leaflet.GeoIP.getPosition failed because its XMLHttpRequest got this response: " + xhr.status);
+      }
+    };
+    xhr.send();
+    return result;
+  },
+
+  centerMapOnPosition: function (map, zoom, ip) {
+    var position = L.GeoIP.getPosition(ip);
+    map.setView(position, zoom);
+  }
+});
 
 
 L.Control.Markers = L.Control.extend({
@@ -552,8 +593,8 @@ $.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
         });
     });
 });
-
+  
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
-
+L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
 window.setInterval(refreshMarkers, 30000);

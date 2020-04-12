@@ -26,13 +26,13 @@ let toggleZoom = true;
 
 let zoomState = 0;
 
-let imageUrl = '/dist/no2layers/World_raster_2020_02.png',
+let imageUrl = '/map/no2layers/World_raster_2020_02.png',
     imageBounds = [[-77.65, -155.95], [71.85, 166.15]];
 
 let markerInfo = {
     "pollution":  {
-        "img": "/dist/img/pollution_glow.png", 
-        "icon_img": "/dist/img/pollution.png",
+        "img": "/map/img/pollution_glow.png", 
+        "icon_img": "/map/img/pollution.png",
         //"fonticon": "nf nf-mdi-periodic_table_co2",
         //nf-mdi-thought_bubble, nf-fa-thumbs_down nf-mdi-flag
         "fonticon": "nf nf-mdi-periodic_table_co2",
@@ -42,8 +42,8 @@ let markerInfo = {
         "desc": "Register and pinpoint polluters."
     },
     "climateaction": {
-        "img": "/dist/img/action_glow.png",
-        "icon_img": "/dist/img/action.png",
+        "img": "/map/img/action_glow.png",
+        "icon_img": "/map/img/action.png",
         //"fonticon": "nf nf-mdi-bullhorn",
         //nf-mdi-guy_fawkes_mask
         "fonticon": "fa fa-bullhorn",
@@ -53,8 +53,8 @@ let markerInfo = {
         "desc": "Locate climate action to accelerate change."
     },
     "transition": {
-        "img": "/dist/img/transition_glow.png",
-        "icon_img": "/dist/img/transition.png",
+        "img": "/map/img/transition_glow.png",
+        "icon_img": "/map/img/transition.png",
         "fonticon": "nf nf-mdi-lightbulb_on",
         "cssname": "transition",
         "title": "Transition",
@@ -68,8 +68,8 @@ let currentMarkerFilters = ["climateaction", "pollution", "transition"];
 
 let LeafIcon = Icon.extend({
     options: {
-        //shadowUrl: 'dist/img/leaf-shadow.png',
-        shadowUrl: '/dist/img/icon-shadow.png',
+        //shadowUrl: 'map/img/leaf-shadow.png',
+        shadowUrl: '/map/img/icon-shadow.png',
         iconSize:     [24, 34],
         shadowSize:   [34, 34],
         iconAnchor:   [12, 34],
@@ -268,7 +268,7 @@ L.videoOverlay(videoUrl, videoBounds ).addTo(decarbnowMap);
 */
 
 /*
-let videoUrl = 'dist/img/tropomi.mp4',
+let videoUrl = 'map/img/tropomi.mp4',
     videoBounds = [[ 70, -180], [ -70, 180]],
     videoOptions = {opacity: 0.5};
 L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(decarbnowMap);
@@ -309,10 +309,10 @@ function refreshMarkers() {
 
             // add the original tweet to the panel OR the text of the tweet, if no original URL is specified
             if (item.urlOriginalTweet) {
-                text += '<div id="tweet-' + item.tweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                text += '<div id="tweet-' + item.tweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"map/img/twitter.png\" /></a>
                 twitterIds.push(item.tweetId);
                 if (item.replyFromSameUser && item.nextTweetId) {
-                    text += '<div id="tweet-' + item.nextTweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                    text += '<div id="tweet-' + item.nextTweetId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"map/img/twitter.png\" /></a>
                     twitterIds.push(item.nextTweetId);
                     text += '<a class="nextTweet" href="' + API_URL + '/render/' + item.nextTweetId + '"></a>';
                 }
@@ -324,7 +324,7 @@ function refreshMarkers() {
                 if (item.urlInReplyTweet) {
                     let tws = item.urlInReplyTweet.split("/");
                     let twitterId = tws[tws.length-1];
-                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"map/img/twitter.png\" /></a>
                     twitterIds.push(twitterId);
                 }
 
@@ -332,7 +332,7 @@ function refreshMarkers() {
                 if (item.urlQuotedTweet) {
                     let tws = item.urlQuotedTweet.split("/");
                     let twitterId = tws[tws.length-1];
-                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"dist/img/twitter.png\" /></a>
+                    text += '<div id="tweet-' + twitterId + '"></div>'; // <a href=\"" + item.origurl + "\"><img src=\"map/img/twitter.png\" /></a>
                     twitterIds.push(twitterId);
                 }
             }
@@ -482,9 +482,9 @@ decarbnowMap.on('contextmenu',function(e){
 
     let text = '<h3>Tweet about</h3>'+
     '<select id="icontype">'+
-    '<option value="pollution" data-image="/dist/img/pollution.png">Pollution</option>'+
-    '<option value="climateaction"  data-image="/dist/img/action.png">Climate Action</option>'+
-    '<option value="transition" data-image="/dist/img/transition.png">Transition</option>'+
+    '<option value="pollution" data-image="/map/img/pollution.png">Pollution</option>'+
+    '<option value="climateaction"  data-image="/map/img/action.png">Climate Action</option>'+
+    '<option value="transition" data-image="/map/img/transition.png">Transition</option>'+
     '</select>'+
     '<form>'+
     '<textarea id="tweetText" ></textarea>' +
@@ -557,14 +557,14 @@ initializeMarkers();
 refreshMarkers();
 
 // add GeoJSON layers to the map once all files are loaded
-$.getJSON("/dist/no2layers/World_2007_rastered.geojson",function(no2_2007){
-    $.getJSON("/dist/no2layers/World_2011_rastered.geojson",function(no2_2011){
-        $.getJSON("/dist/no2layers/World_2015_rastered.geojson",function(no2_2015){
-            $.getJSON("/dist/no2layers/World_2019_rastered.geojson",function(no2_2019){
-            	$.getJSON("/dist/no2layers/World_2019_12.geojson",function(no2_2019_12){
-	            	$.getJSON("/dist/no2layers/World_2020_01.geojson",function(no2_2020_01){
-	            		$.getJSON("/dist/no2layers/World_2020_02.geojson",function(no2_2020_02){
-		            		$.getJSON("/dist/global_power_plant_database.geojson",function(coalplants) {
+$.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
+    $.getJSON("/map/no2layers/World_2011_rastered.geojson",function(no2_2011){
+        $.getJSON("/map/no2layers/World_2015_rastered.geojson",function(no2_2015){
+            $.getJSON("/map/no2layers/World_2019_rastered.geojson",function(no2_2019){
+            	$.getJSON("/map/no2layers/World_2019_12.geojson",function(no2_2019_12){
+	            	$.getJSON("/map/no2layers/World_2020_01.geojson",function(no2_2020_01){
+	            		$.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
+		            		$.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
 			                    
 			                    let baseLayers = {
 			                        "Satellite": createBackgroundMapSat(),

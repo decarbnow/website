@@ -10,7 +10,7 @@ import leaflet_timedimension from 'leaflet-timedimension';
 
 const API_URL = 'https://decarbnow.space/api';
 const DEBOUNCE_TIMEOUT = 200;
-const JUMP_TIMEOUT = 5000;
+const JUMP_TIMEOUT = 3000;
 
 //**************************************************************************
 // configuration and declaration
@@ -25,6 +25,7 @@ let decarbnowMap = map('map', {
 
 let toggleZoom = true;
 
+let jumpedToMarker = false;
 let urlMarker = null;
 
 let zoomState = 0;
@@ -396,8 +397,8 @@ function refreshMarkers() {
                 })
             );
 
-            if (urlMarker == null && checkMatch(window.location.pathname, item)) {
-                console.debug("found url marker!", item, mm);
+            if (!jumpedToMarker && urlMarker == null && checkMatch(window.location.pathname, item)) {
+//                console.debug("found url marker!", item, mm);
                 urlMarker = {
                     marker: mm,
                     text: text,
@@ -406,10 +407,10 @@ function refreshMarkers() {
             }
         });
 
-        if (urlMarker != null) {
-            console.debug("jumping to poi in " + JUMP_TIMEOUT + "ms:", urlMarker);
+        if (!jumpedToMarker && urlMarker != null) {
+//            console.debug("jumping to poi in " + JUMP_TIMEOUT + "ms:", urlMarker);
             window.setTimeout(function () {
-                console.debug("jumping now");
+//                console.debug("jumping now");
 
                 sidebar.show();
                 sidebar.setContent(twemoji.parse(urlMarker.text));
@@ -423,6 +424,8 @@ function refreshMarkers() {
                 }
 
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 2);
+
+                jumpedToMarker = true;
             }, JUMP_TIMEOUT);
         }
     });

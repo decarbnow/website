@@ -505,7 +505,7 @@ decarbnowMap.on('contextmenu',function(e){
 
         let tweet = '#decarbnow ' + $('#tweetText').val();
 
-        tweet += 'https://decarbnow.space/map/' + hash + '/' + tweettype;
+        tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
 
         // Remove existing iframe
         $('#tweetBtn').html('');

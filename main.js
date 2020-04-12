@@ -381,6 +381,8 @@ function replaceURLWithHTMLLinks(text){
 //**************************************************************************
 decarbnowMap.on('contextmenu',function(e){
 
+    console.debug(e);
+
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
     let text = '<h3>Tweet about</h3>'+
@@ -400,11 +402,15 @@ decarbnowMap.on('contextmenu',function(e){
         .setLatLng(e.latlng)
         .setContent(text)
         .openOn(decarbnowMap);
-    
+
     //here comes the beauty
     function onTweetSettingsChange (e) {
-        let tweettype = document.getElementById("icontype");
-        let strUser = tweettype.options[tweettype.selectedIndex].value;
+        let tweettypeInput = document.getElementById("icontype");
+        let tweettype = tweettypeInput.options[tweettypeInput.selectedIndex].value;
+
+        let tweet = '#decarbnow ' + $('#tweetText').val();
+
+        tweet += 'https://decarbnow.space/map/' + hash + '/' + tweettype;
 
         // Remove existing iframe
         $('#tweetBtn').html('');
@@ -413,11 +419,12 @@ decarbnowMap.on('contextmenu',function(e){
             .addClass('twitter-share-button')
             .attr('href', 'http://twitter.com/share')
             .attr('data-url', 'null')
-            .attr('data-text', '#decarbnow #' + strUser + ' #' + hash + ' ' + $('#tweetText').val());
+            .attr('data-text', tweet);
         $('#tweetBtn').append(tweetBtn);
 
         window.twttr.widgets.load();
     }
+
     function debounce(callback) {
         // each call to debounce creates a new timeoutId
         let timeoutId;

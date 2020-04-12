@@ -10,6 +10,7 @@ import leaflet_timedimension from 'leaflet-timedimension';
 
 const API_URL = 'https://decarbnow.space/api';
 const DEBOUNCE_TIMEOUT = 200;
+const JUMP_TIMEOUT = 5000;
 
 //**************************************************************************
 // configuration and declaration
@@ -406,7 +407,7 @@ function refreshMarkers() {
         });
 
         if (urlMarker != null) {
-            console.debug("jumping to poi in 1000ms:", urlMarker);
+            console.debug("jumping to poi in " + JUMP_TIMEOUT + "ms:", urlMarker);
             window.setTimeout(function () {
                 console.debug("jumping now");
 
@@ -422,7 +423,7 @@ function refreshMarkers() {
                 }
 
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 2);
-            }, 1000);
+            }, JUMP_TIMEOUT);
         }
     });
 }

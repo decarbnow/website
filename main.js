@@ -274,6 +274,26 @@ let videoUrl = 'map/img/tropomi.mp4',
 L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(decarbnowMap);
 */
 
+function checkMatch(url, item) {
+    if (url.length == 0 || url.split("/").length < 3) {
+        return false;
+    }
+    let r = new RegExp("[\(\)]", "g");
+    let lng = item.position.replace(r, "").split(" ")[1]*1;
+    console.debug(lng);
+    let lat = item.position.replace(r, "").split(" ")[2]*1;
+    console.debug(lat);
+    let urlGeohash = url.split("/")[2].toLowerCase();
+    console.debug(urlGeohash);
+    let type = url.split("/")[3].toLowerCase();
+    console.debug(type);
+    let itemGeohash = encode(lng, lat).substr(0, urlGeohash.length);
+    console.debug(itemGeohash);
+    if (urlGeohash == itemGeohash && item.type == type) {
+        return true;
+    }
+    return false;
+}
 
 //console.log(markers);
 
@@ -283,6 +303,9 @@ function refreshMarkers() {
         return;
     }
     console.log("refreshing markers from " + API_URL + '/poi');
+
+    let urlMarker = null;
+
     $.get(API_URL + "/poi?size=100", function(data) {
         console.log("function refreshMarkers");
         for (var i in currentMarkers) {
@@ -371,7 +394,15 @@ function refreshMarkers() {
                     
                 })
             );
+
+            if (urlMarker == null && checkMatch(window.location.pathname, item)) {
+                urlMarker = mm;
+            }
         });
+
+        if (urlMarker != null) {
+            centerLeafletMapOnMarker(decarbnowMap, urlMarker, 2);
+        }
     });
 }
 
@@ -469,6 +500,21 @@ function setTweetMessage(variable){
 function replaceURLWithHTMLLinks(text){
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
         return text.replace(exp,"<a href='$1'>$1</a>"); 
+}
+
+function checkMatch(url, item) {
+    if (url.length == 0 || url.split("/").length < 3) {
+        return false;
+    }
+    let lng = item.position.replace(new RegExp("[\(\)]"), "").split(" ")[1]*1
+    let lat = item.position.replace(new RegExp("[\(\)]"), "").split(" ")[2]*1
+    let urlGeohash = url.split("/")[1].toLowerCase();
+    let type = url.split("/")[2].toLowerCase();
+    itemGeohash = encode(lng, lat).substr(geohash.length);
+    if (urlGeohash == itemGeohash && item.type == type) {
+        return true;
+    }
+    return false;
 }
 
 //**************************************************************************

@@ -502,21 +502,6 @@ function replaceURLWithHTMLLinks(text){
         return text.replace(exp,"<a href='$1'>$1</a>"); 
 }
 
-function checkMatch(url, item) {
-    if (url.length == 0 || url.split("/").length < 3) {
-        return false;
-    }
-    let lng = item.position.replace(new RegExp("[\(\)]"), "").split(" ")[1]*1
-    let lat = item.position.replace(new RegExp("[\(\)]"), "").split(" ")[2]*1
-    let urlGeohash = url.split("/")[1].toLowerCase();
-    let type = url.split("/")[2].toLowerCase();
-    itemGeohash = encode(lng, lat).substr(geohash.length);
-    if (urlGeohash == itemGeohash && item.type == type) {
-        return true;
-    }
-    return false;
-}
-
 //**************************************************************************
 // events
 //**************************************************************************

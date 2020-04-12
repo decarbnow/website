@@ -397,14 +397,31 @@ function refreshMarkers() {
 
             if (urlMarker == null && checkMatch(window.location.pathname, item)) {
                 console.debug("found url marker!", item, mm);
-                urlMarker = mm;
+                urlMarker = {
+                    marker: mm,
+                    text: text,
+                    twitterIds: twitterIds
+                };
             }
         });
 
         if (urlMarker != null) {
             console.debug("jumping to poi in 1000ms:", urlMarker);
             window.setTimeout(function () {
-                centerLeafletMapOnMarker(decarbnowMap, urlMarker, 2);
+                console.debug("jumping now");
+
+                sidebar.show();
+                sidebar.setContent(twemoji.parse(urlMarker.text));
+                for (let idx in urlMarker.twitterIds) {
+                    let twitterId = urlMarker.twitterIds[idx];
+                    //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
+                    window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
+                        //console.debug('created tweet');
+                        //infScroll.loadNextPage();
+                    });
+                }
+
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 2);
             }, 1000);
         }
     });

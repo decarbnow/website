@@ -24,6 +24,8 @@ let decarbnowMap = map('map', {
 
 let toggleZoom = true;
 
+let urlMarker = null;
+
 let zoomState = 0;
 
 let imageUrl = '/map/no2layers/World_raster_2020_02.png',
@@ -280,15 +282,15 @@ function checkMatch(url, item) {
     }
     let r = new RegExp("[\(\)]", "g");
     let lng = item.position.replace(r, "").split(" ")[1]*1;
-    console.debug(lng);
+//    console.debug(lng);
     let lat = item.position.replace(r, "").split(" ")[2]*1;
-    console.debug(lat);
+//    console.debug(lat);
     let urlGeohash = url.split("/")[2].toLowerCase();
-    console.debug(urlGeohash);
+//    console.debug(urlGeohash);
     let type = url.split("/")[3].toLowerCase();
-    console.debug(type);
+//    console.debug(type);
     let itemGeohash = encode(lng, lat).substr(0, urlGeohash.length);
-    console.debug(itemGeohash);
+//    console.debug(itemGeohash);
     if (urlGeohash == itemGeohash && item.type == type) {
         return true;
     }
@@ -303,8 +305,6 @@ function refreshMarkers() {
         return;
     }
     console.log("refreshing markers from " + API_URL + '/poi');
-
-    let urlMarker = null;
 
     $.get(API_URL + "/poi?size=100", function(data) {
         console.log("function refreshMarkers");
@@ -396,12 +396,16 @@ function refreshMarkers() {
             );
 
             if (urlMarker == null && checkMatch(window.location.pathname, item)) {
+                console.debug("found url marker!", item, mm);
                 urlMarker = mm;
             }
         });
 
         if (urlMarker != null) {
-            centerLeafletMapOnMarker(decarbnowMap, urlMarker, 2);
+            console.debug("jumping to poi in 1000ms:", urlMarker);
+            window.setTimeout(function () {
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker, 2);
+            }, 1000);
         }
     });
 }

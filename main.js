@@ -593,6 +593,8 @@ decarbnowMap.on('contextmenu',function(e){
         debounce(onTweetSettingsChange)();
     });
 
+    //init debounce
+    debounce(onTweetSettingsChange)();
     //console.log(e);
     window.twttr.widgets.load();
 });

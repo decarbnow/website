@@ -194,7 +194,19 @@ function createBackgroundMapSat() {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
         attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+ 
-                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA OMI</a>, '+
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
+    });
+}
+
+function createBackgroundMapLight() {
+    return tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3'],
+        attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+ 
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
                      '<a href="https://github.com/wri/global-power-plant-database">WRI</a>'
     });
 }
@@ -627,7 +639,8 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                    
 				                    let baseLayers = {
 				                        "Satellite": createBackgroundMapSat(),
-				                        "Streets": createBackgroundMap().addTo(decarbnowMap)
+				                        "Streets": createBackgroundMap(),
+				                        "Light/Positron": createBackgroundMapLight().addTo(decarbnowMap),
 				                    };
 				                    let overlays = {
 				                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),

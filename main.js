@@ -668,7 +668,9 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
 				                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);
 				                    L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
-
+				                    $("#feature_infos").stop();
+    								$("#feature_infos").fadeIn(1000);
+    								$("#feature_infos").fadeOut(6000);
 				                    decarbnowMap.addControl(sidebar);
 				           	 	});
 				           	});

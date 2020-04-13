@@ -561,7 +561,7 @@ decarbnowMap.on('contextmenu',function(e){
 
         let tweet = '#decarbnow ' + $('#tweetText').val();
 
-        tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
+        //tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
 
         // Remove existing iframe
         $('#tweetBtn').html('');
@@ -569,7 +569,7 @@ decarbnowMap.on('contextmenu',function(e){
         var tweetBtn = $('<a></a>')
             .addClass('twitter-share-button')
             .attr('href', 'http://twitter.com/share')
-            .attr('data-url', 'null')
+            .attr('data-url', 'https://decarbnow.space/map/' + hash + '/' + tweettype)
             .attr('data-text', tweet);
         $('#tweetBtn').append(tweetBtn);
 

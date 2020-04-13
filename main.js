@@ -279,7 +279,7 @@ L.videoOverlay(videoUrl, videoBounds, videoOptions).addTo(decarbnowMap);
 */
 
 function checkMatch(url, item) {
-    if (url.length == 0 || url.split("/").length < 3) {
+    if (url.length == 0 || url.split("/").length < 4) {
         return false;
     }
     let r = new RegExp("[\(\)]", "g");

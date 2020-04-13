@@ -10,7 +10,7 @@ import leaflet_timedimension from 'leaflet-timedimension';
 
 const API_URL = 'https://decarbnow.space/api';
 const DEBOUNCE_TIMEOUT = 200;
-const JUMP_TIMEOUT = 3000;
+const JUMP_TIMEOUT = 2500;
 
 //**************************************************************************
 // configuration and declaration

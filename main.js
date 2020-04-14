@@ -624,8 +624,7 @@ decarbnowMap.on('click', function () {
 // initiation
 //**************************************************************************
 
-initializeMarkers();
-refreshMarkers();
+
 
 // add GeoJSON layers to the map once all files are loaded
 $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
@@ -678,6 +677,8 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                        }).addTo(decarbnowMap)
 				                    }
 
+				                    initializeMarkers();
+									refreshMarkers();
 				                    decarbnowMap.addLayer(markerClusters);
 				                    L.control.layers(baseLayers, overlays_other,{collapsed:false}).addTo(decarbnowMap);
 				                    L.control.layers(overlays, null, {collapsed:false}).addTo(decarbnowMap);

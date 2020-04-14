@@ -26,8 +26,6 @@ let decarbnowMap = map('map', {
 //}).setView([L.GeoIP.getPosition().lat, L.GeoIP.getPosition().lng], 15);
 }).setView([47, 16], 5);
 
-let initLayer = L.geoJson(null).addTo(decarbnowMap);
-
 let toggleZoom = true;
 
 let jumpedToMarker = false;
@@ -630,7 +628,6 @@ decarbnowMap.on('click', function () {
 //**************************************************************************
 
 decarbnowMap.spin(true);
-initLayer.fire('data:loading');
 // add GeoJSON layers to the map once all files are loaded
 $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
     $.getJSON("/map/no2layers/World_2011_rastered.geojson",function(no2_2011){
@@ -641,7 +638,6 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 	            		$.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
 	            			$.getJSON("/map/no2layers/World_2020_03.geojson",function(no2_2020_03){
 			            		$.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
-				                    initLayer.fire('data:loaded');
 				                    let baseLayers = {
 				                        "Satellite": createBackgroundMapSat(),
 				                        "Streets": createBackgroundMap(),

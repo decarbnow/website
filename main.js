@@ -436,7 +436,7 @@ function refreshMarkers() {
                     });
                 }
 
-                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 4);
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 jumpedToMarker = true;
             }, JUMP_TIMEOUT);

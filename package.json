@@ -15,6 +15,7 @@
     "leaflet": "^1.6.0",
     "leaflet-control-geocoder": "^1.11.0",
     "leaflet-sidebar": "^0.2.0",
+    "leaflet-spin": "^1.1.2",
     "leaflet-timedimension": "^1.1.1",
     "leaflet.markercluster": "^1.4.1",
     "terser": "^4.6.3",
@@ -24,7 +25,7 @@
   "license": "MIT",
   "devDependencies": {
     "json-loader": "^0.5.7",
-    "webpack": "^4.41.5",
+    "webpack": "^4.42.1",
     "webpack-cli": "^3.3.10",
     "webpack-serve": "^3.2.0"
   }

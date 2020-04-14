@@ -436,7 +436,7 @@ function refreshMarkers() {
                     });
                 }
 
-                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 2);
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 4);
 
                 jumpedToMarker = true;
             }, JUMP_TIMEOUT);
@@ -641,7 +641,7 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                    let baseLayers = {
 				                        "Satellite": createBackgroundMapSat(),
 				                        "Streets": createBackgroundMap(),
-				                        "Light/Positron": createBackgroundMapLight().addTo(decarbnowMap),
+				                        "Light": createBackgroundMapLight().addTo(decarbnowMap),
 				                    };
 				                    let overlays = {
 				                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
@@ -698,5 +698,9 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
   
 L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
 L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
-L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
+if(window.location.pathname.split("/").length > 3) {
+	decarbnowMap.setView([15, 0], 2);
+} else {
+	L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
+}
 window.setInterval(refreshMarkers, 30000);

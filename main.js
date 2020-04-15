@@ -151,6 +151,20 @@ function locate() {
       map.locate({setView: true});
 }
 
+ function ChangeUrl(item) {
+ 	//console.log(item, mm);
+ 	let r = new RegExp("[\(\)]", "g");
+ 	let lng = item.position.replace(r, "").split(" ")[1]*1;
+ 	let lat = item.position.replace(r, "").split(" ")[2]*1;
+ 	let itemGeohash = encode(lng, lat);
+    if (typeof (history.pushState) != "undefined") {
+        var obj = { Title: itemGeohash, Url: '/map/' + itemGeohash + '/' + item.type};
+        history.pushState(obj, obj.Title, obj.Url);
+    } else {
+        alert("Browser does not support HTML5.");
+    }
+}
+
 
 function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
@@ -406,8 +420,9 @@ function refreshMarkers() {
                             //console.debug('created tweet');
                             //infScroll.loadNextPage();
                         });
+                        
                     }
-                    
+                    ChangeUrl(item);
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
                     
                 })

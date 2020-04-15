@@ -567,6 +567,14 @@ decarbnowMap.on('contextmenu',function(e){
 
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
+    if (typeof (history.pushState) != "undefined") {
+        var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
+        history.pushState(obj, obj.Title, obj.Url);
+    } else {
+        alert("Browser does not support HTML5.");
+    }
+
+
     let text = '<h3>Tweet about</h3>'+
     '<select id="icontype">'+
     '<option value="pollution" data-image="/map/img/pollution.png">Pollution</option>'+
@@ -605,6 +613,14 @@ decarbnowMap.on('contextmenu',function(e){
         $('#tweetBtn').append(tweetBtn);
 
         window.twttr.widgets.load();
+
+        if (typeof (history.pushState) != "undefined") {
+        var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
+        history.pushState(obj, obj.Title, obj.Url);
+	    } else {
+	        alert("Browser does not support HTML5.");
+	    }
+
     }
 
     function debounce(callback) {

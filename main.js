@@ -635,6 +635,13 @@ decarbnowMap.on('click', function () {
     if (typeof twittermarker !== 'undefined') { // check
         decarbnowMap.removeLayer(twittermarker); // remove
     }
+
+    if (typeof (history.pushState) != "undefined") {
+        var obj = { Title: "map", Url: '/map/'};
+        history.pushState(obj, obj.Title, obj.Url);
+    } else {
+        alert("Browser does not support HTML5.");
+    }
 });
 
 

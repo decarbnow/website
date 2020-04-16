@@ -435,9 +435,8 @@ function refreshMarkers() {
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
 
                     currentMarker = mm;
-                    if(decarbnowMap.hasLayer(currentMarker)){
-                		currentMarker.enablePermanentHighlight();
-                	}
+               		currentMarker.enablePermanentHighlight();
+
                 })
             );
 
@@ -470,11 +469,11 @@ function refreshMarkers() {
 
                 currentMarker = urlMarker.marker;
                 
-                if(decarbnowMap.hasLayer(currentMarker)){
-                	currentMarker.enablePermanentHighlight();
+                if(!decarbnowMap.hasLayer(currentMarker)){
+                	decarbnowMap.addLayer(currentMarker);
                 }
-                
-                
+
+                currentMarker.enablePermanentHighlight();
 
                 jumpedToMarker = true;
             }, JUMP_TIMEOUT);

@@ -435,7 +435,7 @@ function refreshMarkers() {
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
 
                     currentMarker = mm;
-                    if(currentMarker){
+                    if(decarbnowMap.hasLayer(currentMarker)){
                 		currentMarker.enablePermanentHighlight();
                 	}
                 })
@@ -469,9 +469,9 @@ function refreshMarkers() {
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 currentMarker = urlMarker.marker;
-                console.log(currentMarker);
-                if(currentMarker){
-                	urlMarker.marker.enablePermanentHighlight();
+                
+                if(decarbnowMap.hasLayer(currentMarker)){
+                	currentMarker.enablePermanentHighlight();
                 }
                 
                 

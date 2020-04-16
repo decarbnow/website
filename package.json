@@ -17,6 +17,7 @@
     "leaflet-sidebar": "^0.2.0",
     "leaflet-spin": "^1.1.2",
     "leaflet-timedimension": "^1.1.1",
+    "leaflet.marker.highlight": "0.0.3",
     "leaflet.markercluster": "^1.4.1",
     "terser": "^4.6.3",
     "twemoji": "^12.1.4"

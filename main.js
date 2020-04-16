@@ -471,7 +471,7 @@ function refreshMarkers() {
                 currentMarker = urlMarker.marker;
                 console.log(currentMarker);
                 if(currentMarker){
-                	currentMarker.enablePermanentHighlight();
+                	urlMarker.marker.enablePermanentHighlight();
                 }
                 
                 

@@ -432,9 +432,9 @@ function refreshMarkers() {
                         
                     }
                     ChangeUrl(item);
-                    centerLeafletMapOnMarker(decarbnowMap, mm, 2);
                     currentMarker = mm;
-                    mm.enablePermanentHighlight();
+                    currentMarker.enablePermanentHighlight();
+                    centerLeafletMapOnMarker(decarbnowMap, mm, 2);
                     
                 })
             );
@@ -464,7 +464,8 @@ function refreshMarkers() {
                         //infScroll.loadNextPage();
                     });
                 }
-
+                currentMarker = urlMarker.marker;
+                currentMarker.enablePermanentHighlight();
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 jumpedToMarker = true;

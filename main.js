@@ -8,6 +8,8 @@ import InfiniteScroll from 'infinite-scroll'
 import 'leaflet-control-geocoder';
 import leaflet_timedimension from 'leaflet-timedimension';
 import 'leaflet-spin';
+import 'leaflet-spin';
+import 'leaflet.marker.highlight';
 
 const API_URL = 'https://decarbnow.space/api';
 const DEBOUNCE_TIMEOUT = 200;
@@ -30,6 +32,8 @@ let toggleZoom = true;
 
 let jumpedToMarker = false;
 let urlMarker = null;
+
+let currentMarker = null;
 
 let zoomState = 0;
 
@@ -152,6 +156,7 @@ function locate() {
 }
 
  function ChangeUrl(item) {
+ 	jumpedToMarker = true;
  	//console.log(item, mm);
  	let r = new RegExp("[\(\)]", "g");
  	let lng = item.position.replace(r, "").split(" ")[1]*1;
@@ -411,6 +416,10 @@ function refreshMarkers() {
             currentMarkers[item.type].push(mm
                 .addTo(markerClusters)
                 .on('click', function () {
+                	if(currentMarker){
+    					currentMarker.disablePermanentHighlight();
+    					currentMarker = null;
+    				} 
                     sidebar.show();
                     sidebar.setContent(twemoji.parse(text));
                     for (let idx in twitterIds) {
@@ -424,6 +433,8 @@ function refreshMarkers() {
                     }
                     ChangeUrl(item);
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
+                    currentMarker = mm;
+                    mm.enablePermanentHighlight();
                     
                 })
             );
@@ -564,7 +575,7 @@ function replaceURLWithHTMLLinks(text){
 decarbnowMap.on('contextmenu',function(e){
 
     console.debug(e);
-
+    sidebar.hide();
     let hash = encode(e.latlng.lat, e.latlng.lng);
 
     if (typeof (history.pushState) != "undefined") {
@@ -573,6 +584,10 @@ decarbnowMap.on('contextmenu',function(e){
     } else {
         alert("Browser does not support HTML5.");
     }
+    if(currentMarker){
+    	currentMarker.disablePermanentHighlight();
+    	currentMarker = null;
+    } 
 
 
     let text = '<h3>Tweet about</h3>'+
@@ -658,6 +673,11 @@ decarbnowMap.on('click', function () {
     } else {
         alert("Browser does not support HTML5.");
     }
+
+    if(currentMarker){
+    	currentMarker.disablePermanentHighlight();
+    	currentMarker = null;
+    } 
 });
 
 

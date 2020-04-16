@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/node_modules/leaflet-sidebar/src/L.Control.Sidebar.css" />
     <link rel="stylesheet" href="/node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <link rel="stylesheet" href="/node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.css" />
+    <link rel="stylesheet" href="/node_modules/leaflet.marker.highlight/dist/leaflet.marker.highlight.css" />
     <style>
         select.icon-menu option {
             background-repeat:no-repeat;
@@ -184,6 +185,43 @@
             border:1px solid grey;
             display:none;
         }
+        .permanent .glow {
+            z-index: -2;
+            background: -webkit-radial-gradient(rgba(66, 186, 255, 1), rgba(255, 223, 67, 0) 70%)!important;
+            -webkit-animation: highlight1 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .permanent .flare {
+            z-index: -2;
+            background: rgba(66, 186, 255, 1) !important;
+            -webkit-animation: highlight 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @-webkit-keyframes highlight1 {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 0;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0.4;
+            }
+        }
+
+        @-webkit-keyframes highlight {
+            0% {
+                width: 0px;
+                height: 0px;
+                opacity: 0;
+            }
+            100% {
+                width: 20px;
+                height: 20px;
+                opacity: 0.6;
+            }
+        }
+
 }
 
     </style>

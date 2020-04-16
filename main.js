@@ -433,11 +433,11 @@ function refreshMarkers() {
                     }
                     ChangeUrl(item);
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
-                    
+
                     currentMarker = mm;
-                    currentMarker.enablePermanentHighlight();
-                    
-                    
+                    if(currentMarker){
+                		currentMarker.enablePermanentHighlight();
+                	}
                 })
             );
 
@@ -469,7 +469,11 @@ function refreshMarkers() {
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 currentMarker = urlMarker.marker;
-                currentMarker.enablePermanentHighlight();
+                console.log(currentMarker);
+                if(currentMarker){
+                	currentMarker.enablePermanentHighlight();
+                }
+                
                 
 
                 jumpedToMarker = true;

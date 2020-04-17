@@ -459,17 +459,18 @@ function refreshMarkers() {
 //            console.debug("jumping to poi in " + JUMP_TIMEOUT + "ms:", urlMarker);
             window.setTimeout(function () {
 //                console.debug("jumping now");
-
-                sidebar.show();
-                sidebar.setContent(twemoji.parse(urlMarker.text));
-                for (let idx in urlMarker.twitterIds) {
-                    let twitterId = urlMarker.twitterIds[idx];
-                    //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
-                    window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
-                        //console.debug('created tweet');
-                        //infScroll.loadNextPage();
-                    });
-                }
+				if(window.twttr.widgets){
+	                sidebar.show();
+	                sidebar.setContent(twemoji.parse(urlMarker.text));
+	                for (let idx in urlMarker.twitterIds) {
+	                    let twitterId = urlMarker.twitterIds[idx];
+	                    //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
+	                    window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
+	                        //console.debug('created tweet');
+	                        //infScroll.loadNextPage();
+	                    });
+	                }
+	            }
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
 
                 currentMarker = urlMarker.marker;

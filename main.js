@@ -420,17 +420,22 @@ function refreshMarkers() {
     					currentMarker.disablePermanentHighlight();
     					currentMarker = null;
     				} 
-                    sidebar.show();
-                    sidebar.setContent(twemoji.parse(text));
-                    for (let idx in twitterIds) {
-                        let twitterId = twitterIds[idx];
-                        //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
-                        window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
-                            //console.debug('created tweet');
-                            //infScroll.loadNextPage();
-                        });
-                        
+
+                    
+                    if(window.twttr.widgets){
+                    	sidebar.show();
+                    	sidebar.setContent(twemoji.parse(text));
+                    	for (let idx in twitterIds) {
+	                        let twitterId = twitterIds[idx];
+	                        
+	                        //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
+	                        window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
+	                            //console.debug('created tweet');
+	                            //infScroll.loadNextPage();
+	                        });
+                    	}
                     }
+                    
                     ChangeUrl(item);
                     centerLeafletMapOnMarker(decarbnowMap, mm, 2);
 

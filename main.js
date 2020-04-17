@@ -420,8 +420,7 @@ function refreshMarkers() {
     					currentMarker.disablePermanentHighlight();
     					currentMarker = null;
     				} 
-
-                    
+    				
                     if(window.twttr.widgets){
                     	sidebar.show();
                     	sidebar.setContent(twemoji.parse(text));
@@ -640,12 +639,14 @@ decarbnowMap.on('contextmenu',function(e){
             .attr('data-url', 'https://decarbnow.space/map/' + hash + '/' + tweettype)
             .attr('data-text', tweet);
         $('#tweetBtn').append(tweetBtn);
-
-        window.twttr.widgets.load();
+        if(window.twttr.widgets){
+        	window.twttr.widgets.load();
+        }
+        
 
         if (typeof (history.pushState) != "undefined") {
-        var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
-        history.pushState(obj, obj.Title, obj.Url);
+        	var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
+        	history.pushState(obj, obj.Title, obj.Url);
 	    } else {
 	        alert("Browser does not support HTML5.");
 	    }
@@ -672,7 +673,9 @@ decarbnowMap.on('contextmenu',function(e){
     //init debounce
     debounce(onTweetSettingsChange)();
     //console.log(e);
-    window.twttr.widgets.load();
+    if(window.twttr.widgets){
+    	window.twttr.widgets.load();
+    }    
 });
 
 decarbnowMap.on('click', function () {

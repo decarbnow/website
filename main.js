@@ -18,8 +18,43 @@ const JUMP_TIMEOUT = 2000;
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
+let SatelliteMap = L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+	attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+ 
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let LightMap = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+	attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
+        			 '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20, 
+	subdomains:['mt0','mt1','mt2','mt3']
+});
+
+let StreetsMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+ 
+                     '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                     '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                     '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+	maxZoom: 20,
+	ext: 'png'
+});
+
+let baseLayers = {
+	"Satellite": SatelliteMap,
+	"Streets": StreetsMap,
+	"Light": LightMap
+};
+
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
+    layers: [eval(baseMapOnMapLoad())],
     tap: true
 //}).setView([48.2084, 16.373], 5);
 //}).setView([, L.GeoIP.getPosition().lon], 12);
@@ -31,8 +66,6 @@ let toggleZoom = true;
 let jumpedToMarker = false;
 
 let urlMarker = null;
-
-let baseLayers = null;
 
 let selBaselayer = null;
 
@@ -156,6 +189,15 @@ window.twttr.ready(function() {
 //**************************************************************************
 function locate() {
       map.locate({setView: true});
+}
+
+function baseMapOnMapLoad(){
+	if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
+		return(window.location.pathname.split("/")[5] + 'Map');
+		//eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
+	} else {
+		return("LightMap")
+	}
 }
 
 function ChangeUrl(item) {
@@ -740,11 +782,6 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 	            		$.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
 	            			$.getJSON("/map/no2layers/World_2020_03.geojson",function(no2_2020_03){
 			            		$.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
-				                    baseLayers = {
-				                        "Satellite": createBackgroundMapSatellite(),
-				                        "Streets": createBackgroundMapStreets(),
-				                        "Light": createBackgroundMapLight().addTo(decarbnowMap)
-				                    };
 				                    let overlays = {
 				                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
 				                        "NO<sub>2</sub> 2011": L.geoJson(no2_2011, {style: pollutionStyle}),
@@ -779,11 +816,13 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                            }
 				                        }).addTo(decarbnowMap)
 				                    }
-
+				                    /*
 						            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
 						            	eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
-						            } 
-			            
+						            } else {
+						            	createBackgroundMapLight().addTo(decarbnowMap)
+						            }
+			            			*/
 				                    
 				                    initializeMarkers();
 									refreshMarkers();

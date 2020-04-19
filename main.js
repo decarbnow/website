@@ -781,8 +781,7 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                    }
 
 						            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
-						            	baseMap = window.location.pathname.split("/")[5];
-						            	eval("createBackgroundMap" + baseMap + "()").addTo(decarbnowMap);
+						            	eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
 						            } 
 			            
 				                    

@@ -454,9 +454,9 @@ function refreshMarkers() {
             }
 
             if(!isNaN(Number(window.location.pathname.split("/")[4]))){
-            	zoomLevel = window.location.pathname.split("/")[4];
+            	let zoomLevel = window.location.pathname.split("/")[4];
             } else {
-            	zoomLevel = 7;
+            	let zoomLevel = 7;
             }
 
             

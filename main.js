@@ -446,12 +446,6 @@ function refreshMarkers() {
 
                 })
             );
-
-            let baseMap = "Light";
-
-            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
-            	let baseMap = window.location.pathname.split("/")[5];
-            } 
                         
             let zoomLevel = 7;
             
@@ -490,8 +484,6 @@ function refreshMarkers() {
 	            }
 	            console.log(urlMarker.baseMap )
 	            
-	            eval("createBackgroundMap" + urlMarker.baseMap + "()").addTo(decarbnowMap);
-
 	            console.log(urlMarker.zoomLevel)
                 centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, urlMarker.zoomLevel - decarbnowMap.getZoom());
 
@@ -753,7 +745,7 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                    baseLayers = {
 				                        "Satellite": createBackgroundMapSatellite(),
 				                        "Streets": createBackgroundMapStreets(),
-				                        "Light": createBackgroundMapLight().addTo(decarbnowMap),
+				                        "Light": createBackgroundMapLight()
 				                    };
 				                    let overlays = {
 				                        "NO<sub>2</sub> 2007": L.geoJson(no2_2007, {style: pollutionStyle}),
@@ -790,6 +782,14 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 				                        }).addTo(decarbnowMap)
 				                    }
 
+				                    let baseMap = "Light";
+
+						            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
+						            	baseMap = window.location.pathname.split("/")[5];
+						            } 
+
+						            eval("createBackgroundMap" + baseMap + "()").addTo(decarbnowMap);
+				                    
 				                    initializeMarkers();
 									refreshMarkers();
 				                    decarbnowMap.addLayer(markerClusters);

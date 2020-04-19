@@ -18,8 +18,6 @@ const JUMP_TIMEOUT = 2000;
 //**************************************************************************
 // configuration and declaration
 //**************************************************************************
-
-
 let decarbnowMap = map('map', {
     zoomControl: false, // manually added
     tap: true
@@ -31,7 +29,12 @@ let decarbnowMap = map('map', {
 let toggleZoom = true;
 
 let jumpedToMarker = false;
+
 let urlMarker = null;
+
+let baseLayers = null;
+
+let selBaselayer = null;
 
 let currentMarker = null;
 
@@ -155,7 +158,7 @@ function locate() {
       map.locate({setView: true});
 }
 
- function ChangeUrl(item) {
+function ChangeUrl(item) {
  	jumpedToMarker = true;
  	//console.log(item, mm);
  	let r = new RegExp("[\(\)]", "g");
@@ -200,7 +203,7 @@ function initializeMarkers() {
     };
 }
 
-function createBackgroundMap() {
+function createBackgroundMapStreets() {
     return tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //return tileLayer('https://api.mapbox.com/styles/v1/sweing/cjrt0lzml9igq2smshy46bfe7/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoic3dlaW5nIiwiYSI6ImNqZ2gyYW50ODA0YTEycXFxYTAyOTZza2IifQ.NbvRDornVZjSg_RCJdE7ig', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+ 
@@ -211,7 +214,7 @@ function createBackgroundMap() {
 }
 
 
-function createBackgroundMapSat() {
+function createBackgroundMapSatellite() {
     return tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
         maxZoom: 20,
         subdomains:['mt0','mt1','mt2','mt3'],
@@ -444,12 +447,27 @@ function refreshMarkers() {
                 })
             );
 
+            if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
+            	let baseMap = window.location.pathname.split("/")[5];
+            } else {
+            	let baseMap = "Light";
+            }
+
+            if(!isNaN(Number(window.location.pathname.split("/")[4]))){
+            	zoomLevel = window.location.pathname.split("/")[4];
+            } else {
+            	zoomLevel = 7;
+            }
+
+            
             if (!jumpedToMarker && urlMarker == null && checkMatch(window.location.pathname, item)) {
 //                console.debug("found url marker!", item, mm);
                 urlMarker = {
                     marker: mm,
                     text: text,
-                    twitterIds: twitterIds
+                    twitterIds: twitterIds,
+                    zoomLevel: zoomLevel,
+                    baseMap: baseMap
                 };
             }
         });
@@ -470,7 +488,12 @@ function refreshMarkers() {
 	                    });
 	                }
 	            }
-                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, 5);
+	            console.log(urlMarker.baseMap )
+	            
+	            eval("createBackgroundMap" + urlMarker.baseMap + "()").addTo(decarbnowMap);
+
+	            console.log(urlMarker.zoomLevel)
+                centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, urlMarker.zoomLevel - decarbnowMap.getZoom());
 
                 currentMarker = urlMarker.marker;
                 
@@ -585,12 +608,26 @@ function replaceURLWithHTMLLinks(text){
 //**************************************************************************
 // events
 //**************************************************************************
+decarbnowMap.on('baselayerchange', function (e) {
+	//console.log(baseLayers);
+	let id = event.currentTarget.layerId;
+
+	Object.keys(baseLayers).forEach(baseLayer => {
+    
+        if(id == baseLayers[baseLayer]._leaflet_id){
+			selBaselayer = baseLayer;
+    		console.log(baseLayers[baseLayer]);
+		}
+	});
+});
+
 decarbnowMap.on('contextmenu',function(e){
 
     console.debug(e);
     sidebar.hide();
     let hash = encode(e.latlng.lat, e.latlng.lng);
-
+    //let zoomLevel = decarbnowMap.getZoom();
+    
     if (typeof (history.pushState) != "undefined") {
         var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
         history.pushState(obj, obj.Title, obj.Url);
@@ -713,9 +750,9 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
 	            		$.getJSON("/map/no2layers/World_2020_02.geojson",function(no2_2020_02){
 	            			$.getJSON("/map/no2layers/World_2020_03.geojson",function(no2_2020_03){
 			            		$.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
-				                    let baseLayers = {
-				                        "Satellite": createBackgroundMapSat(),
-				                        "Streets": createBackgroundMap(),
+				                    baseLayers = {
+				                        "Satellite": createBackgroundMapSatellite(),
+				                        "Streets": createBackgroundMapStreets(),
 				                        "Light": createBackgroundMapLight().addTo(decarbnowMap),
 				                    };
 				                    let overlays = {
@@ -764,6 +801,7 @@ $.getJSON("/map/no2layers/World_2007_rastered.geojson",function(no2_2007){
     								$("#feature_infos").fadeOut(6000);
 				                    decarbnowMap.addControl(sidebar);
 				                    decarbnowMap.spin(false);
+				                    selBaselayer = "Light";
 				           	 	});
 				           	});
 		                });

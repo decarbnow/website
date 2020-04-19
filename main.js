@@ -453,7 +453,7 @@ function refreshMarkers() {
             	let baseMap = "Light";
             }
 
-            if(typeof window.location.pathname.split("/")[4] !== 'undefined' && !isNaN(Number(window.location.pathname.split("/")[4]))){
+            if(typeof window.location.pathname.split("/")[4] !== 'undefined' || !isNaN(Number(window.location.pathname.split("/")[4]))){
             	let zoomLevel = window.location.pathname.split("/")[4];
             } else {
             	let zoomLevel = 7;

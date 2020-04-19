@@ -447,12 +447,12 @@ function refreshMarkers() {
                 })
             );
 
+            let baseMap = "Light";
+
             if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
             	let baseMap = window.location.pathname.split("/")[5];
-            } else {
-            	let baseMap = "Light";
-            }
-            
+            } 
+                        
             let zoomLevel = 7;
             
             if(!isNaN(Number(window.location.pathname.split("/")[4]))){

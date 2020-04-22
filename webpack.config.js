@@ -1,12 +1,12 @@
 const path = require('path');
 
 module.exports = {
-    entry: './main.js',
+    entry: './js/main.js',
     output: {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'map')
     },
-    mode: 'production',
+    mode: 'development',
     plugins: [],
     performance: {
         hints: false,

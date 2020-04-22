@@ -26,11 +26,8 @@ let StreetsMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
 	ext: 'png'
 });
 
-let baseLayers = {
+export default {
     Satellite: SatelliteMap,
     Streets: StreetsMap,
     Light: LightMap
 };
-
-
-export default baseLayers

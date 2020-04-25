@@ -34,7 +34,7 @@ let pollutionStyle = {
     let id = event.currentTarget.layerId;
 
     Object.keys(tiles).forEach(baseLayer => {
-    
+
         if(id == tiles[baseLayer]._leaflet_id){
             selBaselayer = baseLayer;
             console.log(tiles[baseLayer]);
@@ -59,7 +59,7 @@ let dmap = {
     sidebar: null,
     init: function() {
         let layer = tiles.Light;
-        
+
         if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
             layer = tiles[window.location.pathname.split("/")[5]];
         }
@@ -68,10 +68,10 @@ let dmap = {
             zoomControl: false, // manually added
             tap: true
         }).setView([47, 16], 5);
-        
+
         layer.addTo(m)
 
-        $.getJSON("/map/global_power_plant_database.geojson",function(coalplants) {
+        $.getJSON("/data/layers/global_power_plant_database.geojson",function(coalplants) {
             let overlays_other = {
                 "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
                     style: function(feature) {
@@ -82,7 +82,7 @@ let dmap = {
                         return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
                     },
                     onEachFeature: function (feature, layer) {
-                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' + 
+                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
                                         '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
                                         '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
                                         '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
@@ -109,7 +109,7 @@ let dmap = {
 
             let hash = encode(e.latlng.lat, e.latlng.lng);
             //let zoomLevel = decarbnowMap.getZoom();
-            
+
             if (typeof (history.pushState) != "undefined") {
                 var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
                 history.pushState(obj, obj.Title, obj.Url);
@@ -142,7 +142,7 @@ let dmap = {
             // if(currentMarker){
             //     currentMarker.disablePermanentHighlight();
             //     currentMarker = null;
-            // } 
+            // }
         });
 
         L.control.markers({ position: 'topleft' }).addTo(m);
@@ -154,13 +154,13 @@ let dmap = {
 
         dmap.map = m;
         window.decarbnowMap = m;
-    }, 
+    },
 
     load: function() {
         layers.init()
 
         //overlays[layersInfo.list[layersInfo.active].name] = layerJson
-        
+
         L.control.layers(layers.overlays, null, {collapsed:false}).addTo(dmap.map);
 
         //                                     if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
@@ -168,13 +168,13 @@ let dmap = {
         //                                     } else {
         //                                         createBackgroundMapLight().addTo(decarbnowMap)
         //                                     }
-                                            
+
 
 
 
 
         layers.show('no2_2020_03', function() {
-            //L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
+            //L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
 
 
             /*
@@ -198,4 +198,3 @@ let dmap = {
 }
 
 export default dmap
-

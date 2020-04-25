@@ -37,7 +37,7 @@ let layers = {
                 doAfter()
         } else {
             dmap.map.spin(true);
-            $.getJSON("/map/no2layers/" + layers.list[id].file, function(layer) {
+            $.getJSON("/data/layers/no2/" + layers.list[id].file, function(layer) {
                 layers.list[id].content = layer
                 layers.switch(id)
                 dmap.map.spin(false);

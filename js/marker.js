@@ -152,13 +152,18 @@ let markers = {
         //removeOutsideVisibleBounds: true
     }),
 
-    initialize: function() {
+    init: function() {
+        markers.reset()
+        markers.refresh()
+        window.setInterval(markers.refresh, 30000);
+    },
+
+    reset: function() {
         markers.currentMarkers = {
             "pollution": [],
             "climateaction": [],
             "transition": []
         };
-        window.setInterval(markers.refresh, 30000);
     },
 
 
@@ -177,7 +182,7 @@ let markers = {
                 }
             }
 
-            markers.initialize();
+            markers.reset();
             data._embedded.poi.forEach(function(item) {
 
                 // create the text, that will be shown, when clicking on the poi

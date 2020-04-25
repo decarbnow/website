@@ -9,7 +9,6 @@ dmap.init()
 
 //import "./geoip.js";
 
-dmap.load()
 
 
 

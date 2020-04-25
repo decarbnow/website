@@ -40,9 +40,9 @@ let showGeoLoc = L.popup().setContent(
 );
 
 
-let showTweetBox = function() {
+let showTweetBox = function(latlng, hash) {
     showGeoLoc
-    .setLatLng(e.latlng)
+    .setLatLng(latlng)
     .setContent(text)
     .openOn(decarbnowMap);
 
@@ -102,3 +102,5 @@ let showTweetBox = function() {
         window.twttr.widgets.load();
     }    
 }
+
+export default showTweetBox

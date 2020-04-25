@@ -92,6 +92,7 @@ let dmap = {
                 }).addTo(m)
             }
             L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
+            dmap.load()
         });
 
         // INIT SIDEMAP
@@ -121,7 +122,7 @@ let dmap = {
             //     currentMarker = null;
             // }
 
-            showTweetBox()
+            showTweetBox(e.latlng, hash)
         });
 
         m.on('click', function () {
@@ -144,16 +145,18 @@ let dmap = {
             // } 
         });
 
-        
+        L.control.markers({ position: 'topleft' }).addTo(m);
+        L.control.zoom({ position: 'topleft' }).addTo(m);
         m.addLayer(markers.clusters);
         m.addControl(dmap.sidebar);
+
+        markers.init()
 
         dmap.map = m;
         window.decarbnowMap = m;
     }, 
 
     load: function() {
-
         layers.init()
 
         //overlays[layersInfo.list[layersInfo.active].name] = layerJson
@@ -171,10 +174,8 @@ let dmap = {
 
 
         layers.show('no2_2020_03', function() {
-            markers.refresh();
             //L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
-            L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
-            L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
+
 
             /*
             $("#feature_infos").stop();
@@ -186,6 +187,7 @@ let dmap = {
                 layers.show(id)
                 event.stopPropagation()
             })
+
 
             //selBaselayer = "Light";
             //$.getJSON('https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_rivers_lake_centerlines.geojson', function(data) {

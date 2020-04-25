@@ -28,7 +28,7 @@ let text = '<h3>Tweet about</h3>'+
     '<option value="transition" data-image="/map/img/transition.png">Transition</option>'+
     '</select>'+
     '<form>'+
-    '<textarea id="tweetText" wrap="off" cols="30" rows="5"></textarea>' +
+    '<textarea id="tweetText" cols="22" rows="5"></textarea>' +
     '</form>'+
     '<div id="tweetBtn">'+
     '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>'+

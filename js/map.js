@@ -1,28 +1,67 @@
 import { map } from 'leaflet';
-import $ from 'jquery';
-import baseLayers from './layers.js';
+
+import tiles from './tiles.js';
+
+import 'leaflet-sidebar';
+import showTweetBox from './twitter.js';
+import { encode } from '@alexpavlov/geohash-js';
+
+import markers from './marker.js';
+import layers from './layers.js';
 
 
+let pollutionStyle = {
+    fillColor: "#FF0000",
+    //fillColor: "#a1a1e4",
+    stroke: true,
+    weight: 0.5,
+    opacity: 0.7,
+    //weight: 0.8,
+    //opacity: 1,
+    color: "#F1EFE8",
+    interactive: false,
+    //weight: 2,
+    //opacity: 1,
+    //color: 'white',
+    //dashArray: '3',
+    fillOpacity: 0.05
+}
+
+
+//let selBaselayer = null;
 /*decarbnowMap.on('baselayerchange', function (e) {
-    //console.log(baseLayers);
+    //console.log(tiles);
     let id = event.currentTarget.layerId;
 
-    Object.keys(baseLayers).forEach(baseLayer => {
+    Object.keys(tiles).forEach(baseLayer => {
     
-        if(id == baseLayers[baseLayer]._leaflet_id){
+        if(id == tiles[baseLayer]._leaflet_id){
             selBaselayer = baseLayer;
-            console.log(baseLayers[baseLayer]);
+            console.log(tiles[baseLayer]);
         }
     });
 });*/
 
-let decarbnowMap = {
+/*var infScroll = null;
+sidebar.on('shown', function () {
+    infScroll = new InfiniteScroll(document.getElementById('sidebar'), {
+        history: false,
+        path: '.nextTweet'
+        //function() {
+        //    return "https://decarbnow.space/api/render/1169366632000438272";
+        //} //'.nextTweet'
+    });
+});*/
+
+
+let dmap = {
     map: null,
+    sidebar: null,
     init: function() {
-        let layer = baseLayers.Light;
+        let layer = tiles.Light;
         
-        if(Object.keys(baseLayers).indexOf(window.location.pathname.split("/")[5]) > -1){
-            layer = baseLayers[window.location.pathname.split("/")[5]];
+        if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
+            layer = tiles[window.location.pathname.split("/")[5]];
         }
 
         let m = map('map', {
@@ -52,15 +91,109 @@ let decarbnowMap = {
                     }
                 }).addTo(m)
             }
-            L.control.layers(baseLayers, overlays_other, {collapsed:false}).addTo(m);
+            L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
         });
-        decarbnowMap.map = m;
+
+        // INIT SIDEMAP
+        dmap.sidebar = L.control.sidebar('sidebar', {
+            closeButton: true,
+            position: 'left'
+        });
 
 
+
+        m.on('contextmenu', function(e) {
+            //console.debug(e);
+            dmap.sidebar.hide();
+
+            let hash = encode(e.latlng.lat, e.latlng.lng);
+            //let zoomLevel = decarbnowMap.getZoom();
+            
+            if (typeof (history.pushState) != "undefined") {
+                var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
+                history.pushState(obj, obj.Title, obj.Url);
+            } else {
+                alert("Browser does not support HTML5.");
+            }
+
+            // if(currentMarker){
+            //     currentMarker.disablePermanentHighlight();
+            //     currentMarker = null;
+            // }
+
+            showTweetBox()
+        });
+
+        m.on('click', function () {
+            dmap.sidebar.hide();
+            /*
+            if (typeof twittermarker !== 'undefined') { // check
+                decarbnowMap.removeLayer(twittermarker); // remove
+            }
+            */
+            if (typeof (history.pushState) != "undefined") {
+                var obj = { Title: "map", Url: '/map/'};
+                history.pushState(obj, obj.Title, obj.Url);
+            } else {
+                alert("Browser does not support HTML5.");
+            }
+
+            // if(currentMarker){
+            //     currentMarker.disablePermanentHighlight();
+            //     currentMarker = null;
+            // } 
+        });
+
+        
+        m.addLayer(markers.clusters);
+        m.addControl(dmap.sidebar);
+
+        dmap.map = m;
+        window.decarbnowMap = m;
+    }, 
+
+    load: function() {
+
+        layers.init()
+
+        //overlays[layersInfo.list[layersInfo.active].name] = layerJson
+        
+        L.control.layers(layers.overlays, null, {collapsed:false}).addTo(dmap.map);
+
+        //                                     if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
+        //                                         eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
+        //                                     } else {
+        //                                         createBackgroundMapLight().addTo(decarbnowMap)
+        //                                     }
+                                            
+
+
+
+
+        layers.show('no2_2020_03', function() {
+            markers.refresh();
+            //L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);      
+            L.control.markers({ position: 'topleft' }).addTo(decarbnowMap);
+            L.control.zoom({ position: 'topleft' }).addTo(decarbnowMap);
+
+            /*
+            $("#feature_infos").stop();
+            $("#feature_infos").fadeIn(1000);
+            $("#feature_infos").fadeOut(6000);
+            */
+            $('.leaflet-control-layers-list input').on('click', function(event) {
+                let id = layers.nameToID[$(this).parent().find('span').html().trim()]
+                layers.show(id)
+                event.stopPropagation()
+            })
+
+            //selBaselayer = "Light";
+            //$.getJSON('https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_rivers_lake_centerlines.geojson', function(data) {
+            //  L.geoJson(data).addTo(decarbnowMap);
+            //});
+        })
     }
 }
 
-
-
-export default decarbnowMap
+export default dmap
 

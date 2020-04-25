@@ -31,7 +31,6 @@ let layers = {
         layers.list[id].layer.addTo(dmap.map)
     },
     show: function(id, doAfter) {
-        console.log(`show layer ${id}`)
         if (layers.list[id].content) {
             layers.switch(id)
             if (doAfter)

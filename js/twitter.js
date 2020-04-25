@@ -28,7 +28,7 @@ let text = '<h3>Tweet about</h3>'+
     '<option value="transition" data-image="/map/img/transition.png">Transition</option>'+
     '</select>'+
     '<form>'+
-    '<textarea id="tweetText" ></textarea>' +
+    '<textarea id="tweetText" wrap="off" cols="30" rows="5"></textarea>' +
     '</form>'+
     '<div id="tweetBtn">'+
     '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>'+
@@ -50,8 +50,13 @@ let showTweetBox = function(latlng, hash) {
     function onTweetSettingsChange (e) {
         let tweettypeInput = document.getElementById("icontype");
         let tweettype = tweettypeInput.options[tweettypeInput.selectedIndex].value;
+        let tweet = null;
 
-        let tweet = '#decarbnow ' + $('#tweetText').val();
+        if($('#tweetText').val().search("#decarbnow") == -1){
+          tweet = '#decarbnow ' + $('#tweetText').val();
+        } else {
+          tweet = $('#tweetText').val()
+        }
 
         //tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
 
@@ -67,7 +72,7 @@ let showTweetBox = function(latlng, hash) {
         if(window.twttr.widgets){
             window.twttr.widgets.load();
         }
-        
+
 
         if (typeof (history.pushState) != "undefined") {
             var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
@@ -100,7 +105,7 @@ let showTweetBox = function(latlng, hash) {
     //console.log(e);
     if(window.twttr.widgets){
         window.twttr.widgets.load();
-    }    
+    }
 }
 
 export default showTweetBox

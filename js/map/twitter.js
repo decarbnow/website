@@ -1,7 +1,5 @@
 const DEBOUNCE_TIMEOUT = 200;
 
-
-
 window.twttr = (function(d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
     if (d.getElementById(id)) return t;

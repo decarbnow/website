@@ -2,7 +2,7 @@ import {marker, Icon } from 'leaflet';
 import twemoji from 'twemoji';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
-import dmap from "./map.js";
+import dmap from "./base.js";
 //import 'leaflet.marker.highlight';
 
 
@@ -11,7 +11,7 @@ const API_URL = 'https://decarbnow.space/api';
 
 function replaceURLWithHTMLLinks(text){
         var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-        return text.replace(exp,"<a href='$1'>$1</a>"); 
+        return text.replace(exp,"<a href='$1'>$1</a>");
 }
 
 
@@ -66,7 +66,7 @@ const JUMP_TIMEOUT = 2000;
 function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
     var markerLatLon = marker.getLatLng();
-    
+
     if (map.getZoom() >= 7) {
         var targetZoom = map.getZoom();
     } else {
@@ -116,7 +116,7 @@ L.Control.Markers = L.Control.extend({
         markerControls.style.alignItems = 'center';
         markerControls.style.paddingBottom = "0px";
         markerControls.classList.add("leaflet-bar");
-        
+
 
         Object.keys(markerInfo).forEach(markerKey => {
             let marker = markerInfo[markerKey];
@@ -193,7 +193,7 @@ let markers = {
                 let bp = p.substring(p.indexOf("(")+1,p.indexOf(")")).split(" ");
                 let long = parseFloat(bp[0]);
                 let lat = parseFloat(bp[1]);
-                
+
                 /*if(currentMarkerFilters.indexOf(item.type) === -1) {
                     return;
                 }*/
@@ -250,14 +250,14 @@ let markers = {
                         // if(currentMarker){
                         //     currentMarker.disablePermanentHighlight();
                         //     currentMarker = null;
-                        // } 
-                        
+                        // }
+
                         if(window.twttr.widgets){
                             dmap.sidebar.show();
                             dmap.sidebar.setContent(twemoji.parse(text));
                             for (let idx in twitterIds) {
                                 let twitterId = twitterIds[idx];
-                                
+
                                 //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
                                 window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
                                     //console.debug('created tweet');
@@ -265,7 +265,7 @@ let markers = {
                                 });
                             }
                         }
-                        
+
                         // ChangeUrl(item);
                         //function ChangeUrl(item) {
                         jumpedToMarker = true;
@@ -289,14 +289,14 @@ let markers = {
 
                     })
                 );
-                            
+
                 let zoomLevel = 7;
-                
+
                 if(!isNaN(Number(window.location.pathname.split("/")[4]))){
                     zoomLevel = Number(window.location.pathname.split("/")[4]);
-                } 
+                }
 
-                
+
                 if (!jumpedToMarker && urlMarker == null && checkMatch(window.location.pathname, item)) {
     //                console.debug("found url marker!", item, mm);
                     urlMarker = {
@@ -324,12 +324,12 @@ let markers = {
                             });
                         }
                     }
-                    
+
                     console.log(urlMarker.zoomLevel)
                     centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, urlMarker.zoomLevel - decarbnowMap.getZoom());
 
                     /*currentMarker = urlMarker.marker;
-                    
+
                     if(!decarbnowMap.hasLayer(currentMarker)){
                         decarbnowMap.addLayer(currentMarker);
                     }

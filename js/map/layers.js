@@ -1,4 +1,4 @@
-import dmap from './map.js'
+import dmap from './base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
 

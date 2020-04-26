@@ -1,3 +1,7 @@
+import jQuery from 'jquery';
+import 'bootstrap';
+import 'jquery-easing';
+
 (function($) {
   "use strict"; // Start of use strict
 

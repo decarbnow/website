@@ -4,7 +4,7 @@
 @import '../node_modules/leaflet-sidebar/src/L.Control.Sidebar.css';
 @import '../node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css';
 @import '../node_modules/leaflet.marker.highlight/dist/leaflet.marker.highlight.css';
-@import '../startpage/vendor/fontawesome-free/css/all.min.css';
-@import '../startpage/vendor/nerdfonts/css/bootstrap-grid.min.css';
+@import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
+@import 'nerdfonts/css/bootstrap-grid.min.css';
 
-@import './old.scss';
+@import './map-legacy.scss';

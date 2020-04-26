@@ -1,15 +1,14 @@
 {
-  "name": "keano-map",
+  "name": "decarbnow-website",
   "version": "1.0.0",
-  "description": "map for keano",
+  "description": "website of decarbnow",
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startOld": "webpack-serve --host 0.0.0.0 --port 8080 --open --live-reload",
     "start": "webpack-dev-server --config webpack.config.js",
     "build": "NODE_ENV=production webpack"
   },
-  "author": "keano group",
+  "author": "decarbnow group",
   "license": "MIT",
   "devDependencies": {
     "@alexpavlov/geohash-js": "^1.3.1",

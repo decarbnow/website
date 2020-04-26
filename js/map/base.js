@@ -3,29 +3,11 @@ import { map } from 'leaflet';
 import tiles from './tiles.js';
 
 import 'leaflet-sidebar';
-import showTweetBox from './twitter.js';
+import twitter from './twitter.js';
 import { encode } from '@alexpavlov/geohash-js';
 
 import markers from './marker.js';
 import layers from './layers.js';
-
-
-let pollutionStyle = {
-    fillColor: "#FF0000",
-    //fillColor: "#a1a1e4",
-    stroke: true,
-    weight: 0.5,
-    opacity: 0.7,
-    //weight: 0.8,
-    //opacity: 1,
-    color: "#F1EFE8",
-    interactive: false,
-    //weight: 2,
-    //opacity: 1,
-    //color: 'white',
-    //dashArray: '3',
-    fillOpacity: 0.05
-}
 
 
 //let selBaselayer = null;
@@ -122,7 +104,7 @@ let dmap = {
             //     currentMarker = null;
             // }
 
-            showTweetBox(e.latlng, hash)
+            twitter.showTweetBox(e.latlng, hash)
         });
 
         m.on('click', function () {

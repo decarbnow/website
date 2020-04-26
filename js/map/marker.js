@@ -175,7 +175,6 @@ let markers = {
         console.log("refreshing markers from " + API_URL + '/poi');
 
         $.get(API_URL + "/poi?size=100", function(data) {
-            console.log("function refreshMarkers");
             for (var i in markers.currentMarkers) {
                 for (var mi in markers.currentMarkers[i]) {
                     decarbnowMap.removeLayer(markers.currentMarkers[i][mi]);

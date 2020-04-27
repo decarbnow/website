@@ -4,7 +4,11 @@ const merge = require('webpack-merge');
 module.exports = merge(baseConfig, {
     mode: 'development',
     devServer: {
-        historyApiFallback: true,
+        historyApiFallback: {
+            rewrites: [
+                { from: /^\/map/, to: '/map/index.html' },
+            ]
+        },
         open: true,
         liveReload: true
     },

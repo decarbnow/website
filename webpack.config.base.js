@@ -48,4 +48,7 @@ module.exports = {
             template: 'start.html'
         }),
     ],
+    output: {
+        publicPath: '/'
+    }
 };

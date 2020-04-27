@@ -1,6 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 
 //const path = require('path');
 
@@ -13,6 +15,9 @@ module.exports = {
     },
     module: {
         rules: [{
+            test: /\.html$/i,
+            loader: 'html-loader',
+        }, {
             test: /\.css$/i,
             use: [MiniCssExtractPlugin.loader, 'css-loader'],
         }, {
@@ -23,14 +28,15 @@ module.exports = {
             use: [MiniCssExtractPlugin.loader, 'css-loader', "sass-loader"],
         }],
     },
-    mode: 'development',
     plugins: [
+        new CleanWebpackPlugin(),
         new CopyWebpackPlugin([
             { from: 'data', to: 'data' }
         ]),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css'
         }),
+        new FixStyleOnlyEntriesPlugin(),
         new HtmlWebpackPlugin({
             filename: 'map/index.html',
             chunks: ['map', 'mapStyle'],
@@ -42,16 +48,4 @@ module.exports = {
             template: 'start.html'
         }),
     ],
-    output: {
-        //path: path.resolve(__dirname, 'map'),
-    },
-    devServer: {
-        historyApiFallback: true,
-        open: true,
-        liveReload: true
-    },
-    // performance: {
-    //     hints: false,
-    // },
-    devtool: 'source-map'
 };

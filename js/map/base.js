@@ -53,22 +53,22 @@ let dmap = {
 
         layer.addTo(m)
 
-        $.getJSON("/data/layers/global_power_plant_database.geojson",function(coalplants) {
+        $.getJSON("/data/layers/e-prtr.geojson",function(coalplants) {
             let overlays_other = {
                 "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
                     style: function(feature) {
                         //return {color: '#d8d4d4'};
-                        return {color: '#FF0000'};
+                        return {color: '#0000FF'};
                     },
                     pointToLayer: function(feature, latlng) {
-                        return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+                        return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.TotalQuantityCO2/100000000), stroke: false, fillOpacity: 0.5});
                     },
                     onEachFeature: function (feature, layer) {
-                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
-                                        '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-                                        '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-                                        '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-                                        '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
+                                        '<tr><td>CO2 Equivalents:</td><td>' + Math.round(feature.properties.TotalQuantityCO2/10000000) + ' Mio. <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
+                                        '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
+                                        '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
+                                        '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
                                         '</table>');
                     }
                 }).addTo(m)
@@ -76,6 +76,30 @@ let dmap = {
             L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
             dmap.load()
         });
+
+        // $.getJSON("/data/layers/global_power_plant_database.geojson",function(coalplants) {
+        //     let overlays_other = {
+        //         "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
+        //             style: function(feature) {
+        //                 //return {color: '#d8d4d4'};
+        //                 return {color: '#FF0000'};
+        //             },
+        //             pointToLayer: function(feature, latlng) {
+        //                 return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+        //             },
+        //             onEachFeature: function (feature, layer) {
+        //                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
+        //                                 '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+        //                                 '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
+        //                                 '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+        //                                 '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+        //                                 '</table>');
+        //             }
+        //         }).addTo(m)
+        //     }
+        //     L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
+        //     dmap.load()
+        // });
 
         // INIT SIDEMAP
         dmap.sidebar = L.control.sidebar('sidebar', {

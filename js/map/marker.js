@@ -177,7 +177,7 @@ let markers = {
         $.get(API_URL + "/poi?size=100", function(data) {
             for (var i in markers.currentMarkers) {
                 for (var mi in markers.currentMarkers[i]) {
-                    decarbnowMap.removeLayer(markers.currentMarkers[i][mi]);
+                    dmap.map.removeLayer(markers.currentMarkers[i][mi]);
                 }
             }
 
@@ -281,7 +281,7 @@ let markers = {
                         }
                         //}
 
-                        centerLeafletMapOnMarker(decarbnowMap, mm, 2);
+                        centerLeafletMapOnMarker(dmap.map, mm, 2);
 
                         // currentMarker = mm;
                         // currentMarker.enablePermanentHighlight();
@@ -325,15 +325,7 @@ let markers = {
                     }
 
                     console.log(urlMarker.zoomLevel)
-                    centerLeafletMapOnMarker(decarbnowMap, urlMarker.marker, urlMarker.zoomLevel - decarbnowMap.getZoom());
-
-                    /*currentMarker = urlMarker.marker;
-
-                    if(!decarbnowMap.hasLayer(currentMarker)){
-                        decarbnowMap.addLayer(currentMarker);
-                    }
-
-                    currentMarker.enablePermanentHighlight();*/
+                    centerLeafletMapOnMarker(dmap.map, urlMarker.marker, urlMarker.zoomLevel - dmap.map.getZoom());
 
                     jumpedToMarker = true;
                 }, JUMP_TIMEOUT);

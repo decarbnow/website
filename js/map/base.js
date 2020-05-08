@@ -1,8 +1,7 @@
 import { map } from 'leaflet';
-
 import tiles from './tiles.js';
-
 import 'leaflet-sidebar';
+
 import twitter from './twitter.js';
 import { encode } from '@alexpavlov/geohash-js';
 
@@ -22,31 +21,57 @@ sidebar.on('shown', function () {
     });
 });*/
 
-
-let dmap = {
+let base = {
     map: null,
     sidebar: null,
     layers: {},
     init: function() {
-        dmap.map = map('map', {
-            zoomControl: false, // manually added
+        // init leaflet map
+        base.map = map('map', {
+            zoomControl: false,
             tap: true,
             maxZoom: 20
         }).setView([47, 16], 5);
 
-        // INIT SIDEMAP
-        dmap.sidebar = L.control.sidebar('sidebar', {
+        // init leaflet sidebar
+        base.sidebar = L.control.sidebar('sidebar', {
             closeButton: true,
             position: 'left'
         });
+        base.map.addControl(base.sidebar);
 
-        dmap.map.on("moveend", function () {
+        // add controls
+        L.control.markers({ position: 'topleft' }).addTo(base.map);
+        L.control.zoom({ position: 'topleft' }).addTo(base.map);
+
+        base.addLayers()
+        base.addEventHandlers()
+    },
+
+    addLayers: function() {
+        base.map.addLayer(markers.clusters);
+        markers.init()
+
+        base.layers['pollution'] = pollutionLayers.init()
+        L.control.layers(base.layers['pollution'].overlays, null, {
+            collapsed: false
+        }).addTo(base.map);
+        base.layers['pollution'].show('no2_2020_03')
+
+        base.layers['point'] = pointLayers.init()
+        L.control.layers(tiles, base.layers['point'].overlays, {
+            collapsed: false
+        }).addTo(base.map);
+    },
+
+    addEventHandlers: function() {
+        base.map.on("moveend", function () {
             url.stateToUrl();
         });
 
-        dmap.map.on('contextmenu', function(e) {
+        base.map.on('contextmenu', function(e) {
             //console.debug(e);
-            dmap.sidebar.hide();
+            base.sidebar.hide();
             let hash = encode(e.latlng.lat, e.latlng.lng);
 
             if (typeof (history.pushState) != "undefined") {
@@ -59,44 +84,20 @@ let dmap = {
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        dmap.map.on('baselayerchange', function (event) {
+        base.map.on('baselayerchange', function (event) {
             url.stateToUrl()
             return true;
         });
 
-        L.control.markers({ position: 'topleft' }).addTo(dmap.map);
-        L.control.zoom({ position: 'topleft' }).addTo(dmap.map);
-        dmap.map.addLayer(markers.clusters);
-        dmap.map.addControl(dmap.sidebar);
-
-        dmap.load()
-
-        url.stateFromUrl();
-    },
-
-    load: function() {
-        markers.init()
-
-        dmap.layers['pollution'] = pollutionLayers.init()
-        L.control.layers(dmap.layers['pollution'].overlays, null, {
-            collapsed: false
-        }).addTo(dmap.map);
-        dmap.layers['pollution'].show('no2_2020_03')
-
-        dmap.layers['point'] = pointLayers.init()
-        L.control.layers(tiles, dmap.layers['point'].overlays, {
-            collapsed: false
-        }).addTo(dmap.map);
-
         $('body').on('click', '.leaflet-control-layers-list input', function(event) {
             //console.log(event.target)
             //console.log(event.target.layerId)
-            let l = dmap.map._layers[event.target.layerId]
+            let l = base.map._layers[event.target.layerId]
             //console.log(l)
-            l.group.show(dmap.map._layers[event.target.layerId].id)
+            l.group.show(base.map._layers[event.target.layerId].id)
             event.stopPropagation()
         })
     }
 }
 
-export default dmap
+export default base

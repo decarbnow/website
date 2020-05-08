@@ -1,4 +1,4 @@
-import dmap from './base.js'
+import base from './base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
 
@@ -25,22 +25,23 @@ class LazyLayerGroup {
 
     switch(id) {
         if (this.active)
-            dmap.map.removeLayer(this.list[this.active].layer);
-        this.list[id].layer.addTo(dmap.map)
+            base.map.removeLayer(this.list[this.active].layer);
+        this.list[id].layer.addTo(base.map)
         this.active = id
     }
 
     show(id, doAfter) {
-        console.log(`SHOW ID '${id}'`)
+        //console.log(`LazyLayerGroup: show layer ID '${id}'`)
         let self = this;
-        if (!this.list[id].layer.loaded) {
-            dmap.map.spin(true);
+        if (!this.list[id].loaded) {
+            base.map.spin(true);
+            //console.log(`LazyLayerGroup: load layer ID '${id}'`)
             $.getJSON(`/data/layers/${this.list[id].file}`, function(data) {
                 self.list[id].layer = L.geoJson(data, {...self.attr, ...self.list[id].attr})
                 self.list[id].layer.group = self;
                 self.list[id].loaded = true
                 self.switch(id)
-                dmap.map.spin(false);
+                base.map.spin(false);
                 if (doAfter)
                     doAfter()
             })

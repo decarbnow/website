@@ -2,7 +2,7 @@ import {marker, Icon } from 'leaflet';
 import twemoji from 'twemoji';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
-import dmap from "./base.js";
+import base from "./base.js";
 //import 'leaflet.marker.highlight';
 
 
@@ -177,7 +177,7 @@ let markers = {
         $.get(API_URL + "/poi?size=100", function(data) {
             for (var i in markers.currentMarkers) {
                 for (var mi in markers.currentMarkers[i]) {
-                    dmap.map.removeLayer(markers.currentMarkers[i][mi]);
+                    base.map.removeLayer(markers.currentMarkers[i][mi]);
                 }
             }
 
@@ -252,8 +252,8 @@ let markers = {
                         // }
 
                         if(window.twttr.widgets){
-                            dmap.sidebar.show();
-                            dmap.sidebar.setContent(twemoji.parse(text));
+                            base.sidebar.show();
+                            base.sidebar.setContent(twemoji.parse(text));
                             for (let idx in twitterIds) {
                                 let twitterId = twitterIds[idx];
 
@@ -281,7 +281,7 @@ let markers = {
                         }
                         //}
 
-                        centerLeafletMapOnMarker(dmap.map, mm, 2);
+                        centerLeafletMapOnMarker(base.map, mm, 2);
 
                         // currentMarker = mm;
                         // currentMarker.enablePermanentHighlight();
@@ -312,8 +312,8 @@ let markers = {
                 window.setTimeout(function () {
     //                console.debug("jumping now");
                     if(window.twttr.widgets){
-                        dmap.sidebar.show();
-                        dmap.sidebar.setContent(twemoji.parse(urlMarker.text));
+                        base.sidebar.show();
+                        base.sidebar.setContent(twemoji.parse(urlMarker.text));
                         for (let idx in urlMarker.twitterIds) {
                             let twitterId = urlMarker.twitterIds[idx];
                             //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
@@ -325,7 +325,7 @@ let markers = {
                     }
 
                     console.log(urlMarker.zoomLevel)
-                    centerLeafletMapOnMarker(dmap.map, urlMarker.marker, urlMarker.zoomLevel - dmap.map.getZoom());
+                    centerLeafletMapOnMarker(base.map, urlMarker.marker, urlMarker.zoomLevel - base.map.getZoom());
 
                     jumpedToMarker = true;
                 }, JUMP_TIMEOUT);

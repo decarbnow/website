@@ -1,9 +1,12 @@
 import $ from 'jquery';
 window.$ = $
 
-import dmap from "./map/base.js";
-window.dmap = dmap
+import base from "./map/base.js";
+import url from './map/url.js';
 
-dmap.init()
+window.base = base
+
+base.init()
+url.stateFromUrl();
 
 //import "./geoip.js";

@@ -7,22 +7,9 @@ import twitter from './twitter.js';
 import { encode } from '@alexpavlov/geohash-js';
 
 import markers from './marker.js';
-import layers from './layers.js';
-
-
-//let selBaselayer = null;
-/*decarbnowMap.on('baselayerchange', function (e) {
-    //console.log(tiles);
-    let id = event.currentTarget.layerId;
-
-    Object.keys(tiles).forEach(baseLayer => {
-
-        if(id == tiles[baseLayer]._leaflet_id){
-            selBaselayer = baseLayer;
-            console.log(tiles[baseLayer]);
-        }
-    });
-});*/
+import url from './url.js';
+import pollutionLayers from './pollutionLayers.js';
+import pointLayers from './pointLayers.js';
 
 /*var infScroll = null;
 sidebar.on('shown', function () {
@@ -30,7 +17,7 @@ sidebar.on('shown', function () {
         history: false,
         path: '.nextTweet'
         //function() {
-        //    return "https://decarbnow.space/api/render/1169366632000438272";
+        //    return "https://decarbnow.space/api/render/1169366632000438272";layers
         //} //'.nextTweet'
     });
 });*/
@@ -39,67 +26,13 @@ sidebar.on('shown', function () {
 let dmap = {
     map: null,
     sidebar: null,
+    layers: {},
     init: function() {
-        let layer = tiles.Light;
-
-        if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
-            layer = tiles[window.location.pathname.split("/")[5]];
-        }
-
-        let m = map('map', {
+        dmap.map = map('map', {
             zoomControl: false, // manually added
-            tap: true
+            tap: true,
+            maxZoom: 20
         }).setView([47, 16], 5);
-
-        layer.addTo(m)
-
-        $.getJSON("/data/layers/e-prtr.geojson",function(coalplants) {
-            let overlays_other = {
-                "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
-                    style: function(feature) {
-                        //return {color: '#d8d4d4'};
-                        return {color: '#0000FF'};
-                    },
-                    pointToLayer: function(feature, latlng) {
-                        return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.TotalQuantityCO2/100000000), stroke: false, fillOpacity: 0.5});
-                    },
-                    onEachFeature: function (feature, layer) {
-                        layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
-                                        '<tr><td>CO2 Equivalents:</td><td>' + Math.round(feature.properties.TotalQuantityCO2/10000000) + ' Mio. <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
-                                        '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
-                                        '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
-                                        '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
-                                        '</table>');
-                    }
-                }).addTo(m)
-            }
-            L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
-            dmap.load()
-        });
-
-        // $.getJSON("/data/layers/global_power_plant_database.geojson",function(coalplants) {
-        //     let overlays_other = {
-        //         "Big coal power stations <i class='fa fa-info-circle'></i>": L.geoJson(coalplants, {
-        //             style: function(feature) {
-        //                 //return {color: '#d8d4d4'};
-        //                 return {color: '#FF0000'};
-        //             },
-        //             pointToLayer: function(feature, latlng) {
-        //                 return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
-        //             },
-        //             onEachFeature: function (feature, layer) {
-        //                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
-        //                                 '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-        //                                 '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
-        //                                 '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-        //                                 '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-        //                                 '</table>');
-        //             }
-        //         }).addTo(m)
-        //     }
-        //     L.control.layers(tiles, overlays_other, {collapsed: false}).addTo(m);
-        //     dmap.load()
-        // });
 
         // INIT SIDEMAP
         dmap.sidebar = L.control.sidebar('sidebar', {
@@ -107,14 +40,14 @@ let dmap = {
             position: 'left'
         });
 
+        dmap.map.on("moveend", function () {
+            url.stateToUrl();
+        });
 
-
-        m.on('contextmenu', function(e) {
+        dmap.map.on('contextmenu', function(e) {
             //console.debug(e);
             dmap.sidebar.hide();
-
             let hash = encode(e.latlng.lat, e.latlng.lng);
-            //let zoomLevel = decarbnowMap.getZoom();
 
             if (typeof (history.pushState) != "undefined") {
                 var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
@@ -123,82 +56,45 @@ let dmap = {
                 alert("Browser does not support HTML5.");
             }
 
-            // if(currentMarker){
-            //     currentMarker.disablePermanentHighlight();
-            //     currentMarker = null;
-            // }
-
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        m.on('click', function () {
-            dmap.sidebar.hide();
-            /*
-            if (typeof twittermarker !== 'undefined') { // check
-                decarbnowMap.removeLayer(twittermarker); // remove
-            }
-            */
-            if (typeof (history.pushState) != "undefined") {
-                var obj = { Title: "map", Url: '/map/'};
-                history.pushState(obj, obj.Title, obj.Url);
-            } else {
-                alert("Browser does not support HTML5.");
-            }
-
-            // if(currentMarker){
-            //     currentMarker.disablePermanentHighlight();
-            //     currentMarker = null;
-            // }
+        dmap.map.on('baselayerchange', function (event) {
+            url.stateToUrl()
+            return true;
         });
 
-        L.control.markers({ position: 'topleft' }).addTo(m);
-        L.control.zoom({ position: 'topleft' }).addTo(m);
-        m.addLayer(markers.clusters);
-        m.addControl(dmap.sidebar);
+        L.control.markers({ position: 'topleft' }).addTo(dmap.map);
+        L.control.zoom({ position: 'topleft' }).addTo(dmap.map);
+        dmap.map.addLayer(markers.clusters);
+        dmap.map.addControl(dmap.sidebar);
 
-        markers.init()
+        dmap.load()
 
-        dmap.map = m;
-        window.decarbnowMap = m;
+        url.stateFromUrl();
     },
 
     load: function() {
-        layers.init()
+        markers.init()
 
-        //overlays[layersInfo.list[layersInfo.active].name] = layerJson
+        dmap.layers['pollution'] = pollutionLayers.init()
+        L.control.layers(dmap.layers['pollution'].overlays, null, {
+            collapsed: false
+        }).addTo(dmap.map);
+        dmap.layers['pollution'].show('no2_2020_03')
 
-        L.control.layers(layers.overlays, null, {collapsed:false}).addTo(dmap.map);
+        dmap.layers['point'] = pointLayers.init()
+        L.control.layers(tiles, dmap.layers['point'].overlays, {
+            collapsed: false
+        }).addTo(dmap.map);
 
-        //                                     if(Object.keys(tiles).indexOf(window.location.pathname.split("/")[5]) > -1){
-        //                                         eval("createBackgroundMap" + window.location.pathname.split("/")[5] + "()").addTo(decarbnowMap);
-        //                                     } else {
-        //                                         createBackgroundMapLight().addTo(decarbnowMap)
-        //                                     }
-
-
-
-
-
-        layers.show('no2_2020_03', function() {
-            //L.Control.geocoder({position: "topleft"}).addTo(decarbnowMap);
-
-
-            /*
-            $("#feature_infos").stop();
-            $("#feature_infos").fadeIn(1000);
-            $("#feature_infos").fadeOut(6000);
-            */
-            $('.leaflet-control-layers-list input').on('click', function(event) {
-                let id = layers.nameToID[$(this).parent().find('span').html().trim()]
-                layers.show(id)
-                event.stopPropagation()
-            })
-
-
-            //selBaselayer = "Light";
-            //$.getJSON('https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_rivers_lake_centerlines.geojson', function(data) {
-            //  L.geoJson(data).addTo(decarbnowMap);
-            //});
+        $('body').on('click', '.leaflet-control-layers-list input', function(event) {
+            //console.log(event.target)
+            //console.log(event.target.layerId)
+            let l = dmap.map._layers[event.target.layerId]
+            //console.log(l)
+            l.group.show(dmap.map._layers[event.target.layerId].id)
+            event.stopPropagation()
         })
     }
 }

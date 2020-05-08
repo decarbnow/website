@@ -39,7 +39,7 @@ let twitter = {
         L.popup()
             .setLatLng(latlng)
             .setContent(text)
-            .openOn(decarbnowMap);
+            .openOn(dmap.map);
 
         //here comes the beauty
         function onTweetSettingsChange (e) {

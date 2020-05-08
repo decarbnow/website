@@ -6,51 +6,52 @@ class LazyLayerGroup {
     constructor(id, list, defaultAttr = {}) {
         let self = this;
 
-        this.active = null;
         this.id = id;
         this.list = list;
         this.defaultAttr = defaultAttr;
         this.overlays = {};
 
         Object.keys(list).forEach(n => {
-            // create dummy layer
-            let l = new L.LayerGroup()
-            l.group = self
-            l.id = n
-            // add info
             let e = list[n];
-            e.layer = l
-            e.loaded = false
-            e.attr = e.attr || {}
-            self.overlays[e.name] = l
+            if (!e.layer) {
+                // create dummy layer
+                let layer = new L.LayerGroup()
+                layer.group = self
+                layer.id = n
+                // add info
+                e.layer = layer
+                e.loaded = false
+                e.attr = e.attr || {}
+            }
+            self.overlays[e.name] = e.layer
         })
     }
 
-    switch(id) {
-        if (this.active)
-            base.map.removeLayer(this.active);
-        this.list[id].layer.addTo(base.map)
-        this.active = this.list[id].layer
+    getActiveLayers() {
+        let a = [];
+        Object.keys(this.list).forEach((k) => {
+            if (base.map.hasLayer(this.list[k].layer))
+                a.push(k);
+        });
+        return a;
     }
 
-    show(id, doAfter) {
-        //console.log(`LazyLayerGroup: show layer ID '${id}'`)
+    activateLayer(id) {
+        this.load(id);
+        this.list[id].layer.addTo(base.map);
+    }
+
+    load(id) {
+        //console.log(`LazyLayerGroup ('${this.id}'): show layer '${id}'`)
         let self = this;
-        if (!this.list[id].loaded) {
+        let e = this.list[id];
+        if (e.file && !e.loaded) {
             base.map.spin(true);
-            //console.log(`LazyLayerGroup: load layer ID '${id}'`)
-            $.getJSON(`/data/layers/${this.list[id].file}`, function(data) {
-                self.list[id].layer = L.geoJson(data, {...self.defaultAttr, ...self.list[id].attr})
-                self.list[id].loaded = true
-                self.switch(id)
+            $.getJSON(`/data/layers/${e.file}`, function(data) {
+                e.layer.addLayer(L.geoJson(data, {...self.defaultAttr, ...self.list[id].attr}))
+                e.loaded = true
                 base.map.spin(false);
-                if (doAfter)
-                    doAfter()
             })
-        } else {
-            this.switch(id)
-            if (doAfter)
-                doAfter()
         }
     }
 }

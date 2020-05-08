@@ -1,47 +1,51 @@
 import base from "./base.js";
-import tiles from './tiles.js';
+
+let initialSate = {
+    z: 5,
+    lat: 48,
+    lng: 15,
+    ls: 'light,power-plants,no2_2020_03'
+}
 
 let url = {
-    s: {
-        z: 5,
-        lat: 48,
-        lng: 15,
-        ls: 'Light',
-    },
     prefix: '/map/',
     stateToUrl: function() {
         let center = base.map.getCenter();
         let z = base.map.getZoom();
 
         let ls = [];
-        Object.keys(tiles).forEach((k) => {
-            if (base.map.hasLayer(tiles[k]))
-                ls.push(k);
+        Object.keys(base.layers).forEach((k) => {
+            ls.push(...base.layers[k].getActiveLayers())
         });
-        if (ls.length == 0)
-            ls = url.s.ls.split(',');
 
-        var obj = { Title: `Lat: ${center.lat}, Lng: ${center.lng}`, Url: `${url.prefix}lng@${center.lng}/lat@${center.lat}/z@${z}/ls@${ls.join(',')}`};
+        var obj = {
+            Title: `Lat: ${center.lat}, Lng: ${center.lng}`,
+            Url: `${url.prefix}lng@${center.lng}/lat@${center.lat}/z@${z}/ls@${ls.join(',')}`
+        };
         history.pushState(obj, obj.Title, obj.Url);
     },
     stateFromUrl: function() {
+        let state = {...initialSate}
         let p = window.location.pathname.substring(url.prefix.length).split('/')
 
         p.forEach((n) => {
             let v = n.split('@')
-            url.s[v[0]] = v[1]
+            state[v[0]] = v[1]
         });
 
-        base.map.flyTo({lat: url.s.lat, lng: url.s.lng}, url.s.z, {
+        base.map.flyTo({lat: state.lat, lng: state.lng}, state.z, {
             animate: true,
             duration: 1.5
         });
 
-        tiles[url.s.ls.split(',')[0]].addTo(base.map)
+        state.ls.split(',').forEach((n) => {
+            console.log(n)
+            base.activateLayer(n)
+        });
     }
 
 }
 
-window.url = url
+window.url = url;
 
 export default url;

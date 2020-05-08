@@ -1,5 +1,4 @@
 import { map } from 'leaflet';
-import tiles from './tiles.js';
 import 'leaflet-sidebar';
 
 import twitter from './twitter.js';
@@ -7,6 +6,7 @@ import { encode } from '@alexpavlov/geohash-js';
 
 import markers from './marker.js';
 import url from './url.js';
+import tileLayers from './tileLayers.js';
 import pollutionLayers from './pollutionLayers.js';
 import pointLayers from './pointLayers.js';
 
@@ -48,22 +48,27 @@ let base = {
         base.addEventHandlers()
     },
 
+    activateLayer: function(id) {
+        Object.keys(base.layers).forEach((k) => {
+            let t = base.layers[k]
+            if (Object.keys(t.list).includes(id))
+                t.activateLayer(id)
+        });
+    },
+
     addLayers: function() {
         base.map.addLayer(markers.clusters);
         markers.init()
 
-        base.layers['pollution'] = pollutionLayers.init()
-        L.control.layers(base.layers['pollution'].overlays, null, {
-            collapsed: false
-        }).addTo(base.map);
-        base.layers['pollution'].show('no2_2020_03')
+        base.layers['tiles'] = tileLayers.init()
+        base.layers['points'] = pointLayers.init()
+        base.layers['pollutions'] = pollutionLayers.init()
 
-        base.layers['point'] = pointLayers.init()
-        L.control.layers(tiles, null, {
+        L.control.layers(base.layers['tiles'].overlays, null, {
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(base.layers['point'].overlays,  null, {
+        L.control.layers(base.layers['pollutions'].overlays, base.layers['points'].overlays, {
             collapsed: false
         }).addTo(base.map);
     },
@@ -88,20 +93,12 @@ let base = {
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        base.map.on('baselayerchange', function (event) {
+        base.map.on('baselayerchange overlayadd', function (e) {
+            if (e.layer.group)
+                e.layer.group.load(e.layer.id)
             url.stateToUrl()
             return true;
         });
-
-        $('body').on('click', '.leaflet-control-layers-list input', function(event) {
-            let t = event.target
-            let l = base.map._layers[t.layerId]
-            if (l && l.group) {
-                //console.log(l)
-                l.group.show(base.map._layers[t.layerId].id)
-            }
-            event.stopPropagation()
-        })
     }
 }
 

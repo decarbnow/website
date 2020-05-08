@@ -41,10 +41,11 @@ let layersList = {
             }
         }
     }
-}
+};
 
 export default {
     init: function() {
-        return new LazyLayerGroup('points', layersList)
+        let llg = new LazyLayerGroup('points', layersList);
+        return llg;
     }
 }

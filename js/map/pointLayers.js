@@ -45,6 +45,6 @@ let layersList = {
 
 export default {
     init: function() {
-        return new LazyLayerGroup(layersList)
+        return new LazyLayerGroup('points', layersList)
     }
 }

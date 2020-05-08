@@ -30,7 +30,7 @@ tropomiDates.forEach(n => {
 
 export default {
     init: function() {
-        return new LazyLayerGroup(layersList, {
+        return new LazyLayerGroup('pollution', layersList, {
             style: style
         })
     }

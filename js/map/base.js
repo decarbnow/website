@@ -59,7 +59,11 @@ let base = {
         base.layers['pollution'].show('no2_2020_03')
 
         base.layers['point'] = pointLayers.init()
-        L.control.layers(tiles, base.layers['point'].overlays, {
+        L.control.layers(tiles, null, {
+            collapsed: false
+        }).addTo(base.map);
+
+        L.control.layers(base.layers['point'].overlays,  null, {
             collapsed: false
         }).addTo(base.map);
     },
@@ -90,11 +94,12 @@ let base = {
         });
 
         $('body').on('click', '.leaflet-control-layers-list input', function(event) {
-            //console.log(event.target)
-            //console.log(event.target.layerId)
-            let l = base.map._layers[event.target.layerId]
-            //console.log(l)
-            l.group.show(base.map._layers[event.target.layerId].id)
+            let t = event.target
+            let l = base.map._layers[t.layerId]
+            if (l && l.group) {
+                //console.log(l)
+                l.group.show(base.map._layers[t.layerId].id)
+            }
             event.stopPropagation()
         })
     }

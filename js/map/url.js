@@ -1,5 +1,4 @@
-import dmap from "./base.js";
-import { encode } from '@alexpavlov/geohash-js';
+import base from "./base.js";
 import tiles from './tiles.js';
 
 let url = {
@@ -11,12 +10,12 @@ let url = {
     },
     prefix: '/map/',
     stateToUrl: function() {
-        let center = dmap.map.getCenter();
-        let z = dmap.map.getZoom();
-        //let hash = encode(center.lat, center.lng);
+        let center = base.map.getCenter();
+        let z = base.map.getZoom();
+
         let ls = [];
         Object.keys(tiles).forEach((k) => {
-            if (dmap.map.hasLayer(tiles[k]))
+            if (base.map.hasLayer(tiles[k]))
                 ls.push(k);
         });
         if (ls.length == 0)
@@ -33,12 +32,12 @@ let url = {
             url.s[v[0]] = v[1]
         });
 
-        dmap.map.flyTo({lat: url.s.lat, lng: url.s.lng}, url.s.z, {
+        base.map.flyTo({lat: url.s.lat, lng: url.s.lng}, url.s.z, {
             animate: true,
             duration: 1.5
         });
 
-        tiles[url.s.ls.split(',')[0]].addTo(dmap.map)
+        tiles[url.s.ls.split(',')[0]].addTo(base.map)
     }
 
 }

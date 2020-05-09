@@ -7,6 +7,5 @@ import url from './map/url.js';
 window.base = base
 
 base.init()
-url.stateFromUrl();
 
 //import "./geoip.js";

@@ -1,53 +1,95 @@
 import base from "./base.js";
-
-let initialSate = {
-    z: 5,
-    lat: 48,
-    lng: 15,
-    ls: 'light,power-plants,no2_2020_03'
-}
+import { encode, decode } from '@alexpavlov/geohash-js';
 
 let url = {
     prefix: '/map/',
-    stateToUrl: function() {
-        let center = base.map.getCenter();
-        center.lng = parseFloat(center.lng).toFixed(5);
-        center.lat = parseFloat(center.lat).toFixed(5);
+    keyValueDivider: '=',
+    specialKeys: ['@'],
+    listDivider: ',',
+    divider: '/',
+    geoHash: true,
 
-        let z = base.map.getZoom();
+    _stateToUrl: function(s) {
+        let lng = parseFloat(s.center.lng).toFixed(5),
+            lat = parseFloat(s.center.lat).toFixed(5),
+            layers = s.layers.filter(e => e !== 'empty');
 
-        let ls = [];
-        Object.keys(base.layers).forEach((k) => {
-            ls.push(...base.layers[k].getActiveLayers())
+        let vars = {
+            z: s.zoom,
+            ls: layers.join(url.listDivider)
+        }
+
+        if (url.geoHash) {
+            vars = {...{
+                '@': encode(lat, lng),
+            }, ...vars}
+        } else {
+            vars = {...{
+                lng: lng,
+                lat: lat,
+            }, ...vars}
+        }
+
+        let parts = Object.keys(vars).map(k => {
+            return [k, vars[k]].join(url.specialKeys.includes(k) ? '' : url.keyValueDivider);
+        })
+
+        return url.prefix + parts.join(url.divider)
+    },
+
+    _urlToState: function() {
+        let parts = window.location.pathname.substring(url.prefix.length).split(url.divider);
+
+        let rs = {}
+        parts.forEach((n) => {
+            if (url.specialKeys.includes(n.charAt(0))) {
+                rs[n.charAt(0)] = n.slice(1);
+            } else {
+                let v = n.split(url.keyValueDivider);
+                rs[v[0]] = v[1];
+            }
         });
-        ls = ls.filter(e => e !== 'empty')
+
+        let s = {}
+
+        if (rs['@']) {
+            let t = decode(rs['@']);
+            s.center = {
+                lat: t.latitude,
+                lng: t.longitude,
+            }
+        }
+
+        if (rs.lat && rs.lng)
+            s.center = {
+                lat: rs.lat,
+                lng: rs.lng,
+            }
+
+        if (rs.z)
+            s.zoom = rs.z
+
+        if (rs.ls)
+            s.layers = rs.ls.split(url.listDivider);
+
+        return s;
+    },
+
+    pushState: function(state = null) {
+        if (!state)
+            state = base.getState();
 
         var obj = {
-            Title: `Lat: ${center.lat}, Lng: ${center.lng}`,
-            Url: `${url.prefix}lng@${center.lng}/lat@${center.lat}/z@${z}/ls@${ls.join(',')}`
+            Title: `Lat: ${state.center.lat}, Lng: ${state.center.lng}`,
+            Url: url._stateToUrl(state)
         };
+
         history.pushState(obj, obj.Title, obj.Url);
     },
-    stateFromUrl: function() {
-        let state = {...initialSate};
-        let p = window.location.pathname.substring(url.prefix.length).split('/');
 
-        p.forEach((n) => {
-            let v = n.split('@');
-            state[v[0]] = v[1];
-        });
-
-        base.map.flyTo({lat: state.lat, lng: state.lng}, state.z, {
-            animate: true,
-            duration: 1.5,
-        });
-
-        base.activateLayer('empty');
-        state.ls.split(',').forEach((n) => {
-            base.activateLayer(n);
-        });
-    }
-
+    getState: function() {
+        return url._urlToState();
+    },
 }
 
 window.url = url;

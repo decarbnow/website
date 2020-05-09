@@ -11,12 +11,16 @@ let url = {
     prefix: '/map/',
     stateToUrl: function() {
         let center = base.map.getCenter();
+        center.lng = parseFloat(center.lng).toFixed(5);
+        center.lat = parseFloat(center.lat).toFixed(5);
+
         let z = base.map.getZoom();
 
         let ls = [];
         Object.keys(base.layers).forEach((k) => {
             ls.push(...base.layers[k].getActiveLayers())
         });
+        ls = ls.filter(e => e !== 'empty')
 
         var obj = {
             Title: `Lat: ${center.lat}, Lng: ${center.lng}`,
@@ -25,22 +29,22 @@ let url = {
         history.pushState(obj, obj.Title, obj.Url);
     },
     stateFromUrl: function() {
-        let state = {...initialSate}
-        let p = window.location.pathname.substring(url.prefix.length).split('/')
+        let state = {...initialSate};
+        let p = window.location.pathname.substring(url.prefix.length).split('/');
 
         p.forEach((n) => {
-            let v = n.split('@')
-            state[v[0]] = v[1]
+            let v = n.split('@');
+            state[v[0]] = v[1];
         });
 
         base.map.flyTo({lat: state.lat, lng: state.lng}, state.z, {
             animate: true,
-            duration: 1.5
+            duration: 1.5,
         });
 
+        base.activateLayer('empty');
         state.ls.split(',').forEach((n) => {
-            console.log(n)
-            base.activateLayer(n)
+            base.activateLayer(n);
         });
     }
 

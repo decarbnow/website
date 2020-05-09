@@ -30,7 +30,7 @@ let base = {
         base.map = map('map', {
             zoomControl: false,
             tap: true,
-            maxZoom: 20
+            maxZoom: 19,
         }).setView([47, 16], 5);
 
         // init leaflet sidebar

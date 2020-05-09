@@ -10,6 +10,19 @@ import tileLayers from './tileLayers.js';
 import pollutionLayers from './pollutionLayers.js';
 import pointLayers from './pointLayers.js';
 
+
+let initialState = {
+    zoom: 5,
+    center: {
+        lat: 48.2082,
+        lng: 16.3738
+    },
+    layers: [
+        'light',
+        'power-plants',
+        'no2_2020_03'
+    ],
+}
 /*var infScroll = null;
 sidebar.on('shown', function () {
     infScroll = new InfiniteScroll(document.getElementById('sidebar'), {
@@ -25,13 +38,14 @@ let base = {
     map: null,
     sidebar: null,
     layers: {},
+
     init: function() {
         // init leaflet map
         base.map = map('map', {
             zoomControl: false,
             tap: true,
             maxZoom: 19,
-        }).setView([47, 16], 5);
+        });
 
         // init leaflet sidebar
         base.sidebar = L.control.sidebar('sidebar', {
@@ -46,6 +60,29 @@ let base = {
 
         base.addLayers()
         base.addEventHandlers()
+        base.setState(url.getState())
+    },
+
+    getState: function() {
+        let layers = [];
+        Object.keys(base.layers).forEach((k) => {
+            layers.push(...base.layers[k].getActiveLayers())
+        });
+
+        return {
+            center: base.map.getCenter(),
+            zoom: base.map.getZoom(),
+            layers: layers,
+        }
+    },
+
+    setState: function(state) {
+        state = {...initialState, ...state}
+        base.map.setView(state.center, state.zoom);
+        base.activateLayer('empty');
+        state.layers.forEach((n) => {
+            base.activateLayer(n);
+        });
     },
 
     activateLayer: function(id) {
@@ -75,7 +112,7 @@ let base = {
 
     addEventHandlers: function() {
         base.map.on("moveend", function () {
-            url.stateToUrl();
+            url.pushState()
         });
 
         base.map.on('contextmenu', function(e) {
@@ -93,10 +130,10 @@ let base = {
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        base.map.on('baselayerchange overlayadd', function (e) {
+        base.map.on('baselayerchange overlayadd overlayremove', function (e) {
             if (e.layer.group)
                 e.layer.group.load(e.layer.id)
-            url.stateToUrl()
+            url.pushState();
             return true;
         });
     }

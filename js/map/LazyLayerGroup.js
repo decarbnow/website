@@ -28,12 +28,7 @@ class LazyLayerGroup {
     }
 
     getActiveLayers() {
-        let a = [];
-        Object.keys(this.list).forEach((k) => {
-            if (base.map.hasLayer(this.list[k].layer))
-                a.push(k);
-        });
-        return a;
+        return Object.keys(this.list).filter(e => (base.map.hasLayer(this.list[e].layer)))
     }
 
     activateLayer(id) {

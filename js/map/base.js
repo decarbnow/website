@@ -88,10 +88,9 @@ let base = {
     },
 
     activateLayer: function(id) {
-        Object.keys(base.layers).forEach((k) => {
-            let t = base.layers[k]
-            if (Object.keys(t.layers).includes(id))
-                base.map.addLayer(t.layers[id])
+        Object.values(base.layers).forEach(ls => {
+            if (id in ls.layers)
+                base.map.addLayer(ls.layers[id])
         });
     },
 
@@ -99,17 +98,21 @@ let base = {
         base.map.addLayer(markers.clusters);
         markers.init()
 
-        base.layers['tiles'] = tileLayers.init()
-        base.layers['points'] = pointLayers.init()
-        base.layers['pollutions'] = pollutionLayers.init()
+        let layers = {
+            tiles: tileLayers.init(),
+            points: pointLayers.init(),
+            pollutions: pollutionLayers.init(),
+        }
 
-        L.control.layers(base.layers['tiles'].overlays, null, {
+        L.control.layers(layers.tiles.getNameObject(), null, {
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(base.layers['pollutions'].overlays, base.layers['points'].overlays, {
+        L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
             collapsed: false
         }).addTo(base.map);
+
+        base.layers = layers;
     },
 
     addEventHandlers: function() {

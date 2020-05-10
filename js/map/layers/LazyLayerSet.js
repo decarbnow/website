@@ -1,4 +1,4 @@
-import base from './base.js'
+import base from '../base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
 
@@ -6,7 +6,7 @@ import 'leaflet-spin';
 L.LazyLayerGroup = L.LayerGroup.extend({
     initialize: function(id, options) {
         this.id = id;
-        
+
         L.LayerGroup.prototype.initialize.call(this);
         L.setOptions(this, options);
 
@@ -30,15 +30,15 @@ L.LazyLayerGroup = L.LayerGroup.extend({
 });
 
 class LazyLayerSet {
-    constructor(id, list, defaultAttr = {}) {
+    constructor(id, options) {
         let self = this;
 
         this.id = id;
-        this.defaultAttr = defaultAttr;
+        this.defaultAttr = options.style;
 
         this.layers = {};
-        Object.keys(list).forEach(n => {
-            let o = list[n];
+        Object.keys(options.list).forEach(n => {
+            let o = options.list[n];
             o.parent = self;
             o.attr = o.attr || {};
 

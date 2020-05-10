@@ -1,5 +1,3 @@
-import LazyLayerGroup from './LazyLayerGroup.js';
-
 let layersList = {
     'e-prtr': {
         file: "e-prtr.geojson",
@@ -44,8 +42,6 @@ let layersList = {
 };
 
 export default {
-    init: function() {
-        let llg = new LazyLayerGroup('points', layersList);
-        return llg;
-    }
+    style: {},
+    list: layersList
 }

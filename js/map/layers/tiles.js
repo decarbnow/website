@@ -1,5 +1,3 @@
-import LazyLayerGroup from './LazyLayerGroup.js';
-
 let layersList = {
     satellite: {
         layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
@@ -37,10 +35,7 @@ let layersList = {
     }
 };
 
-
 export default {
-    init: function() {
-        let llg = new LazyLayerGroup('tiles', layersList);
-        return llg;
-    }
-};
+    style: {},
+    list: layersList
+}

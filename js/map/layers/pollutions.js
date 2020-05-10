@@ -1,15 +1,3 @@
-import LazyLayerGroup from './LazyLayerGroup.js';
-
-let style = {
-    fillColor: "#FF0000",
-    stroke: true,
-    weight: 0.5,
-    opacity: 0.7,
-    color: "#F1EFE8",
-    interactive: false,
-    fillOpacity: 0.05
-};
-
 let layersList = {};
 
 let omiYears = [2007, 2011, 2015, 2019];
@@ -33,9 +21,14 @@ layersList['empty'] = {
 };
 
 export default {
-    init: function() {
-        return new LazyLayerGroup('pollution', layersList, {
-            style: style
-        });
-    }
-};
+    style: {
+        fillColor: "#FF0000",
+        stroke: true,
+        weight: 0.5,
+        opacity: 0.7,
+        color: "#F1EFE8",
+        interactive: false,
+        fillOpacity: 0.05
+    },
+    list: layersList
+}

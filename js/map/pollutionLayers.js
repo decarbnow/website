@@ -34,9 +34,8 @@ layersList['empty'] = {
 
 export default {
     init: function() {
-        let llg = new LazyLayerGroup('pollution', layersList, {
+        return new LazyLayerGroup('pollution', layersList, {
             style: style
         });
-        return llg;
     }
 };

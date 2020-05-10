@@ -60,6 +60,7 @@ let base = {
 
         base.addLayers()
         base.addEventHandlers()
+
         base.setState(url.getState())
     },
 
@@ -79,17 +80,18 @@ let base = {
     setState: function(state) {
         state = {...initialState, ...state}
         base.map.setView(state.center, state.zoom);
-        base.activateLayer('empty');
         state.layers.forEach((n) => {
             base.activateLayer(n);
         });
+        if (base.layers.pollutions.getActiveLayers().length == 0)
+            base.map.addLayer(base.layers.pollutions.layers['empty'])
     },
 
     activateLayer: function(id) {
         Object.keys(base.layers).forEach((k) => {
             let t = base.layers[k]
-            if (Object.keys(t.list).includes(id))
-                t.activateLayer(id)
+            if (Object.keys(t.layers).includes(id))
+                base.map.addLayer(t.layers[id])
         });
     },
 
@@ -130,9 +132,8 @@ let base = {
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        base.map.on('baselayerchange overlayadd overlayremove', function (e) {
-            if (e.layer.group)
-                e.layer.group.load(e.layer.id)
+        base.map.on('baselayerchange overlayadd', function (e) {
+            //e.layer.addTo(base.map)
             url.pushState();
             return true;
         });

@@ -26,10 +26,10 @@ let layersList = {
         name: "Big coal power stations <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#FF0000'
+                color: '#DEB500'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.5});
+                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.8});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +

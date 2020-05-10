@@ -6,8 +6,7 @@ import 'leaflet-spin';
 L.LazyLayerGroup = L.LayerGroup.extend({
     initialize: function(id, options) {
         this.id = id;
-        options.pane = `${id}Pane`;
-
+        
         L.LayerGroup.prototype.initialize.call(this);
         L.setOptions(this, options);
 
@@ -37,25 +36,29 @@ class LazyLayerSet {
         this.id = id;
         this.defaultAttr = defaultAttr;
 
-        this.overlays = {};
         this.layers = {};
         Object.keys(list).forEach(n => {
             let o = list[n];
+            o.parent = self;
+            o.attr = o.attr || {};
+
             let layer = o.layer;
-            if (!layer) {
-                // add info
-                o.parent = self;
-                o.attr = o.attr || {};
-                // create dummy layer
+
+            if (!layer)
                 layer = new L.LazyLayerGroup(n, o);
-            }
+            else
+                L.setOptions(layer, o);
+
             self.layers[n] = layer;
-            self.overlays[o.name] = layer;
         })
     }
 
     getActiveLayers() {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
+    }
+
+    getNameObject() {
+        return Object.assign({}, ...Object.values(this.layers).map(l => ({[l.options.name]: l})))
     }
 }
 

@@ -10,6 +10,40 @@
 </head>
 
 <body id="page-top">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://platform.twitter.com/widgets.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+  window.twttr = (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0], t = window.twttr || {};
+      if (d.getElementById(id)) return t;
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "https://platform.twitter.com/widgets.js";
+      fjs.parentNode.insertBefore(js, fjs);
+
+      t._e = [];
+      console.debug("initialising ready function");
+      t.ready = function(f) {
+          console.debug("inside loading");
+          t._e.push(f);
+      };
+
+      return t;
+  }(document, "script", "twitter-wjs"));
+
+  $(document).ready(function(){
+    $.get("https://decarbnow.space/api/poi?size=100", function(data) {
+      data._embedded.poi.reverse().forEach(function(item) {
+        let text = '';
+        text += '<div id="tweet-' + item.tweetId + '"></div>';
+        $('.bbubble_' + item.type).append(text);
+        window.twttr.widgets.createTweet(item.tweetId, document.getElementById('tweet-' + item.tweetId)).then(() => {
+          });
+        });
+      });
+    });
+  </script>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
         <div class="container">
@@ -145,10 +179,7 @@
                             <h4 class="m-0">#pollution</h4>
                             <hr class="my-4">
                             <div class="small text-black-50">
-
-                                <blockquote class="twitter-tweet"><p lang="de" dir="ltr"><a href="https://twitter.com/hashtag/decarbnow?src=hash&amp;ref_src=twsrc%5Etfw">#decarbnow</a> <a href="https://twitter.com/hashtag/pollution?src=hash&amp;ref_src=twsrc%5Etfw">#pollution</a> <a href="https://twitter.com/hashtag/u1hdpetgg?src=hash&amp;ref_src=twsrc%5Etfw">#u1hdpetgg</a> Like Kraftwerk Niederaußem. Closing coal power plants would reduce Europe’s CO2 pollution extensively.</p>&mdash; decarbnow (@decarbnow) <a href="https://twitter.com/decarbnow/status/1219363171070246912?ref_src=twsrc%5Etfw">January 20, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-                                <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/decarbnow?src=hash&amp;ref_src=twsrc%5Etfw">#decarbnow</a> <a href="https://twitter.com/hashtag/pollution?src=hash&amp;ref_src=twsrc%5Etfw">#pollution</a> @u349g6gf4 Turow power plant at the border of 3 countries is polluting parts of all of them AND is contributing to climate change globally 🤬 <a href="https://t.co/yeXYYiZjog">https://t.co/yeXYYiZjog</a></p>&mdash; decarbnow (@decarbnow) <a href="https://twitter.com/decarbnow/status/1212047971484946435?ref_src=twsrc%5Etfw">December 31, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+                                <div class="bbubble_pollution"></div>
                             </div>
                         </div>
                     </div>
@@ -161,7 +192,7 @@
                             <h4 class="m-0">#climateaction</h4>
                             <hr class="my-4">
                             <div class="small text-black-50">
-                                <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Drone pictures of the Critical Mass at Berlin Tempelhof <a href="https://t.co/cs9YOggY11">https://t.co/cs9YOggY11</a></p>&mdash; KEANO (@keanospace) <a href="https://twitter.com/keanospace/status/1186694543212724224?ref_src=twsrc%5Etfw">October 22, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                                <div class="bbubble_climateaction"></div>
                             </div>
                         </div>
                     </div>
@@ -174,7 +205,7 @@
                             <h4 class="m-0">#transition</h4>
                             <hr class="my-4">
                             <div class="small text-black-50">
-                                <blockquote class="twitter-tweet"><p lang="en" dir="ltr"><a href="https://twitter.com/hashtag/decarbnow?src=hash&amp;ref_src=twsrc%5Etfw">#decarbnow</a> <a href="https://twitter.com/hashtag/transition?src=hash&amp;ref_src=twsrc%5Etfw">#transition</a> @u2e9gffn9 decarbnow developed <a href="https://twitter.com/FactoryHubVIE?ref_src=twsrc%5Etfw">@FactoryHubVIE</a> is finalist of the NASA <a href="https://twitter.com/hashtag/SpaceApps?src=hash&amp;ref_src=twsrc%5Etfw">#SpaceApps</a> challenge. <a href="https://twitter.com/SpaceAppsVienna?ref_src=twsrc%5Etfw">@SpaceAppsVienna</a> <a href="https://t.co/dylW9lzbC5">https://t.co/dylW9lzbC5</a></p>&mdash; KEANO (@keanospace) <a href="https://twitter.com/keanospace/status/1208042360027922432?ref_src=twsrc%5Etfw">December 20, 2019</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                                <div class="bbubble_transition"></div>
                             </div>
                         </div>
                     </div>

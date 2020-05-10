@@ -4,11 +4,10 @@ import 'leaflet-sidebar';
 import twitter from './twitter.js';
 import { encode } from '@alexpavlov/geohash-js';
 
+import layers from './layers/sets.js'
 import markers from './marker.js';
 import url from './url.js';
-import tileLayers from './tileLayers.js';
-import pollutionLayers from './pollutionLayers.js';
-import pointLayers from './pointLayers.js';
+
 
 
 let initialState = {
@@ -98,11 +97,7 @@ let base = {
         base.map.addLayer(markers.clusters);
         markers.init()
 
-        let layers = {
-            tiles: tileLayers.init(),
-            points: pointLayers.init(),
-            pollutions: pollutionLayers.init(),
-        }
+        base.layers = layers
 
         L.control.layers(layers.tiles.getNameObject(), null, {
             collapsed: false
@@ -111,8 +106,6 @@ let base = {
         L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
             collapsed: false
         }).addTo(base.map);
-
-        base.layers = layers;
     },
 
     addEventHandlers: function() {

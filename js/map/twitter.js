@@ -1,17 +1,19 @@
 const DEBOUNCE_TIMEOUT = 200;
 
-let text = '<h3>Tweet about</h3>'+
-    '<select id="icontype">'+
-    '<option value="pollution" data-image="/map/img/pollution.png">Pollution</option>'+
-    '<option value="climateaction"  data-image="/map/img/action.png">Climate Action</option>'+
-    '<option value="transition" data-image="/map/img/transition.png">Transition</option>'+
-    '</select>'+
-    '<form>'+
-    '<textarea id="tweetText" cols="22" rows="5"></textarea>' +
-    '</form>'+
-    '<div id="tweetBtn">'+
-    '<a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>'+
-    '</div>';
+let text = `
+<h3>Tweet about</h3>
+<select id="icontype">
+    <option value="pollution" data-image="/map/img/pollution.png">Pollution</option>
+    <option value="climateaction"  data-image="/map/img/action.png">Climate Action</option>
+    <option value="transition" data-image="/map/img/transition.png">Transition</option>
+</select>
+<form>
+    <textarea id="tweetText" cols="22" rows="5"></textarea>
+</form>
+<div id="tweetBtn">
+    <a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>
+</div>
+`;
 
 let twitter = {
     showTweetBox: function(latlng, hash) {

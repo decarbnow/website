@@ -1,6 +1,8 @@
 import { map } from 'leaflet';
 import 'leaflet-sidebar';
+import 'leaflet-control-geocoder';
 
+import './geoip.js';
 import twitter from './twitter.js';
 import { encode } from '@alexpavlov/geohash-js';
 
@@ -11,10 +13,10 @@ import url from './url.js';
 
 
 let initialState = {
-    zoom: 5,
+    zoom: 3,
     center: {
-        lat: 48.2082,
-        lng: 16.3738
+        lat: 22, // 48.2082,
+        lng: 0, // 16.3738,
     },
     layers: [
         'light',
@@ -37,6 +39,8 @@ let base = {
     map: null,
     sidebar: null,
     layers: {},
+    pushingState: false,
+    afterFirstMove: null,
 
     init: function() {
         // init leaflet map
@@ -60,7 +64,10 @@ let base = {
         base.addLayers()
         base.addEventHandlers()
 
+        base.map.setView(initialState.center, initialState.zoom);
+
         base.setState(url.getState())
+        base.pushingState = true;
     },
 
     getState: function() {
@@ -77,17 +84,33 @@ let base = {
     },
 
     setState: function(state) {
-        state = {...initialState, ...state}
-        base.map.setView(state.center, state.zoom);
-        state.layers.forEach((n) => {
-            base.activateLayer(n);
+        let s = {...initialState, ...state};
+
+        s.layers.forEach((n) => {
+            base.activateLayer(n, ['tiles']);
         });
-        if (base.layers.pollutions.getActiveLayers().length == 0)
-            base.map.addLayer(base.layers.pollutions.layers['empty'])
+
+        let p = state.center || L.GeoIP.getPosition();
+        let z = state.zoom || 10;
+
+        base.map.flyTo(p, z);
+
+
+        base.afterFirstMove = function() {
+            s.layers.forEach((n) => {
+                base.activateLayer(n);
+            });
+
+            if (base.layers.pollutions.getActiveLayers().length == 0)
+                base.map.addLayer(base.layers.pollutions.layers['empty'])
+
+            base.afterFirstMove = null;
+        }
     },
 
-    activateLayer: function(id) {
-        Object.values(base.layers).forEach(ls => {
+    activateLayer: function(id, layerSets = Object.keys(base.layers)) {
+        layerSets.forEach(k => {
+            let ls = base.layers[k];
             if (id in ls.layers)
                 base.map.addLayer(ls.layers[id])
         });
@@ -110,7 +133,13 @@ let base = {
 
     addEventHandlers: function() {
         base.map.on("moveend", function () {
-            url.pushState()
+
+            if (base.pushingState) {
+                if (base.afterFirstMove)
+                    base.afterFirstMove();
+                url.pushState()
+            }
+
         });
 
         base.map.on('contextmenu', function(e) {
@@ -128,9 +157,9 @@ let base = {
             twitter.showTweetBox(e.latlng, hash)
         });
 
-        base.map.on('baselayerchange overlayadd', function (e) {
-            //e.layer.addTo(base.map)
-            url.pushState();
+        base.map.on('baselayerchange overlayadd overlayremove', function (e) {
+            if (base.pushingState)
+                url.pushState();
             return true;
         });
     }

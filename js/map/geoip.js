@@ -1,5 +1,3 @@
-import 'leaflet-control-geocoder';
-
 L.GeoIP = L.extend({
     getPosition: function (ip) {
         var url = "https://freegeoip.app/json/";
@@ -23,16 +21,4 @@ L.GeoIP = L.extend({
         xhr.send();
         return result;
     },
-
-    centerMapOnPosition: function (map, zoom, ip) {
-        var position = L.GeoIP.getPosition(ip);
-        map.setView(position, zoom);
-    }
 });
-
-
-if (window.location.pathname.split("/").length > 3) {
-    decarbnowMap.setView([15, 0], 2);
-} else {
-    L.GeoIP.centerMapOnPosition(decarbnowMap, 5);
-}

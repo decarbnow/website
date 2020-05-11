@@ -10,8 +10,6 @@ import layers from './layers/sets.js'
 import markers from './marker.js';
 import url from './url.js';
 
-
-
 let initialState = {
     zoom: 3,
     center: {
@@ -57,14 +55,12 @@ let base = {
         });
         base.map.addControl(base.sidebar);
 
-        // add controls
-        L.control.markers({ position: 'topleft' }).addTo(base.map);
-        L.control.zoom({ position: 'topleft' }).addTo(base.map);
-
-        base.addLayers()
+        //base.addLayers()
         base.addEventHandlers()
 
         base.map.setView(initialState.center, initialState.zoom);
+
+        base.layers = layers
 
         base.setState(url.getState())
         base.pushingState = true;
@@ -104,6 +100,8 @@ let base = {
             if (base.layers.pollutions.getActiveLayers().length == 0)
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
+            base.addLayers();
+
             base.afterFirstMove = null;
         }
     },
@@ -117,10 +115,12 @@ let base = {
     },
 
     addLayers: function() {
+        // add controls
+        L.control.markers({ position: 'topleft' }).addTo(base.map);
+        L.control.zoom({ position: 'topleft' }).addTo(base.map);
+
         base.map.addLayer(markers.clusters);
         markers.init()
-
-        base.layers = layers
 
         L.control.layers(layers.tiles.getNameObject(), null, {
             collapsed: false

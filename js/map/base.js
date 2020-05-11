@@ -86,7 +86,8 @@ let base = {
             base.activateLayer(n, ['tiles']);
         });
 
-        let p = state.center || L.GeoIP.getPosition();
+        //let p = state.center || L.GeoIP.getPosition();
+        let p = state.center || s.center;
         let z = state.zoom || 10;
 
         base.map.flyTo(p, z);
@@ -118,6 +119,11 @@ let base = {
         // add controls
         L.control.markers({ position: 'topleft' }).addTo(base.map);
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
+				L.Control.geocoder({position: "topleft"}).addTo(base.map);
+
+        var geocoder = L.Control.geocoder({
+          defaultMarkGeocode: false
+        })
 
         base.map.addLayer(markers.clusters);
         markers.init()

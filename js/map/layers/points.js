@@ -1,7 +1,7 @@
 let layersList = {
     'e-prtr': {
         file: "e-prtr.geojson",
-        name: "PRTR <i class='fa fa-info-circle'></i>",
+        name: "PRTR biggest <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
                 color: '#0000FF'
@@ -11,7 +11,27 @@ let layersList = {
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
-                                '<tr><td>CO2 Equivalents:</td><td>' + Math.round(feature.properties.TotalQuantityCO2/10000000) + ' Mio. <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
+                                '<tr><td>CO2 Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)) + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
+                                '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
+                                '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
+                                '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
+                                '</table>');
+            }
+        }
+    },
+    'e-prtr2': {
+        file: "e-prtr2.geojson",
+        name: "PRTR smallest <i class='fa fa-info-circle'></i>",
+        attr: {
+            style: {
+                color: '#0000FF'
+            },
+            pointToLayer: function(feature, latlng) {
+                return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.TotalQuantityCO2/100000000), stroke: false, fillOpacity: 0.5});
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
+                                '<tr><td>CO2 Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)) + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
                                 '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
                                 '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
                                 '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+

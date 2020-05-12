@@ -1,13 +1,13 @@
 import { map } from 'leaflet';
 import 'leaflet-sidebar';
+//import 'leaflet-contextmenu';
 import 'leaflet-control-geocoder';
 
 import './geoip.js';
 import twitter from './twitter.js';
-import { encode } from '@alexpavlov/geohash-js';
 
 import layers from './layers/sets.js'
-import markers from './marker.js';
+import markers from './select.js';
 import url from './url.js';
 
 let initialState = {
@@ -38,7 +38,7 @@ let base = {
     sidebar: null,
     layers: {},
     pushingState: false,
-    afterFirstMove: null,
+    afterNextMove: null,
 
     init: function() {
         // init leaflet map
@@ -46,6 +46,35 @@ let base = {
             zoomControl: false,
             tap: true,
             maxZoom: 19,
+            // contextmenu: true,
+            // contextmenuWidth: 140,
+            // contextmenuItems: [{
+            //     text: 'Tweet ...',
+            //     callback: function(e) {
+            //         base.sidebar.hide();
+            //         base.map.flyTo(e.latlng);
+            //         twitter.showTweetBox(e.latlng)
+            //     }
+            // }, {
+            //     text: 'Copy View Link',
+            //     callback: function(e) {
+            //         base.map.flyTo(e.latlng);
+            //         base.afterNextMove = function() {
+            //             url.pushState();
+            //
+            //             var dummy = document.createElement('input'),
+            //                 text = window.location.href;
+            //
+            //             document.body.appendChild(dummy);
+            //             dummy.value = text;
+            //             dummy.select();
+            //             document.execCommand('copy');
+            //             document.body.removeChild(dummy);
+            //
+            //             base.afterNextMove = null;
+            //         }
+            //     }
+            // }]
         });
 
         // init leaflet sidebar
@@ -86,14 +115,14 @@ let base = {
             base.activateLayer(n, ['tiles']);
         });
 
-        //let p = state.center || L.GeoIP.getPosition();
-        let p = state.center || s.center;
+        let p = state.center || L.GeoIP.getPosition();
+        // let p = state.center || s.center;
         let z = state.zoom || 10;
 
         base.map.flyTo(p, z);
 
 
-        base.afterFirstMove = function() {
+        base.afterNextMove = function() {
             s.layers.forEach((n) => {
                 base.activateLayer(n);
             });
@@ -101,9 +130,10 @@ let base = {
             if (base.layers.pollutions.getActiveLayers().length == 0)
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
+            base.addControls();
             base.addLayers();
 
-            base.afterFirstMove = null;
+            base.afterNextMove = null;
         }
     },
 
@@ -115,18 +145,14 @@ let base = {
         });
     },
 
-    addLayers: function() {
-        // add controls
-        L.control.markers({ position: 'topleft' }).addTo(base.map);
+    addControls: function() {
+        // L.control.markers({ position: 'topleft' }).addTo(base.map);
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
-				L.Control.geocoder({position: "topleft"}).addTo(base.map);
 
-        var geocoder = L.Control.geocoder({
-          defaultMarkGeocode: false
-        })
-
-        base.map.addLayer(markers.clusters);
-        markers.init()
+        L.Control.geocoder({
+            position: 'topleft',
+            // defaultMarkGeocode: false,
+        }).addTo(base.map);
 
         L.control.layers(layers.tiles.getNameObject(), null, {
             collapsed: false
@@ -137,30 +163,23 @@ let base = {
         }).addTo(base.map);
     },
 
+    addLayers: function() {
+        base.map.addLayer(markers.clusters);
+        markers.init()
+    },
+
     addEventHandlers: function() {
         base.map.on("moveend", function () {
-
             if (base.pushingState) {
-                if (base.afterFirstMove)
-                    base.afterFirstMove();
+                if (base.afterNextMove)
+                    base.afterNextMove();
                 url.pushState()
             }
-
         });
 
-        base.map.on('contextmenu', function(e) {
-            //console.debug(e);
-            base.sidebar.hide();
-            let hash = encode(e.latlng.lat, e.latlng.lng);
-
-            if (typeof (history.pushState) != "undefined") {
-                var obj = { Title: hash, Url: '/map/' + hash + '/' + 'pollution'};
-                history.pushState(obj, obj.Title, obj.Url);
-            } else {
-                alert("Browser does not support HTML5.");
-            }
-
-            twitter.showTweetBox(e.latlng, hash)
+        base.map.on("contextmenu", function (e) {
+            base.map.flyTo(e.latlng);
+            twitter.showTweetSidebar(e.latlng)
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

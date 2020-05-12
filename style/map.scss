@@ -3,9 +3,11 @@
 @import '../node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css';
 @import '../node_modules/leaflet-sidebar/src/L.Control.Sidebar.css';
 @import '../node_modules/leaflet-control-geocoder/dist/Control.Geocoder.css';
-@import '../node_modules/leaflet.marker.highlight/dist/leaflet.marker.highlight.css';
+// @import '../node_modules/leaflet.marker.highlight/dist/leaflet.marker.highlight.css';
 @import '../node_modules/@fortawesome/fontawesome-free/css/all.css';
+//@import '../node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css';
 @import 'nerdfonts/css/bootstrap-grid.min.css';
+@import '../node_modules/reset-css/sass/reset';
 
 
 html {
@@ -34,6 +36,66 @@ img.emoji {
     font-size: 2em;
     min-width: 300px;
 }
+
+
+
+h3 {
+    font-size: 1.5em;
+    margin: 20px 0;
+}
+
+
+
+
+#tweetSidebar {
+    position: relative;
+    .select {
+        position: relative;
+        border: 20px black;
+        font-size: 1em;
+        &::after {
+            content: '\25BC';
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 0.2em 1em;
+            cursor: pointer;
+            pointer-events: none;
+            -webkit-transition: .25s all ease;
+            -o-transition: .25s all ease;
+            transition: .25s all ease;
+            color: #888;
+        }
+        /* Transition */
+        &:hover::after {
+            color: #000;
+        }
+
+        select {
+            width: 100%;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -ms-appearance: none;
+            appearance: none;
+            outline: 0;
+            box-shadow: none;
+            border: 0 !important;
+            background: white;
+            background-image: none;
+            flex: 1;
+            padding: .2em .5em;
+            cursor: pointer;
+        }
+    }
+    textarea {
+        width: 100%;
+        margin: 20px 0;
+    }
+    #tweetBtn {
+        float: right;
+    }
+}
+
 // .leaflet-control-layers-toggle {
 //     background-image: url(img/nasa-logo_small.png);
 //     width: 36px;
@@ -56,11 +118,8 @@ img.emoji {
     background: transparent;
 
 }
-#tweetBtn {
-    min-height: 24px;
-    display: inline-block;
-    overflow: hidden;
-}
+
+
 .nextTweet {
     display: none;
 }

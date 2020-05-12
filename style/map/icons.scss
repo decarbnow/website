@@ -1,0 +1,95 @@
+
+.marker-pin {
+    width: 24px;
+    height: 24px;
+    border-radius: 50% 50% 50% 0;
+    background: #fff !important;
+    position: absolute;
+    transform: rotate(-45deg);
+    left: 62%;
+    top: 50%;
+    margin: -15px 0 0 -15px;
+    z-index: -1;
+    &::after {
+        content: '';
+        width: 20px;
+        height: 20px;
+        margin: 2px 0 0 2px;
+        background: rgb(251, 99, 107);
+        position: absolute;
+        border-radius: 50%;
+    }
+    &.action::after {
+        background: rgba(255, 233, 46, 1) !important;
+    }
+    &.transition::after {
+        background: rgb(57, 219, 113) !important;
+    }
+    &.pollution::after {
+        background: rgba(226, 57, 66, 1) !important;
+    }
+}
+
+
+
+/* o align icon*/
+.custom-div-icon i {
+   position: absolute;
+   font-size: 14px;
+   left: 0;
+   right: 0;
+   margin: 6px auto !important;
+   text-align: center;
+}
+
+.custom-div-icon i.action {
+    color: rgba(234, 36, 97, 1) !important;
+    font-size: 11px !important;
+    margin: 12px auto;
+    padding-top: 2px;
+}
+
+.custom-div-icon i.transition {
+    color: rgb(255, 240, 20) !important;
+    margin: 12px auto;
+    padding-top: 1px;
+}
+
+.custom-div-icon i.pollution {
+    color: rgb(213, 213, 213) !important;
+    margin: 12px auto;
+    font-size: 17px !important;
+    padding-top: 0px;
+}
+
+
+.bubble {
+    position: relative;
+    width: 32px;
+    height: 30px;
+    -webkit-border-radius: 32px;
+    -moz-border-radius: 32px;
+    border-color: white;
+    border-width: 3px;
+    border-style: solid;
+    text-align: center;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 32px;
+
+    &.pollution{
+        background: rgba(226, 57, 66, 1) !important;
+        color: rgb(213, 213, 213) !important;
+        font-size: 26px !important;
+    }
+    &.action {
+        background: rgba(255, 233, 46, 1) !important;
+        color: rgba(234, 36, 97, 1) !important;
+        font-size: 16px !important;
+    }
+    &.transition {
+        background: rgb(57, 219, 113) !important;
+        color: rgb(255, 240, 20) !important;
+        font-size: 20px;
+    }
+}

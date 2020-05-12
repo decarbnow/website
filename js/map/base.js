@@ -4,7 +4,9 @@ import 'leaflet-sidebar';
 import 'leaflet-control-geocoder';
 
 import './geoip.js';
+import './marker/control.js';
 import twitter from './twitter.js';
+
 
 import layers from './layers/sets.js'
 import markers from './select.js';
@@ -28,14 +30,14 @@ sidebar.on('shown', function () {
         history: false,
         path: '.nextTweet'
         //function() {
-        //    return "https://decarbnow.space/api/render/1169366632000438272";layers
+        //    return "https://decarbnow.space/api/render/1169366632000438272";
         //} //'.nextTweet'
     });
 });*/
 
 let base = {
     map: null,
-    sidebar: null,
+    sidebars: {},
     layers: {},
     pushingState: false,
     afterNextMove: null,
@@ -77,13 +79,6 @@ let base = {
             // }]
         });
 
-        // init leaflet sidebar
-        base.sidebar = L.control.sidebar('sidebar', {
-            closeButton: true,
-            position: 'left'
-        });
-        base.map.addControl(base.sidebar);
-
         //base.addLayers()
         base.addEventHandlers()
 
@@ -93,6 +88,16 @@ let base = {
 
         base.setState(url.getState())
         base.pushingState = true;
+    },
+
+    showSidebar: function(id) {
+        Object.keys(base.sidebars).forEach(k => {
+            if (k != id)
+                base.sidebars[k].hide();
+        })
+        let s = base.sidebars[id];
+        s.show();
+        return s;
     },
 
     getState: function() {
@@ -120,8 +125,6 @@ let base = {
         let z = state.zoom || 10;
 
         base.map.flyTo(p, z);
-
-
         base.afterNextMove = function() {
             s.layers.forEach((n) => {
                 base.activateLayer(n);
@@ -146,7 +149,7 @@ let base = {
     },
 
     addControls: function() {
-        // L.control.markers({ position: 'topleft' }).addTo(base.map);
+        L.control.markers({ position: 'topleft' }).addTo(base.map);
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
 
         L.Control.geocoder({
@@ -161,6 +164,26 @@ let base = {
         L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
             collapsed: false
         }).addTo(base.map);
+
+        // init leaflet sidebars
+        base.sidebars = {
+            'show-tweet': L.control.sidebar('sidebar', {
+                closeButton: true,
+                position: 'left'
+            }),
+            'new-tweet': L.control.sidebar('new-tweet-sidebar', {
+                closeButton: true,
+                position: 'left'
+            })
+        }
+
+        base.sidebars['new-tweet'].on('hide', function () {
+            twitter.marker.remove()
+        });
+
+        Object.values(base.sidebars).forEach(s => {
+            base.map.addControl(s);
+        });
     },
 
     addLayers: function() {

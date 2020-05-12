@@ -20,11 +20,11 @@ html, body, #map {
     margin: 0;
 }
 
-select.icon-menu option {
-    background-repeat:no-repeat;
-    background-position:bottom left;
-    padding-left:30px;
-}
+// select.icon-menu option {
+//     background-repeat:no-repeat;
+//     background-position:bottom left;
+//     padding-left:30px;
+// }
 
 img.emoji {
     height: 1em;
@@ -38,189 +38,13 @@ img.emoji {
 }
 
 
-
-h3 {
-    font-size: 1.5em;
-    margin: 20px 0;
-}
-
-
-
-
-#tweetSidebar {
-    position: relative;
-    .select {
-        position: relative;
-        border: 20px black;
-        font-size: 1em;
-        &::after {
-            content: '\25BC';
-            position: absolute;
-            top: 0;
-            right: 0;
-            padding: 0.2em 1em;
-            cursor: pointer;
-            pointer-events: none;
-            -webkit-transition: .25s all ease;
-            -o-transition: .25s all ease;
-            transition: .25s all ease;
-            color: #888;
-        }
-        /* Transition */
-        &:hover::after {
-            color: #000;
-        }
-
-        select {
-            width: 100%;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            -ms-appearance: none;
-            appearance: none;
-            outline: 0;
-            box-shadow: none;
-            border: 0 !important;
-            background: white;
-            background-image: none;
-            flex: 1;
-            padding: .2em .5em;
-            cursor: pointer;
-        }
-    }
-    textarea {
-        width: 100%;
-        margin: 20px 0;
-    }
-    #tweetBtn {
-        float: right;
-    }
-}
-
-// .leaflet-control-layers-toggle {
-//     background-image: url(img/nasa-logo_small.png);
-//     width: 36px;
-//     height: 36px;
-// }
-// .layers-sat {
-//     background-image: url(./img/pollution.png);
-//     width: 36px;
-//     height: 36px;
-// }
-.leaflet-sidebar .close {
-    z-index: 800;
-    color: rgba(0, 0, 0, 0.4);
-    line-height: 0.9em;
-    width: 25px;
-    height: 25px;
-    right: 5px;
-    top: 15px;
-    font-size: 20px;
-    background: transparent;
-
-}
-
-
 .nextTweet {
     display: none;
 }
 
+@import 'map/sidebar.scss';
 
-.marker-pin {
-    width: 24px;
-    height: 24px;
-    border-radius: 50% 50% 50% 0;
-    background: #fff !important;
-    position: absolute;
-    transform: rotate(-45deg);
-    left: 62%;
-    top: 50%;
-    margin: -15px 0 0 -15px;
-    z-index: -1;
-    &::after {
-        content: '';
-        width: 20px;
-        height: 20px;
-        margin: 2px 0 0 2px;
-        background: rgb(251, 99, 107);
-        position: absolute;
-        border-radius: 50%;
-    }
-    &.action::after {
-        background: rgba(255, 233, 46, 1) !important;
-    }
-    &.transition::after {
-        background: rgb(57, 219, 113) !important;
-    }
-    &.pollution::after {
-        background: rgba(226, 57, 66, 1) !important;
-    }
-}
-
-
-
-
-
-/* o align icon*/
-.custom-div-icon i {
-   position: absolute;
-   font-size: 14px;
-   left: 0;
-   right: 0;
-   margin: 6px auto !important;
-   text-align: center;
-}
-
-.custom-div-icon i.action {
-    color: rgba(234, 36, 97, 1) !important;
-    font-size: 11px !important;
-    margin: 12px auto;
-    padding-top: 2px;
-}
-
-.custom-div-icon i.transition {
-    color: rgb(255, 240, 20) !important;
-    margin: 12px auto;
-    padding-top: 1px;
-}
-
-.custom-div-icon i.pollution {
-    color: rgb(213, 213, 213) !important;
-    margin: 12px auto;
-    font-size: 17px !important;
-    padding-top: 0px;
-}
-
-
-.bubble {
-    position: relative;
-    width: 32px;
-    height: 30px;
-    -webkit-border-radius: 32px;
-    -moz-border-radius: 32px;
-    border-color: white;
-    border-width: 3px;
-    border-style: solid;
-    text-align: center;
-    display: inline-block;
-    vertical-align: middle;
-    line-height: 32px;
-
-    &.pollution{
-        background: rgba(226, 57, 66, 1) !important;
-        color: rgb(213, 213, 213) !important;
-        font-size: 26px !important;
-    }
-    &.action {
-        background: rgba(255, 233, 46, 1) !important;
-        color: rgba(234, 36, 97, 1) !important;
-        font-size: 16px !important;
-    }
-    &.transition {
-        background: rgb(57, 219, 113) !important;
-        color: rgb(255, 240, 20) !important;
-        font-size: 20px;
-    }
-}
+@import 'map/icons.scss';
 
 
 #feature_infos {
@@ -235,42 +59,40 @@ h3 {
     border:1px solid grey;
     display:none;
 }
-.permanent .glow {
-    z-index: -2;
-    background: -webkit-radial-gradient(rgba(66, 186, 255, 1), rgba(255, 223, 67, 0) 70%)!important;
-    -webkit-animation: highlight1 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
 
-.permanent .flare {
-    z-index: -2;
-    background: rgba(66, 186, 255, 1) !important;
-    -webkit-animation: highlight 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-@-webkit-keyframes highlight1 {
-    0% {
-        width: 0px;
-        height: 0px;
-        opacity: 0;
-    }
-    100% {
-        width: 100px;
-        height: 100px;
-        opacity: 0.4;
-    }
-}
-
-@-webkit-keyframes highlight {
-    0% {
-        width: 0px;
-        height: 0px;
-        opacity: 0;
-    }
-    100% {
-        width: 20px;
-        height: 20px;
-        opacity: 0.6;
-    }
-}
-textarea {
-    resize: none;
-}
+// .permanent .glow {
+//     z-index: -2;
+//     background: -webkit-radial-gradient(rgba(66, 186, 255, 1), rgba(255, 223, 67, 0) 70%)!important;
+//     -webkit-animation: highlight1 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+// }
+//
+// .permanent .flare {
+//     z-index: -2;
+//     background: rgba(66, 186, 255, 1) !important;
+//     -webkit-animation: highlight 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
+// }
+// @-webkit-keyframes highlight1 {
+//     0% {
+//         width: 0px;
+//         height: 0px;
+//         opacity: 0;
+//     }
+//     100% {
+//         width: 100px;
+//         height: 100px;
+//         opacity: 0.4;
+//     }
+// }
+//
+// @-webkit-keyframes highlight {
+//     0% {
+//         width: 0px;
+//         height: 0px;
+//         opacity: 0;
+//     }
+//     100% {
+//         width: 20px;
+//         height: 20px;
+//         opacity: 0.6;
+//     }
+// }

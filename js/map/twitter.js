@@ -1,67 +1,33 @@
-import createMarkerIcon from "./marker.js";
+import { icons } from "./marker/icons.js";
 import { encode } from '@alexpavlov/geohash-js';
 
 const DEBOUNCE_TIMEOUT = 200;
 
-let text = `
-<div id='tweetSidebar'>
-    <h3>Tweet about</h3>
-    <div class="select">
-        <select id="icontype">
-            <option value="pollution">Pollution</option>
-            <option value="climateaction">Climate Action</option>
-            <option value="transition">Transition</option>
-        </select>
-    </div>
-    <form>
-        <textarea id="tweetText" cols="22" rows="5"></textarea>
-    </form>
-    <div id="tweetBtn">
-        <a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>
-    </div>
-</div>
-`;
-
 let twitter = {
-    marker: null,
-    setMarker: function(latlng, type = 'pollution') {
-        if (twitter.marker) {
-            twitter.marker.setLatLng(latlng);
-        } else {
-            twitter.marker = L.marker(latlng, {
-                icon: createMarkerIcon(type)
-            })
-        }
-    },
+    marker: L.marker(null, {icon: icons['pollution']}),
     showTweetSidebar: function(latlng) {
-        // add marker
-        twitter.setMarker(latlng)
+        // update marker
+        twitter.marker.setLatLng(latlng);
         twitter.marker.addTo(base.map);
-
+        
         // open sidebar
-        base.sidebar
-            .setContent(text)
-            .show();
+        base.showSidebar('new-tweet');
 
         //here comes the beauty
         function onTweetSettingsChange(e) {
-            let tweettypeInput = document.getElementById("icontype");
-            let tweettype = tweettypeInput.options[tweettypeInput.selectedIndex].value;
+            let tweettype = $('#new-tweet-sidebar select.icontype').val();
 
-            twitter.marker.setIcon(createMarkerIcon(tweettype))
+            twitter.marker.setIcon(icons[tweettype])
 
-            let tweet = null;
+            let tweet = $('#new-tweet-sidebar textarea').val();
 
-            if($('#tweetText').val().search("#decarbnow") == -1){
-                tweet = '#decarbnow ' + $('#tweetText').val();
-            } else {
-                tweet = $('#tweetText').val()
-            }
+            if (tweet.search("#decarbnow") == -1)
+                tweet = '#decarbnow ' + tweet;
 
             //tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
 
             // Remove existing iframe
-            $('#tweetBtn').html('');
+            $('#new-tweet-sidebar .tweetBtn').html('');
             // Generate new markup
             var tweetBtn = $('<a></a>')
                 .addClass('twitter-share-button')
@@ -69,7 +35,8 @@ let twitter = {
                 .attr('data-url', 'https://decarbnow.space/map/')
                 //.attr('data-url', 'https://decarbnow.space/map/' + hash + '/' + tweettype)
                 .attr('data-text', tweet);
-            $('#tweetBtn').append(tweetBtn);
+            $('#new-tweet-sidebar .tweetBtn').append(tweetBtn);
+
             if(window.twttr.widgets){
                 window.twttr.widgets.load();
             }
@@ -95,9 +62,9 @@ let twitter = {
             }
         }
 
-        $('#icontype').on('change', onTweetSettingsChange);
+        $('#new-tweet-sidebar select.icontype').on('change', onTweetSettingsChange);
 
-        $('#tweetText').on('input', function() {
+        $('#new-tweet-sidebar .tweetBtn').on('input', function() {
             debounce(onTweetSettingsChange)();
         });
 

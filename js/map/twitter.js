@@ -9,7 +9,7 @@ let twitter = {
         // update marker
         twitter.marker.setLatLng(latlng);
         twitter.marker.addTo(base.map);
-        
+
         // open sidebar
         base.showSidebar('new-tweet');
 
@@ -37,10 +37,8 @@ let twitter = {
                 .attr('data-text', tweet);
             $('#new-tweet-sidebar .tweetBtn').append(tweetBtn);
 
-            if(window.twttr.widgets){
+            if(window.twttr.widgets)
                 window.twttr.widgets.load();
-            }
-
 
             // if (typeof (history.pushState) != "undefined") {
             //     var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
@@ -48,7 +46,6 @@ let twitter = {
             // } else {
             //     alert("Browser does not support HTML5.");
             // }
-
         }
 
         function debounce(callback) {

@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 //const path = require('path');
 
@@ -29,6 +30,7 @@ module.exports = {
         }],
     },
     plugins: [
+        new FaviconsWebpackPlugin(),
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin([
             { from: 'data', to: 'data' }

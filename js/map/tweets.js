@@ -60,7 +60,7 @@ function checkMatch(url, item) {
     return false;
 }
 
-let markers = {
+let tweets = {
     currentMarkers: {},
 
     clusters: L.markerClusterGroup({
@@ -72,45 +72,40 @@ let markers = {
     }),
 
     init: function() {
-        markers.reset()
-        markers.refresh()
-        window.setInterval(markers.refresh, 30000);
+        base.layers.points.layers.tweets.addLayer(tweets.clusters);
+        tweets.reset()
+        tweets.refresh()
+        window.setInterval(tweets.refresh, 30000);
     },
 
     reset: function() {
-        markers.currentMarkers = {
-            "pollution": [],
-            "climateaction": [],
-            "transition": []
-        };
+        Object.values(tweets.currentMarkers).forEach(g => {
+            g.forEach(m => {
+                base.map.removeLayer(m);
+            });
+        });
+        tweets.currentMarkers = {};
     },
 
-
     refresh: function() {
-        markers.clusters.clearLayers()
-        if ($('.decarbnowpopup').length > 0) {
-            return;
-        }
-        console.log("refreshing markers from " + API_URL + '/poi');
+        tweets.clusters.clearLayers()
+
+        console.log("refreshing tweets from " + API_URL + '/poi');
 
         $.get(API_URL + "/poi?size=100", function(data) {
-            for (var i in markers.currentMarkers) {
-                for (var mi in markers.currentMarkers[i]) {
-                    base.map.removeLayer(markers.currentMarkers[i][mi]);
-                }
-            }
-
-            markers.reset();
+            tweets.reset();
             data._embedded.poi.forEach(function(item) {
 
                 // create the text, that will be shown, when clicking on the poi
                 let text = '';
                 let twitterIds = [];
+
                 //"POINT (48.1229059305042 16.5587781183422)"
-                let p = item.position;
-                let bp = p.substring(p.indexOf("(")+1,p.indexOf(")")).split(" ");
-                let long = parseFloat(bp[0]);
-                let lat = parseFloat(bp[1]);
+                let temp = item.position.substring(item.position.indexOf("(") + 1, item.position.indexOf(")")).split(" ");
+                let latlng = {
+                    lat: parseFloat(temp[0]),
+                    lng: parseFloat(temp[1])
+                }
 
                 /*if(currentMarkerFilters.indexOf(item.type) === -1) {
                     return;
@@ -146,64 +141,33 @@ let markers = {
                     }
                 }
 
-                let mm = L.marker([long, lat], {icon: icons[item.type]});
-
-                //mm.sidebar.setContent(twemoji.parse(text)).show()
-
-                //decarbnowMap.addLayer(markerClusters);
-                markers.currentMarkers[item.type].push(mm
-                    .addTo(markers.clusters)
+                let mm = L.marker(latlng, {icon: icons[item.type]})
+                    .addTo(tweets.clusters)
                     .on('click', function () {
-                        // if(currentMarker){
-                        //     currentMarker.disablePermanentHighlight();
-                        //     currentMarker = null;
-                        // }
-
-                        if(window.twttr.widgets){
+                        if (window.twttr.widgets){
                             base.showSidebar('show-tweet')
                                 .setContent(twemoji.parse(text));
 
                             for (let idx in twitterIds) {
                                 let twitterId = twitterIds[idx];
-
-                                //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));
-                                window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId)).then(() => {
-                                    //console.debug('created tweet');
-                                    //infScroll.loadNextPage();
-                                });
+                                window.twttr.widgets.createTweet(twitterId, document.getElementById('tweet-' + twitterId))
                             }
                         }
 
-                        // ChangeUrl(item);
-                        //function ChangeUrl(item) {
-                        jumpedToMarker = true;
-                        //console.log(item, mm);
-                        let r = new RegExp("[\(\)]", "g");
-                        let lng = item.position.replace(r, "").split(" ")[1]*1;
-                        let lat = item.position.replace(r, "").split(" ")[2]*1;
-                        let itemGeohash = encode(lng, lat);
-                        if (typeof (history.pushState) != "undefined") {
-                            var obj = { Title: itemGeohash, Url: '/map/' + itemGeohash + '/' + item.type};
-                            history.pushState(obj, obj.Title, obj.Url);
-                        } else {
-                            alert("Browser does not support HTML5.");
-                        }
-                        //}
-
                         centerLeafletMapOnMarker(base.map, mm, 2);
-
-                        // currentMarker = mm;
-                        // currentMarker.enablePermanentHighlight();
-
                     })
-                );
+
+                if (!tweets.currentMarkers[item.type])
+                    tweets.currentMarkers[item.type] = [];
+
+                tweets.currentMarkers[item.type].push(mm);
+
 
                 let zoomLevel = 7;
 
-                if(!isNaN(Number(window.location.pathname.split("/")[4]))){
-                    zoomLevel = Number(window.location.pathname.split("/")[4]);
-                }
-
+                // if(!isNaN(Number(window.location.pathname.split("/")[4]))){
+                //     zoomLevel = Number(window.location.pathname.split("/")[4]);
+                // }
 
                 if (!jumpedToMarker && urlMarker == null && checkMatch(window.location.pathname, item)) {
     //                console.debug("found url marker!", item, mm);
@@ -244,4 +208,4 @@ let markers = {
     }
 }
 
-export default markers
+export default tweets

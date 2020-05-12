@@ -9,7 +9,7 @@ import twitter from './twitter.js';
 
 
 import layers from './layers/sets.js'
-import markers from './select.js';
+import tweets from './tweets.js';
 import url from './url.js';
 
 let initialState = {
@@ -119,6 +119,9 @@ let base = {
         s.layers.forEach((n) => {
             base.activateLayer(n, ['tiles']);
         });
+        // default tile layer
+        if (base.layers.tiles.getActiveLayers().length == 0)
+            base.map.addLayer(base.layers.tiles.layers['light'])
 
         let p = state.center || L.GeoIP.getPosition();
         // let p = state.center || s.center;
@@ -129,12 +132,12 @@ let base = {
             s.layers.forEach((n) => {
                 base.activateLayer(n);
             });
-
+            // default polltion layer
             if (base.layers.pollutions.getActiveLayers().length == 0)
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
             base.addControls();
-            base.addLayers();
+            tweets.init()
 
             base.afterNextMove = null;
         }
@@ -149,7 +152,7 @@ let base = {
     },
 
     addControls: function() {
-        L.control.markers({ position: 'topleft' }).addTo(base.map);
+        // L.control.markers({ position: 'topleft' }).addTo(base.map);
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
 
         L.Control.geocoder({
@@ -157,13 +160,17 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(layers.tiles.getNameObject(), null, {
+        L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
+            position: 'topright',
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
+        L.control.layers(layers.tiles.getNameObject(), null, {
+            position: 'topright',
             collapsed: false
         }).addTo(base.map);
+
+
 
         // init leaflet sidebars
         base.sidebars = {
@@ -184,11 +191,6 @@ let base = {
         Object.values(base.sidebars).forEach(s => {
             base.map.addControl(s);
         });
-    },
-
-    addLayers: function() {
-        base.map.addLayer(markers.clusters);
-        markers.init()
     },
 
     addEventHandlers: function() {

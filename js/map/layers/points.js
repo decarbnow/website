@@ -58,6 +58,9 @@ let layersList = {
                                 '</table>');
             }
         }
+    },
+    'tweets': {
+        name: "Tweets",
     }
 };
 

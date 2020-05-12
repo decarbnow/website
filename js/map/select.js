@@ -3,9 +3,8 @@ import twemoji from 'twemoji';
 import { encode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import base from "./base.js";
-import createMarkerIcon from "./marker.js";
+import { icons } from "./marker/icons.js";
 //import 'leaflet.marker.highlight';
-
 
 const API_URL = 'https://decarbnow.space/api';
 
@@ -15,23 +14,11 @@ function replaceURLWithHTMLLinks(text){
     return text.replace(exp,"<a href='$1'>$1</a>");
 }
 
-
 // let currentMarkerFilters = ["climateaction", "pollution", "transition"];
-
-
-
-
 //let currentMarker = null;
-
 let jumpedToMarker = false;
-
 let urlMarker = null;
-
 const JUMP_TIMEOUT = 2000;
-
-
-
-
 
 function centerLeafletMapOnMarker(map, marker, d_zoom) {
     var sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
@@ -159,7 +146,7 @@ let markers = {
                     }
                 }
 
-                let mm = L.marker([long, lat], {icon: createMarkerIcon(item.type)});
+                let mm = L.marker([long, lat], {icon: icons[item.type]});
 
                 //mm.sidebar.setContent(twemoji.parse(text)).show()
 
@@ -173,8 +160,9 @@ let markers = {
                         // }
 
                         if(window.twttr.widgets){
-                            base.sidebar.show();
-                            base.sidebar.setContent(twemoji.parse(text));
+                            base.showSidebar('show-tweet')
+                                .setContent(twemoji.parse(text));
+
                             for (let idx in twitterIds) {
                                 let twitterId = twitterIds[idx];
 
@@ -233,8 +221,9 @@ let markers = {
                 window.setTimeout(function () {
     //                console.debug("jumping now");
                     if(window.twttr.widgets){
-                        base.sidebar.show();
-                        base.sidebar.setContent(twemoji.parse(urlMarker.text));
+                        base.showSidebar('show-tweet')
+                            .setContent(twemoji.parse(urlMarker.text));
+
                         for (let idx in urlMarker.twitterIds) {
                             let twitterId = urlMarker.twitterIds[idx];
                             //console.debug("rendering " + twitterId, document.getElementById('tweet-' + twitterId));

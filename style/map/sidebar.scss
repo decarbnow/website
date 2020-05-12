@@ -1,0 +1,58 @@
+.leaflet-sidebar {
+    .close {
+        z-index: 800;
+        color: rgba(0, 0, 0, 0.4);
+        line-height: 0.9em;
+        width: 25px;
+        height: 25px;
+        right: 5px;
+        top: 15px;
+        font-size: 20px;
+        background: transparent;
+    }
+
+    h3 {
+        font-size: 1.5em;
+        margin: 20px 0;
+    }
+
+    #new-tweet-sidebar {
+        position: relative;
+        .select {
+            position: relative;
+            border: 20px black;
+            font-size: 1em;
+            // &::after {
+            //     content: '\25BC';
+            //     position: absolute;
+            //     top: 0;
+            //     right: 0;
+            //     padding: 0.2em 1em;
+            //     cursor: pointer;
+            //     pointer-events: none;
+            //     -webkit-transition: .25s all ease;
+            //     -o-transition: .25s all ease;
+            //     transition: .25s all ease;
+            //     color: #888;
+            // }
+            // /* Transition */
+            // &:hover::after {
+            //     color: #000;
+            // }
+
+            select {
+                width: 100%;
+                flex: 1;
+                padding: .2em .5em;
+                cursor: pointer;
+            }
+        }
+        textarea {
+            width: 100%;
+            margin: 20px 0;
+        }
+        .tweetBtn {
+            float: right;
+        }
+    }
+}

@@ -61,7 +61,7 @@ let twitter = {
 
         $('#new-tweet-sidebar select.icontype').on('change', onTweetSettingsChange);
 
-        $('#new-tweet-sidebar .tweetBtn').on('input', function() {
+        $('#new-tweet-sidebar textarea').on('input', function() {
             debounce(onTweetSettingsChange)();
         });
 

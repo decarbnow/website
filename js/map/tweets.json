@@ -2,82 +2,106 @@
     "tweets": {
         "1260300628091449345": {
             "@": "trfwcw8j2",
-            "z": 15,
-            "ls": ["satellite", "power-plants", "tweets"],
+            "z": 7,
+            "ls": ["satellite", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261291706403741696": {
             "@": "9myw9p5d9",
-            "z": 14,
-            "ls": ["light", "no2_2020_03", "power-plants", "tweets"],
+            "z": 10,
+            "ls": ["satellite", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261313171555594240": {
             "@": "sdwfeb24b",
-            "z": 15,
-            "ls": ["satellite", "power-plants"],
+            "z": 10,
+            "ls": ["satellite", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261593754542264320": {
             "@": "r1rub7cn0",
+            "z": 10,
+            "ls": ["satellite"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1219362072703705090": {
             "@": "u3jexvjw4",
+            "z": 14,
+            "ls": ["satellite", "tweets", "power-plants"],
             "tags": ["pollution"],
             "story": "1219362072703705090"
         },
         "1219363171070246912": {
             "@": "u1hdpetgg",
+            "z": 14,
+            "ls": ["satellite", "tweets", "power-plants"],
             "tags": ["pollution"],
             "story": "1219362072703705090"
         },
         "1134434633851035648": {
             "@": "u2edhws2b",
+            "z": 16,
+            "ls": ["streets", "tweets"],
             "tags": ["climateaction"],
             "story": "1134434633851035648"
         },
         "1185501850847629313": {
             "@": "u2edhqcez",
+            "z": 16,
+            "ls": ["streets", "tweets"],
             "tags": ["climateaction"],
             "story": "1134434633851035648"
         },
         "1185212199117246464": {
             "@": "u2edhwk4p",
+            "z": 16,
+            "ls": ["streets", "tweets"],
             "tags": ["climateaction"],
             "story": "1134434633851035648"
         },
         "523166265331159040": {
             "@": "u2edhw31x",
+            "z": 16,
+            "ls": ["streets", "tweets"],
             "tags": ["climateaction"],
             "story": "1134434633851035648"
         },
         "1186694543212724224": {
             "@": "u33d9051w",
+            "z": 14,
+            "ls": ["satellite", "tweets"],
             "tags": ["climateaction"],
             "story": "1134434633851035648"
         },
         "1251121577682485255": {
             "@": "9ve51cb3q",
+            "z": 15,
+            "ls": ["satellite", "tweets", "power-plants"],
             "tags": ["pollution"],
             "story": "1251121577682485255"
         },
         "1212356714382671873": {
             "@": "u176nk1fs",
+            "z": 15,
+            "ls": ["satellite", "tweets"],
             "tags": ["transition"],
             "story": "1251121577682485255"
         },
         "1157588184689258496": {
             "@": "u2e6fm8kz",
+            "z": 15,
+            "ls": ["satellite", "tweets"],
             "tags": ["transition"],
             "story": "1251121577682485255"
         },
         "1189943242789445633": {
             "@": "u274b7y5e",
+            "z": 16,
+            "ls": ["satellite", "tweets"],
             "tags": ["transition"],
             "story": "1251121577682485255"
         }

@@ -16,6 +16,17 @@
         margin: 20px 0;
     }
 
+    #show-tweet-sidebar {
+        .tweet.loaded {
+            &.selected .control {
+                background-color: #00acee;
+            }
+            .control {
+                background-color: #AAAAAA;
+            }
+        }
+    }
+
     #new-tweet-sidebar {
         position: relative;
         .select {
@@ -53,6 +64,15 @@
         }
         .tweetBtn {
             float: right;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    .leaflet-sidebar {
+        width: 560px;
+        &.left {
+            left: -600px;
         }
     }
 }

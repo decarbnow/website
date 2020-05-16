@@ -31,77 +31,88 @@ let manager = {
     },
 
     activate: function(id) {
-        let tweet = tweetList.tweets[id];
+        let tweetInfo = tweetList.tweets[id];
 
-        if (tweet.ls) {
+        if (tweetInfo.ls) {
             Object.values(base.layers).forEach(ls => {
                 ls.getActiveLayers().forEach((l) => {
                     l.removeFrom(base.map)
                 });
             });
 
-            tweet.ls.forEach((n) => {
-                console.log('ACTIVATE LAYER ' + n)
+            tweetInfo.ls.forEach((n) => {
+                //console.log('ACTIVATE LAYER ' + n)
                 base.activateLayer(n);
             });
         }
         // let p = state.center || s.center;
 
         let z = 10;
-        if (tweet.z)
+        if (tweetInfo.z)
             z = tweet.z
 
 
-        base.map.setView(manager.getLatLng(tweet), z);
+        let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width,
+            latlng = manager.getLatLng(tweetInfo);
 
+        base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
+
+        $(`#tweet-${id}`)[0].scrollIntoView({
+            // block: 'start',
+            // inline: 'nearest',
+            // behavior: "smooth"
+        });
+    },
+
+    initSidebar: function(id) {
+        let tweetInfo = tweetList.tweets[id];
+
+        let ids = [id];
+        if (tweetInfo.story)
+            ids = tweetList.stories[tweetInfo.story];
+
+        let entries = ids.map(tweetId => {
+            let classes = ['tweet'];
+            if (id == tweetId)
+                classes.push('selected');
+            return `
+                <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
+                    <div class="control">${tweetId}</div>
+                    <div class="widget">
+                    </div>
+                </div>`;
+        });
+        let text = entries.join('');
+        if (tweetInfo.story)
+            text = `<h3>Story</h3><div class="story" data-story="${tweetInfo.story}">${text}</div>`;
+
+        base.showSidebar('show-tweet')
+            .setContent(text);
+
+        $('#show-tweet-sidebar .tweet').each((i, e) => {
+            let te = $(e)
+            window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(() => {
+                te.addClass('loaded');
+            });
+        });
+
+        $('#show-tweet-sidebar').on("click", "div.tweet", function() {
+            let tweet = $(this)
+            manager.activate(tweet.data('tweet'));
+            tweet.parent().find('.tweet.selected').removeClass('selected');
+            tweet.addClass('selected');
+        });
     },
 
     load: function() {
         console.log(tweetList)
         Object.keys(tweetList.tweets).forEach((id) => {
-            let info = tweetList.tweets[id];
-
-            L.marker(manager.getLatLng(info), {icon: icons[info.tags[0]]})
+            let tweetInfo = tweetList.tweets[id];
+            L.marker(manager.getLatLng(tweetInfo), {icon: icons[tweetInfo.tags[0]]})
                 .addTo(manager.clusters)
                 .on('click', function () {
-                    if (window.twttr.widgets) {
-                        let ids = [id];
-                        if (info.story)
-                            ids = tweetList.stories[info.story];
-
-                        let entries = ids.map(tweetId => {
-                            let classes = ['tweet'];
-                            if (id == tweetId)
-                                classes.push('selected');
-                            return `
-                                <div class="${classes.join(' ')}" data-tweet="${tweetId}">
-                                    <div class="control">${tweetId}</div>
-                                    <div class="widget">
-                                    </div>
-                                </div>`;
-                        });
-                        let text = entries.join('');
-                        if (info.story)
-                            text = `<div class="story" data-story="${info.story}">${text}</div>`;
-
-                        base.showSidebar('show-tweet')
-                            .setContent(text);
-
-                        $('#show-tweet-sidebar .tweet').each((i, e) => {
-                            let te = $(e)
-                            window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(() => {
-                                te.addClass('loaded');
-                            });
-                        });
-
-                        $('#show-tweet-sidebar').on("click", "div.tweet", function() {
-                            let tweet = $(this)
-                            manager.activate(tweet.data('tweet'));
-                            tweet.parent().find('.tweet.selected').removeClass('selected');
-                            tweet.addClass('selected');
-                        });
-                    }
-
+                    manager.initSidebar(id);
+                    manager.activate(id);
                 })
         });
     }

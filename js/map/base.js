@@ -22,7 +22,8 @@ let initialState = {
     layers: [
         'light',
         'power-plants',
-        'no2_2020_03'
+        'no2_2020_03',
+        'tweets'
     ],
 }
 /*var infScroll = null;

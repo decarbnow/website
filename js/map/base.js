@@ -10,6 +10,7 @@ import twitter from './twitter.js';
 
 import layers from './layers/sets.js'
 import tweets from './tweets.js';
+import tweetsLegacy from './tweets.legacy.js';
 import url from './url.js';
 
 let initialState = {
@@ -137,6 +138,7 @@ let base = {
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
             base.addControls();
+            tweetsLegacy.init()
             tweets.init()
 
             base.afterNextMove = null;
@@ -169,8 +171,6 @@ let base = {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
-
-
 
         // init leaflet sidebars
         base.sidebars = {

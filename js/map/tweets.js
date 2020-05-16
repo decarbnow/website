@@ -49,7 +49,7 @@ let manager = {
 
         let z = 10;
         if (tweetInfo.z)
-            z = tweet.z
+            z = tweetInfo.z
 
 
         let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width,
@@ -84,7 +84,7 @@ let manager = {
         });
         let text = entries.join('');
         if (tweetInfo.story)
-            text = `<h3>Story</h3><div class="story" data-story="${tweetInfo.story}">${text}</div>`;
+            text = `<h3>Story</h3><div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
 
         base.showSidebar('show-tweet')
             .setContent(text);
@@ -111,7 +111,12 @@ let manager = {
             L.marker(manager.getLatLng(tweetInfo), {icon: icons[tweetInfo.tags[0]]})
                 .addTo(manager.clusters)
                 .on('click', function () {
-                    manager.initSidebar(id);
+                    // IS OPEN
+                    if (tweetInfo.story && base.sidebars['show-tweet'].isVisible() & $(`#story-${tweetInfo.story}`).length) {
+                
+                    } else {
+                        manager.initSidebar(id);
+                    }
                     manager.activate(id);
                 })
         });

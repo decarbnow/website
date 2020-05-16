@@ -16,15 +16,15 @@
         },
         "1261313171555594240": {
             "@": "sdwfeb24b",
-            "z": 10,
+            "z": 9,
             "ls": ["satellite", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261593754542264320": {
             "@": "r1rub7cn0",
-            "z": 10,
-            "ls": ["satellite"],
+            "z": 7,
+            "ls": ["streets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
@@ -104,6 +104,12 @@
             "ls": ["satellite", "tweets"],
             "tags": ["transition"],
             "story": "1251121577682485255"
+        },
+        "1207671820922556416": {
+            "@": "u349g6gf4",
+            "z": 15,
+            "ls": ["satellite", "power-plants", "e-prtr", "tweets"],
+            "tags": ["pollution"]
         }
     },
     "stories": {

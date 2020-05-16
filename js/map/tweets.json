@@ -3,22 +3,21 @@
         "1260300628091449345": {
             "@": "trfwcw8j2",
             "z": 15,
-            "ls": "satellite,power-plants,tweetsLegacy"
-            "baselayer":
+            "ls": ["satellite", "power-plants", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261291706403741696": {
             "@": "9myw9p5d9",
             "z": 14,
-            "ls": "light,no2_2020_03,power-plants,tweetsLegacy"
+            "ls": ["light", "no2_2020_03", "power-plants", "tweets"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },
         "1261313171555594240": {
             "@": "sdwfeb24b",
             "z": 15,
-            "ls": "satellite,power-plants,tweetsLegacy"
+            "ls": ["satellite", "power-plants"],
             "tags": ["pollution"],
             "story": "1260300628091449345"
         },

@@ -6,7 +6,7 @@ import base from "./base.js";
 import { icons } from "./marker/icons.js";
 import tweetList from './tweets.json';
 
-let tweets = {
+let manager = {
     currentMarkers: {},
 
     clusters: L.markerClusterGroup({
@@ -18,22 +18,51 @@ let tweets = {
     }),
 
     init: function() {
-        base.layers.points.layers.tweets.addLayer(tweets.clusters);
-        tweets.load()
+        base.layers.points.layers.tweets.addLayer(manager.clusters);
+        manager.load()
+    },
+
+    getLatLng: function(tweetInfo) {
+        let t = decode(tweetInfo['@']);
+        return {
+            lat: t.latitude,
+            lng: t.longitude,
+        }
+    },
+
+    activate: function(id) {
+        let tweet = tweetList.tweets[id];
+
+        if (tweet.ls) {
+            Object.values(base.layers).forEach(ls => {
+                ls.getActiveLayers().forEach((l) => {
+                    l.removeFrom(base.map)
+                });
+            });
+
+            tweet.ls.forEach((n) => {
+                console.log('ACTIVATE LAYER ' + n)
+                base.activateLayer(n);
+            });
+        }
+        // let p = state.center || s.center;
+
+        let z = 10;
+        if (tweet.z)
+            z = tweet.z
+
+
+        base.map.setView(manager.getLatLng(tweet), z);
+
     },
 
     load: function() {
         console.log(tweetList)
         Object.keys(tweetList.tweets).forEach((id) => {
             let info = tweetList.tweets[id];
-            let t = decode(info.geohash);
-            let latlng = {
-                lat: t.latitude,
-                lng: t.longitude,
-            }
 
-            L.marker(latlng, {icon: icons[info.tags[0]]})
-                .addTo(tweets.clusters)
+            L.marker(manager.getLatLng(info), {icon: icons[info.tags[0]]})
+                .addTo(manager.clusters)
                 .on('click', function () {
                     if (window.twttr.widgets) {
                         let ids = [id];
@@ -64,6 +93,13 @@ let tweets = {
                                 te.addClass('loaded');
                             });
                         });
+
+                        $('#show-tweet-sidebar').on("click", "div.tweet", function() {
+                            let tweet = $(this)
+                            manager.activate(tweet.data('tweet'));
+                            tweet.parent().find('.tweet.selected').removeClass('selected');
+                            tweet.addClass('selected');
+                        });
                     }
 
                 })
@@ -71,4 +107,4 @@ let tweets = {
     }
 }
 
-export default tweets
+export default manager

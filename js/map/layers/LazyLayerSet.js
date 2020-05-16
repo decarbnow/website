@@ -53,8 +53,12 @@ class LazyLayerSet {
         })
     }
 
-    getActiveLayers() {
+    getActiveLayersByName() {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
+    }
+
+    getActiveLayers() {
+        return Object.values(this.layers).filter(l => (base.map.hasLayer(l)));
     }
 
     getNameObject() {

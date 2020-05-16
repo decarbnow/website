@@ -61,7 +61,7 @@ let layersList = {
     },
     'big-cities': {
         file: "cities_gt_100k.geojson",
-        name: "Big Cities <i class='fa fa-info-circle'></i>",
+        name: "Big cities <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
                 color: '#00FF00'
@@ -71,7 +71,7 @@ let layersList = {
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +
-                                '<tr><td>Population:</td><td>' + feature.properties.population + '</td></tr>'+
+                                '<tr><td>Population:</td><td>' + feature.properties.population + ' (' + feature.properties.updated_at.substring(0, 4) + ')</td></tr>'+
                                 '<tr><td>Country:</td><td>' + feature.properties.country + '</td></tr>'+
                                 '</table>');
             }

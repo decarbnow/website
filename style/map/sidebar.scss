@@ -18,9 +18,16 @@
 
     #show-tweet-sidebar {
         .tweet.loaded {
-            &.selected .control {
+            opacity: 0.5;
+
+            &.selected {
+                opacity: 1;
                 background-color: #00acee;
+                &.selected .control {
+                    background-color: #00acee;
+                }
             }
+
             .control {
                 margin-top: 20px;
                 background-color: #AAAAAA;

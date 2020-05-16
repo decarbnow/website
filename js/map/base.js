@@ -174,7 +174,7 @@ let base = {
 
         // init leaflet sidebars
         base.sidebars = {
-            'show-tweet': L.control.sidebar('sidebar', {
+            'show-tweet': L.control.sidebar('show-tweet-sidebar', {
                 closeButton: true,
                 position: 'left'
             }),

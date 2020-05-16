@@ -44,7 +44,7 @@ let layersList = {
         name: "Big coal power stations <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#DEB500'
+                color: '#FF0000'
             },
             pointToLayer: function(feature, latlng) {
                 return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.8});
@@ -55,6 +55,24 @@ let layersList = {
                                 '<tr><td>Capacity:</td><td>' + feature.properties.capacity_mw + ' MW</td></tr>'+
                                 '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
                                 '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                '</table>');
+            }
+        }
+    },
+    'big-cities': {
+        file: "cities_gt_100k.geojson",
+        name: "Big Cities <i class='fa fa-info-circle'></i>",
+        attr: {
+            style: {
+                color: '#00FF00'
+            },
+            pointToLayer: function(feature, latlng) {
+                return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.population/70000), stroke: false, fillOpacity: 0.5});
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +
+                                '<tr><td>Population:</td><td>' + feature.properties.population + '</td></tr>'+
+                                '<tr><td>Country:</td><td>' + feature.properties.country + '</td></tr>'+
                                 '</table>');
             }
         }

@@ -104,7 +104,7 @@ let base = {
     getState: function() {
         let layers = [];
         Object.keys(base.layers).forEach((k) => {
-            layers.push(...base.layers[k].getActiveLayers())
+            layers.push(...base.layers[k].getActiveLayersByName())
         });
 
         return {

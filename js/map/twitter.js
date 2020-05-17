@@ -1,17 +1,31 @@
 import { icons } from "./marker/icons.js";
 import { encode } from '@alexpavlov/geohash-js';
 
+import base from './base.js'
+
 const DEBOUNCE_TIMEOUT = 200;
 
 let twitter = {
+    sidebar: null,
     marker: L.marker(null, {icon: icons['pollution']}),
-    showTweetSidebar: function(latlng) {
+    init: function() {
+        twitter.sidebar = L.control.sidebar('new-tweet-sidebar', {
+            closeButton: false,
+            position: 'left'
+        });
+        base.map.addControl(twitter.sidebar)
+        twitter.sidebar.on('hide', function () {
+            twitter.marker.remove()
+        });
+
+    },
+    openSidebar: function(latlng) {
         // update marker
         twitter.marker.setLatLng(latlng);
         twitter.marker.addTo(base.map);
 
         // open sidebar
-        base.showSidebar('new-tweet');
+        base.showSidebar(twitter);
 
         //here comes the beauty
         function onTweetSettingsChange(e) {
@@ -39,13 +53,6 @@ let twitter = {
 
             if(window.twttr.widgets)
                 window.twttr.widgets.load();
-
-            // if (typeof (history.pushState) != "undefined") {
-            //     var obj = { Title: hash, Url: '/map/' + hash + '/' + tweettype};
-            //     history.pushState(obj, obj.Title, obj.Url);
-            // } else {
-            //     alert("Browser does not support HTML5.");
-            // }
         }
 
         function debounce(callback) {
@@ -72,6 +79,9 @@ let twitter = {
             window.twttr.widgets.load();
         }
     },
+    closeSidebar: function() {
+        twitter.sidebar.hide();
+    }
 }
 
 export default twitter

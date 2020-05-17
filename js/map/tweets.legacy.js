@@ -72,7 +72,7 @@ let tweets = {
     }),
 
     init: function() {
-        base.layers.points.layers.tweetsLegacy.addLayer(tweets.clusters);
+        base.layerSets.points.layers.tweetsLegacy.addLayer(tweets.clusters);
         tweets.reset()
         tweets.refresh()
         window.setInterval(tweets.refresh, 30000);

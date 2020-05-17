@@ -8,6 +8,7 @@ import tweetList from './tweets.json';
 import url from './url.js';
 
 let manager = {
+    sidebar: null,
     activeTweet: null,
     autoScrolling: false,
     clusters: L.markerClusterGroup({
@@ -19,9 +20,15 @@ let manager = {
     }),
 
     init: function() {
+        manager.sidebar = L.control.sidebar('show-tweet-sidebar', {
+            closeButton: false,
+            position: 'left'
+        });
+        base.map.addControl(manager.sidebar)
+
         manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
-        base.layers.points.layers.tweets.addLayer(manager.clusters);
-        
+        base.layerSets.points.layers.tweets.addLayer(manager.clusters);
+
         manager.load();
 
         function scrollAction(direction) {
@@ -137,8 +144,7 @@ let manager = {
         if (tweetInfo.story)
             text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
 
-        base.showSidebar('show-tweet')
-            .setContent(text)
+        base.showSidebar(manager, text)
 
         $('#show-tweet-sidebar .tweet').each((i, e) => {
             let te = $(e)
@@ -158,7 +164,7 @@ let manager = {
 
     closeSidebar: function() {
         manager.activeTweet = null;
-        base.sidebars['show-tweet'].hide();
+        manager.sidebar.hide();
         url.pushState();
     },
 
@@ -169,7 +175,7 @@ let manager = {
                 .addTo(manager.clusters)
                 .on('click', function () {
                     // IS OPEN
-                    if (tweetInfo.story && base.sidebars['show-tweet'].isVisible() & $(`#story-${tweetInfo.story}`).length) {
+                    if (tweetInfo.story && manager.sidebar.isVisible() & $(`#story-${tweetInfo.story}`).length) {
                         manager.activate(id);
                     } else {
                         manager.openSidebar(id);

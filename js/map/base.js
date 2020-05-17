@@ -6,7 +6,7 @@ import 'leaflet-control-geocoder';
 import './geoip.js';
 import './marker/control.js';
 import twitter from './twitter.js';
-import { sets, layers } from './layers/sets.js'
+import { layerSets, layers } from './layers/sets.js'
 import tweets from './tweets.js';
 import tweetsLegacy from './tweets.legacy.js';
 import url from './url.js';
@@ -28,6 +28,7 @@ let initialState = {
 let base = {
     map: null,
     sidebars: {},
+    layerSets: {},
     layers: {},
     pushingState: false,
     afterNextMove: null,
@@ -74,20 +75,11 @@ let base = {
 
         base.map.setView(initialState.center, initialState.zoom);
 
-        base.layers = sets;
+        base.layerSets = layerSets;
+        base.layers = layers;
 
         base.setState(url.getState());
         base.pushingState = true;
-    },
-
-    showSidebar: function(id) {
-        Object.keys(base.sidebars).forEach(k => {
-            if (k != id)
-                base.sidebars[k].hide();
-        })
-        let s = base.sidebars[id];
-        s.show();
-        return s;
     },
 
     getState: function() {
@@ -106,8 +98,8 @@ let base = {
             base.showLayerId(n, ['tiles']);
         });
         // default tile layer
-        if (base.layers.tiles.getVisibleLayers().length == 0)
-            base.map.addLayer(base.layers.tiles.layers['light'])
+        if (base.layerSets.tiles.getVisibleLayers().length == 0)
+            base.map.addLayer(base.layerSets.tiles.layers['light'])
 
         let p = state.center || L.GeoIP.getPosition();
         // let p = state.center || s.center;
@@ -115,46 +107,66 @@ let base = {
 
         base.map.flyTo(p, z);
         base.afterNextMove = function() {
-            s.layers.forEach((n) => {
-                base.showLayerId(n);
-            });
-            // default polltion layer
-            if (base.layers.pollutions.getVisibleLayers().length == 0)
-                base.map.addLayer(base.layers.pollutions.layers['empty'])
-
-            base.addControls();
-            tweetsLegacy.init();
-            tweets.init();
-
-            if (s.tweet)
-                tweets.openSidebar(s.tweet, false)
-
+            base.finalInit(s)
             base.afterNextMove = null;
         }
     },
 
-    showLayerId: function(id, layerSets = Object.keys(base.layers)) {
+    showSidebar: function(mod, content = null) {
+        [tweets, twitter].forEach((m) => {
+            if (m != mod) {
+                m.sidebar.hide();
+            }
+        });
+
+        mod.sidebar.show();
+        if (content)
+            mod.sidebar.setContent(content);
+        return module.sidebar;
+    },
+
+    finalInit: function(state) {
+        state.layers.forEach((n) => {
+            base.showLayerId(n);
+        });
+        // default polltion layer
+        if (base.layerSets.pollutions.getVisibleLayers().length == 0)
+            base.map.addLayer(base.layerSets.pollutions.layers['empty'])
+
+        base.addControls();
+        tweetsLegacy.init();
+        tweets.init();
+        twitter.init();
+
+        if (state.tweet)
+            tweets.openSidebar(statetweet, false)
+    },
+
+    showLayerId: function(id, layerSets = Object.keys(base.layerSets)) {
+        // if (id in base.layers && !base.map.hasLayer(base.layers[id]))
+        //     base.map.addLayer(base.layers[id]);
+
         layerSets.forEach(k => {
-            let ls = base.layers[k];
-            if (id in ls.layers && !base.map.hasLayer(ls.layers[id]))
-                base.map.addLayer(ls.layers[id])
+            console.log(k)
+            let layers = base.layerSets[k].layers;
+            if (id in layers && !base.map.hasLayer(layers[id]))
+                base.map.addLayer(layers[id])
         });
     },
 
-    hideLayerId: function(id, layerSets = Object.keys(base.layers)) {
+    hideLayerId: function(id, layerSets = Object.keys(base.layerSets)) {
+        // if (id in base.layers && !base.map.hasLayer(base.layers[id]))
+        //     base.map.removeLayer(base.layers[id]);
+
         layerSets.forEach(k => {
-            let ls = base.layers[k];
-            if (id in ls.layers && base.map.hasLayer(ls.layers[id]))
-                base.map.removeLayer(ls.layers[id])
+            let layers = base.layerSets[k].layers;
+            if (id in layers && base.map.hasLayer(layers[id]))
+                base.map.removeLayer(layers[id])
         });
     },
 
-    getVisibleLayerIds: function(id, layerSets = Object.keys(base.layers)) {
-        let layers = [];
-        layerSets.forEach((k) => {
-            layers.push(...base.layers[k].getVisibleLayerIds())
-        });
-        return layers;
+    getVisibleLayerIds: function() {
+        return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
     },
 
     addControls: function() {
@@ -166,35 +178,19 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(sets.pollutions.getNameObject(), sets.points.getNameObject(), {
+        L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(sets.tiles.getNameObject(), null, {
+        L.control.layers(layerSets.tiles.getNameObject(), null, {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
 
-        // init leaflet sidebars
-        base.sidebars = {
-            'show-tweet': L.control.sidebar('show-tweet-sidebar', {
-                closeButton: false,
-                position: 'left'
-            }),
-            'new-tweet': L.control.sidebar('new-tweet-sidebar', {
-                closeButton: false,
-                position: 'left'
-            })
-        }
-
-        base.sidebars['new-tweet'].on('hide', function () {
-            twitter.marker.remove()
-        });
-
-        Object.values(base.sidebars).forEach(s => {
-            base.map.addControl(s);
-        });
+        // Object.values(base.sidebars).forEach(s => {
+        //     base.map.addControl(s);
+        // });
     },
 
     addEventHandlers: function() {
@@ -208,11 +204,12 @@ let base = {
 
         base.map.on("contextmenu", function (e) {
             base.map.flyTo(e.latlng);
-            twitter.showTweetSidebar(e.latlng)
+            twitter.openSidebar(e.latlng)
         });
 
         base.map.on("click", function (e) {
             tweets.closeSidebar();
+            twitter.closeSidebar();
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

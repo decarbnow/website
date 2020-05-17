@@ -19,6 +19,12 @@ let url = {
             ls: layers.join(url.listDivider)
         }
 
+        if (s.tweet) {
+            vars = {...{
+                't': s.tweet,
+            }, ...vars}
+        }
+
         if (url.geoHash) {
             vars = {...{
                 '@': encode(lat, lng),
@@ -40,7 +46,7 @@ let url = {
     _urlToState: function() {
         let parts = window.location.pathname.substring(url.prefix.length).split(url.divider);
 
-        let rs = {}
+        let rs = {};
         parts.forEach((n) => {
             if (url.specialKeys.includes(n.charAt(0))) {
                 rs[n.charAt(0)] = n.slice(1);
@@ -50,27 +56,30 @@ let url = {
             }
         });
 
-        let s = {}
+        let s = {};
 
         if (rs['@']) {
             let t = decode(rs['@']);
             s.center = {
                 lat: t.latitude,
                 lng: t.longitude,
-            }
+            };
         }
 
         if (rs.lat && rs.lng)
             s.center = {
                 lat: rs.lat,
                 lng: rs.lng,
-            }
+            };
 
         if (rs.z)
-            s.zoom = rs.z
+            s.zoom = rs.z;
 
         if (rs.ls)
             s.layers = rs.ls.split(url.listDivider);
+
+        if (rs.t)
+            s.tweet = rs.t;
 
         return s;
     },

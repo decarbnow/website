@@ -16,7 +16,22 @@
         font-size: 1.5em;
         margin: 20px 0;
     }
+    .arrow {
+      border: solid black;
+      border-width: 0 5px 5px 0;
+      display: inline-block;
+      padding: 5px;
+    }
 
+    .up {
+      transform: rotate(-135deg);
+      -webkit-transform: rotate(-135deg);
+    }
+
+    .down {
+      transform: rotate(45deg);
+      -webkit-transform: rotate(45deg);
+    }
     #show-tweet-sidebar {
         .story {
             display: grid;
@@ -36,7 +51,21 @@
                     left: 0;
                     height: 100%;
                     width: 100%;
+                    margin-top: 0px;
+                    cursor:pointer;
                     // background-color: white;
+                    .top-up {
+                      position: absolute;
+                      top: -8px;
+                      left: 50%;
+                      opacity: 1 !important;
+                    }
+                    .bottom-down {
+                      position: absolute;
+                      bottom: -12px;
+                      left: 50%;
+                      opacity: 1 !important;
+                    }
                 }
 
                 &.selected {

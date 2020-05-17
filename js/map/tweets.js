@@ -70,6 +70,20 @@ let manager = {
                 }
             }
         });
+
+        //Move on click:
+        /*
+        $('#show-tweet-sidebar').bind('click', function(e){
+          if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
+              if ($(this).hasClass('next')) {
+                  scrollAction('down')
+              } else {
+                  scrollAction('up')
+              }
+          }
+        });
+        */
+
     },
 
     getLatLng: function(tweetInfo) {
@@ -137,8 +151,9 @@ let manager = {
             return `
                 <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
                     <div class="widget"></div>
-                    <div class="overlay"></div>
-                </div>`;
+                    <div class="overlay"><div class="top-up"><i class="arrow down"></i></div><div class="bottom-down"><i class="arrow up"></i></div></div>
+                </div>
+                `;
         });
         let text = entries.join('');
         if (tweetInfo.story)

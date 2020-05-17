@@ -8,7 +8,8 @@ import tweetList from './tweets.json';
 
 let manager = {
     currentMarkers: {},
-
+    autoScrolling: false,
+    scrollPosition: null,
     clusters: L.markerClusterGroup({
         disableClusteringAtZoom: 19,
         maxClusterRadius: 10,
@@ -22,40 +23,19 @@ let manager = {
         manager.load()
 
         $('#show-tweet-sidebar').scroll(function(event) {
-            if($('#show-tweet-sidebar .tweet.unloaded').length == 0) {
-                // console.log($('#show-tweet-sidebar').scrollTop());
-                let fe = null;
-                let min = null;
-                $('#show-tweet-sidebar .tweet').each((i, t) => {
-                    let e = $(t);
-                    //console.log(e.data('tweet') + ' ' + e.offset().top);
-                    let o = e.offset().top;
-
-                    if (o > 0 && (!min || o < min)) {
-                        fe = e;
-                        min = o
-                    }
-                });
-                // console.log(fe.data('tweet'))
-                // console.log(fe.hasClass('selected'))
-                if (fe && !fe.hasClass('selected')) {
-                    console.log(fe.data('tweet'))
-                    manager.activate(fe.data('tweet'));
+            if($('#show-tweet-sidebar .tweet.unloaded').length == 0 && !manager.autoScrolling && manager.scrollPosition) {
+                let t = $('#show-tweet-sidebar .tweet.selected');
+                let tn = null
+                if ($('#show-tweet-sidebar').scrollTop() > manager.scrollPosition) {
+                    tn = t.next('.tweet')
+                } else {
+                    tn = t.prev('.tweet')
+                }
+                if (tn.length > 0) {
+                    manager.activate(tn.data('tweet'));
                 }
             }
-
-
-
-            // #target not yet in view
-            // if (triggerAtY > $('#show-tweet-sidebar').scrollTop()) {
-            // return;
-            // }
-            //var triggerAtY = $('#target').offset().top - $(window).outerHeight();
-
-            // run your task
-
-            // remove this event handler
-            //$(this).off(event);
+            manager.scrollPosition = $('#show-tweet-sidebar').scrollTop()
         });
     },
 
@@ -72,16 +52,18 @@ let manager = {
         let tweetDiv = $(`#tweet-${id}`);
 
         if (tweetInfo.ls) {
-            Object.values(base.layers).forEach(ls => {
-                ls.getActiveLayers().forEach((l) => {
-                    l.removeFrom(base.map)
-                });
+            let visibleLayers = base.getVisibleLayerIds()
+
+            let hide = visibleLayers.filter(x => !tweetInfo.ls.includes(x));
+            hide.forEach((lid) => {
+                base.hideLayerId(lid)
             });
 
-            tweetInfo.ls.forEach((n) => {
-                //console.log('ACTIVATE LAYER ' + n)
-                base.activateLayer(n);
+            let show = tweetInfo.ls.filter(x => !visibleLayers.includes(x) );
+            show.forEach((lid) => {
+                base.showLayerId(lid)
             });
+
         }
         // let p = state.center || s.center;
 
@@ -94,12 +76,15 @@ let manager = {
             latlng = manager.getLatLng(tweetInfo);
 
         base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
-
-        tweetDiv[0].scrollIntoView({
-            // block: 'start',
-            // inline: 'nearest',
-            // behavior: "smooth"
-        });
+        //console.log('Autoscrolling to: ' + id + ' Tweet positon: ' + tweetDiv.position().top)
+        manager.autoScrolling = true;
+        $('#show-tweet-sidebar').animate({
+            scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top
+        }, 500, function() {
+            setTimeout(function() {
+                manager.autoScrolling = false;
+            }, 200);
+        })
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
         tweetDiv.addClass('selected');
@@ -118,14 +103,12 @@ let manager = {
                 classes.push('selected');
             return `
                 <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
-                    <div class="control">${tweetId}</div>
-                    <div class="widget">
-                    </div>
+                    <div class="widget"></div>
                 </div>`;
         });
         let text = entries.join('');
         if (tweetInfo.story)
-            text = `<h3>Story</h3><div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
+            text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
 
         base.showSidebar('show-tweet')
             .setContent(text);
@@ -135,13 +118,16 @@ let manager = {
             window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(() => {
                 te.addClass('loaded');
                 te.removeClass('unloaded');
+                if($('#show-tweet-sidebar .tweet.unloaded').length == 0) {
+                    manager.activate(id);
+                }
             });
         });
 
-        $('#show-tweet-sidebar').on("click", "div.tweet", function() {
-            let tweet = $(this)
-            manager.activate(tweet.data('tweet'));
-        });
+        // $('#show-tweet-sidebar').on("click", "div.tweet", function() {
+        //     let tweet = $(this)
+        //     manager.activate(tweet.data('tweet'));
+        // });
     },
 
     load: function() {
@@ -153,11 +139,11 @@ let manager = {
                 .on('click', function () {
                     // IS OPEN
                     if (tweetInfo.story && base.sidebars['show-tweet'].isVisible() & $(`#story-${tweetInfo.story}`).length) {
-
+                        manager.activate(id);
                     } else {
                         manager.initSidebar(id);
                     }
-                    manager.activate(id);
+
                 })
         });
     }

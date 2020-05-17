@@ -6,9 +6,7 @@ import 'leaflet-control-geocoder';
 import './geoip.js';
 import './marker/control.js';
 import twitter from './twitter.js';
-
-
-import layers from './layers/sets.js'
+import { sets, layers } from './layers/sets.js'
 import tweets from './tweets.js';
 import tweetsLegacy from './tweets.legacy.js';
 import url from './url.js';
@@ -26,16 +24,6 @@ let initialState = {
         'tweets'
     ],
 }
-/*var infScroll = null;
-sidebar.on('shown', function () {
-    infScroll = new InfiniteScroll(document.getElementById('sidebar'), {
-        history: false,
-        path: '.nextTweet'
-        //function() {
-        //    return "https://decarbnow.space/api/render/1169366632000438272";
-        //} //'.nextTweet'
-    });
-});*/
 
 let base = {
     map: null,
@@ -82,13 +70,13 @@ let base = {
         });
 
         //base.addLayers()
-        base.addEventHandlers()
+        base.addEventHandlers();
 
         base.map.setView(initialState.center, initialState.zoom);
 
-        base.layers = layers
+        base.layers = sets;
 
-        base.setState(url.getState())
+        base.setState(url.getState());
         base.pushingState = true;
     },
 
@@ -139,7 +127,7 @@ let base = {
             tweets.init();
 
             if (s.tweet)
-                tweets.initSidebar(s.tweet, false)
+                tweets.openSidebar(s.tweet, false)
 
             base.afterNextMove = null;
         }
@@ -178,12 +166,12 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(layers.pollutions.getNameObject(), layers.points.getNameObject(), {
+        L.control.layers(sets.pollutions.getNameObject(), sets.points.getNameObject(), {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(layers.tiles.getNameObject(), null, {
+        L.control.layers(sets.tiles.getNameObject(), null, {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
@@ -191,11 +179,11 @@ let base = {
         // init leaflet sidebars
         base.sidebars = {
             'show-tweet': L.control.sidebar('show-tweet-sidebar', {
-                closeButton: true,
+                closeButton: false,
                 position: 'left'
             }),
             'new-tweet': L.control.sidebar('new-tweet-sidebar', {
-                closeButton: true,
+                closeButton: false,
                 position: 'left'
             })
         }
@@ -221,6 +209,10 @@ let base = {
         base.map.on("contextmenu", function (e) {
             base.map.flyTo(e.latlng);
             twitter.showTweetSidebar(e.latlng)
+        });
+
+        base.map.on("click", function (e) {
+            tweets.closeSidebar();
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

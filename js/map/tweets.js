@@ -19,10 +19,12 @@ let manager = {
     }),
 
     init: function() {
+        manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         base.layers.points.layers.tweets.addLayer(manager.clusters);
+        
         manager.load();
 
-        function activate( direction) {
+        function scrollAction(direction) {
             let t = $('#show-tweet-sidebar .tweet.selected');
             let tn = null;
 
@@ -36,53 +38,31 @@ let manager = {
             }
         }
 
-
+        // wheel scroll
         $('#show-tweet-sidebar').bind('wheel scroll', function(e) {
             if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
                 if (e.originalEvent.wheelDelta / 120 <= 0) {
-                    activate('down')
+                    scrollAction('down')
                 } else {
-                    activate('up')
+                    scrollAction('up')
                 }
             }
         });
 
+        // touch display
         let ts = null;
-
         $('#show-tweet-sidebar').bind('touchstart', function(e) {
             ts = e.originalEvent.touches[0].clientY;
         });
-
         $('#show-tweet-sidebar').bind('touchmove', function(e) {
             if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
                 if (ts > e.originalEvent.changedTouches[0].clientY) {
-                    activate('down')
+                    scrollAction('down')
                 } else {
-                    activate('up')
+                    scrollAction('up')
                 }
             }
         });
-
-
-        // document.querySelector('#show-tweet-sidebar').addEventListener(
-        //     'click',
-        //     function(event) {
-        //         var target = $(event.target);
-        //         if (target.hasClass)
-        //         console.log('propagation stopped');
-        //         event.stopPropagation();
-        //     },
-        //     true // Add listener to *capturing* phase
-        // );
-        // $('#show-tweet-sidebar').click(function (event) {
-        //     // Do body action
-        //
-        //     // var target = $(event.target);
-        //     // if (target.is($("#myDiv"))) {
-        //     // // Do div action
-        //     // }
-        //     event.stopPropagation();
-        // });
     },
 
     getLatLng: function(tweetInfo) {
@@ -109,19 +89,17 @@ let manager = {
             show.forEach((lid) => {
                 base.showLayerId(lid)
             });
-
         }
 
         let z = 10;
         if (tweetInfo.z)
             z = tweetInfo.z
 
-        let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width,
-            latlng = manager.getLatLng(tweetInfo);
+        if (move) {
+            let latlng = manager.getLatLng(tweetInfo);
+            base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([manager.sidebarOffset / 2, 0]), z), z);
+        }
 
-        if (move)
-            base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
-        //console.log('Autoscrolling to: ' + id + ' Tweet positon: ' + tweetDiv.position().top)
         manager.autoScrolling = true;
         $('#show-tweet-sidebar').animate({
             scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top - 100
@@ -138,7 +116,7 @@ let manager = {
         url.pushState()
     },
 
-    initSidebar: function(id, move = true) {
+    openSidebar: function(id, move = true) {
         let tweetInfo = tweetList.tweets[id];
 
         let ids = [id];
@@ -152,6 +130,7 @@ let manager = {
             return `
                 <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
                     <div class="widget"></div>
+                    <div class="overlay"></div>
                 </div>`;
         });
         let text = entries.join('');
@@ -159,7 +138,7 @@ let manager = {
             text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
 
         base.showSidebar('show-tweet')
-            .setContent(text);
+            .setContent(text)
 
         $('#show-tweet-sidebar .tweet').each((i, e) => {
             let te = $(e)
@@ -167,19 +146,23 @@ let manager = {
                 te.addClass('loaded');
                 te.removeClass('unloaded');
                 if($('#show-tweet-sidebar .tweet.unloaded').length == 0) {
+                    // all tweets are loaded
                     manager.activate(id, move);
+                    $('#show-tweet-sidebar .tweet.loaded .overlay').on('click', function(e) {
+                        manager.activate($(this).parents('.tweet').data('tweet'));
+                    });
                 }
             });
         });
+    },
 
-        // $('#show-tweet-sidebar').on("click", "div.tweet", function() {
-        //     let tweet = $(this)
-        //     manager.activate(tweet.data('tweet'));
-        // });
+    closeSidebar: function() {
+        manager.activeTweet = null;
+        base.sidebars['show-tweet'].hide();
+        url.pushState();
     },
 
     load: function() {
-        console.log(tweetList)
         Object.keys(tweetList.tweets).forEach((id) => {
             let tweetInfo = tweetList.tweets[id];
             L.marker(manager.getLatLng(tweetInfo), {icon: icons[tweetInfo.tags[0]]})
@@ -189,9 +172,8 @@ let manager = {
                     if (tweetInfo.story && base.sidebars['show-tweet'].isVisible() & $(`#story-${tweetInfo.story}`).length) {
                         manager.activate(id);
                     } else {
-                        manager.initSidebar(id);
+                        manager.openSidebar(id);
                     }
-
                 })
         });
     }

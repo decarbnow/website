@@ -4,8 +4,18 @@ import tiles from './tiles.js';
 import pollutions from './pollutions.js';
 import points from './points.js';
 
-export default {
+let sets = {
     tiles: new LazyLayerSet('tiles', tiles),
     pollutions: new LazyLayerSet('pollutions', pollutions),
-    points: new LazyLayerSet('points', points)
+    points: new LazyLayerSet('points', points),
 };
+
+let layers = {};
+Object.keys(sets).forEach((k) => {
+    layers = {...layers, ...sets[k].layers};
+});
+
+export {
+    sets,
+    layers
+}

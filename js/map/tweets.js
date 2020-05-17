@@ -5,11 +5,11 @@ import MarkerClusterGroup from 'leaflet.markercluster';
 import base from "./base.js";
 import { icons } from "./marker/icons.js";
 import tweetList from './tweets.json';
+import url from './url.js';
 
 let manager = {
-    currentMarkers: {},
+    activeTweet: null,
     autoScrolling: false,
-    scrollPosition: null,
     clusters: L.markerClusterGroup({
         disableClusteringAtZoom: 19,
         maxClusterRadius: 10,
@@ -20,23 +20,69 @@ let manager = {
 
     init: function() {
         base.layers.points.layers.tweets.addLayer(manager.clusters);
-        manager.load()
+        manager.load();
 
-        $('#show-tweet-sidebar').scroll(function(event) {
-            if($('#show-tweet-sidebar .tweet.unloaded').length == 0 && !manager.autoScrolling && manager.scrollPosition) {
-                let t = $('#show-tweet-sidebar .tweet.selected');
-                let tn = null
-                if ($('#show-tweet-sidebar').scrollTop() > manager.scrollPosition) {
-                    tn = t.next('.tweet')
+        function activate( direction) {
+            let t = $('#show-tweet-sidebar .tweet.selected');
+            let tn = null;
+
+            if (direction == 'down')
+                tn = t.next('.tweet');
+            else if (direction == 'up')
+                tn = t.prev('.tweet');
+
+            if (tn.length > 0) {
+                manager.activate(tn.data('tweet'));
+            }
+        }
+
+
+        $('#show-tweet-sidebar').bind('wheel scroll', function(e) {
+            if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
+                if (e.originalEvent.wheelDelta / 120 <= 0) {
+                    activate('down')
                 } else {
-                    tn = t.prev('.tweet')
-                }
-                if (tn.length > 0) {
-                    manager.activate(tn.data('tweet'));
+                    activate('up')
                 }
             }
-            manager.scrollPosition = $('#show-tweet-sidebar').scrollTop()
         });
+
+        let ts = null;
+
+        $('#show-tweet-sidebar').bind('touchstart', function(e) {
+            ts = e.originalEvent.touches[0].clientY;
+        });
+
+        $('#show-tweet-sidebar').bind('touchmove', function(e) {
+            if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
+                if (ts > e.originalEvent.changedTouches[0].clientY) {
+                    activate('down')
+                } else {
+                    activate('up')
+                }
+            }
+        });
+
+
+        // document.querySelector('#show-tweet-sidebar').addEventListener(
+        //     'click',
+        //     function(event) {
+        //         var target = $(event.target);
+        //         if (target.hasClass)
+        //         console.log('propagation stopped');
+        //         event.stopPropagation();
+        //     },
+        //     true // Add listener to *capturing* phase
+        // );
+        // $('#show-tweet-sidebar').click(function (event) {
+        //     // Do body action
+        //
+        //     // var target = $(event.target);
+        //     // if (target.is($("#myDiv"))) {
+        //     // // Do div action
+        //     // }
+        //     event.stopPropagation();
+        // });
     },
 
     getLatLng: function(tweetInfo) {
@@ -47,7 +93,7 @@ let manager = {
         }
     },
 
-    activate: function(id) {
+    activate: function(id, move = true) {
         let tweetInfo = tweetList.tweets[id];
         let tweetDiv = $(`#tweet-${id}`);
 
@@ -65,21 +111,20 @@ let manager = {
             });
 
         }
-        // let p = state.center || s.center;
 
         let z = 10;
         if (tweetInfo.z)
             z = tweetInfo.z
 
-
         let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width,
             latlng = manager.getLatLng(tweetInfo);
 
-        base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
+        if (move)
+            base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
         //console.log('Autoscrolling to: ' + id + ' Tweet positon: ' + tweetDiv.position().top)
         manager.autoScrolling = true;
         $('#show-tweet-sidebar').animate({
-            scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top
+            scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top - 100
         }, 500, function() {
             setTimeout(function() {
                 manager.autoScrolling = false;
@@ -88,9 +133,12 @@ let manager = {
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
         tweetDiv.addClass('selected');
+
+        manager.activeTweet = id;
+        url.pushState()
     },
 
-    initSidebar: function(id) {
+    initSidebar: function(id, move = true) {
         let tweetInfo = tweetList.tweets[id];
 
         let ids = [id];
@@ -119,7 +167,7 @@ let manager = {
                 te.addClass('loaded');
                 te.removeClass('unloaded');
                 if($('#show-tweet-sidebar .tweet.unloaded').length == 0) {
-                    manager.activate(id);
+                    manager.activate(id, move);
                 }
             });
         });

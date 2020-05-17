@@ -106,7 +106,8 @@ let base = {
         return {
             center: base.map.getCenter(),
             zoom: base.map.getZoom(),
-            layers: base.getVisibleLayerIds()
+            layers: base.getVisibleLayerIds(),
+            tweet: tweets.activeTweet,
         }
     },
 
@@ -134,8 +135,11 @@ let base = {
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
             base.addControls();
-            tweetsLegacy.init()
-            tweets.init()
+            tweetsLegacy.init();
+            tweets.init();
+
+            if (s.tweet)
+                tweets.initSidebar(s.tweet, false)
 
             base.afterNextMove = null;
         }

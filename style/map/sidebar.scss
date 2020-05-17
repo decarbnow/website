@@ -19,23 +19,18 @@
 
     #show-tweet-sidebar {
         .story {
-            margin-bottom: 500px;
+            display: grid;
+            grid-gap: 0px;
+            grid-template-columns: 100%;
+            margin: 100px 0;
         }
         .tweet.loaded {
-            opacity: 0.3;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            opacity: 0.5;
+            transition: all 1s linear;
+            // margin: 20px 0;
 
             &.selected {
                 opacity: 1;
-                // background-color: #00acee;
-                // &.selected .control {
-                //     background-color: #00acee;
-                // }
-            }
-
-            .control {
-                background-color: #AAAAAA;
             }
         }
     }
@@ -81,8 +76,18 @@
     }
 }
 
+.leaflet-sidebar {
+    padding: 0;
+}
 
 .leaflet-sidebar > .leaflet-control {
-    background-color: transparent;
+    // background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.5);
     box-shadow: none;
+    padding: 0 8px;
+    //  scrollbar-color: transparent transparent;
+    // ::-webkit-scrollbar {
+    //      display: none;
+    //  }
+    overflow: hidden; /* Hide scrollbars */
 }

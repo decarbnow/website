@@ -20,6 +20,43 @@ let manager = {
     init: function() {
         base.layers.points.layers.tweets.addLayer(manager.clusters);
         manager.load()
+
+        $('#show-tweet-sidebar').scroll(function(event) {
+            if($('#show-tweet-sidebar .tweet.unloaded').length == 0) {
+                // console.log($('#show-tweet-sidebar').scrollTop());
+                let fe = null;
+                let min = null;
+                $('#show-tweet-sidebar .tweet').each((i, t) => {
+                    let e = $(t);
+                    //console.log(e.data('tweet') + ' ' + e.offset().top);
+                    let o = e.offset().top;
+
+                    if (o > 0 && (!min || o < min)) {
+                        fe = e;
+                        min = o
+                    }
+                });
+                // console.log(fe.data('tweet'))
+                // console.log(fe.hasClass('selected'))
+                if (fe && !fe.hasClass('selected')) {
+                    console.log(fe.data('tweet'))
+                    manager.activate(fe.data('tweet'));
+                }
+            }
+
+
+
+            // #target not yet in view
+            // if (triggerAtY > $('#show-tweet-sidebar').scrollTop()) {
+            // return;
+            // }
+            //var triggerAtY = $('#target').offset().top - $(window).outerHeight();
+
+            // run your task
+
+            // remove this event handler
+            //$(this).off(event);
+        });
     },
 
     getLatLng: function(tweetInfo) {
@@ -32,6 +69,7 @@ let manager = {
 
     activate: function(id) {
         let tweetInfo = tweetList.tweets[id];
+        let tweetDiv = $(`#tweet-${id}`);
 
         if (tweetInfo.ls) {
             Object.values(base.layers).forEach(ls => {
@@ -57,11 +95,14 @@ let manager = {
 
         base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([sidebarOffset / 2, 0]), z), z);
 
-        $(`#tweet-${id}`)[0].scrollIntoView({
+        tweetDiv[0].scrollIntoView({
             // block: 'start',
             // inline: 'nearest',
             // behavior: "smooth"
         });
+
+        tweetDiv.parent().find('.tweet.selected').removeClass('selected');
+        tweetDiv.addClass('selected');
     },
 
     initSidebar: function(id) {
@@ -72,7 +113,7 @@ let manager = {
             ids = tweetList.stories[tweetInfo.story];
 
         let entries = ids.map(tweetId => {
-            let classes = ['tweet'];
+            let classes = ['tweet', 'unloaded'];
             if (id == tweetId)
                 classes.push('selected');
             return `
@@ -93,14 +134,13 @@ let manager = {
             let te = $(e)
             window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(() => {
                 te.addClass('loaded');
+                te.removeClass('unloaded');
             });
         });
 
         $('#show-tweet-sidebar').on("click", "div.tweet", function() {
             let tweet = $(this)
             manager.activate(tweet.data('tweet'));
-            tweet.parent().find('.tweet.selected').removeClass('selected');
-            tweet.addClass('selected');
         });
     },
 
@@ -113,7 +153,7 @@ let manager = {
                 .on('click', function () {
                     // IS OPEN
                     if (tweetInfo.story && base.sidebars['show-tweet'].isVisible() & $(`#story-${tweetInfo.story}`).length) {
-                
+
                     } else {
                         manager.initSidebar(id);
                     }

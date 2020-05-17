@@ -19,6 +19,7 @@
     #show-tweet-sidebar {
         .tweet.loaded {
             opacity: 0.5;
+            margin-bottom: 200px;
 
             &.selected {
                 opacity: 1;
@@ -29,7 +30,6 @@
             }
 
             .control {
-                margin-top: 20px;
                 background-color: #AAAAAA;
             }
         }
@@ -72,15 +72,6 @@
         }
         .tweetBtn {
             float: right;
-        }
-    }
-}
-
-@media (min-width: 1200px) {
-    .leaflet-sidebar {
-        width: 560px;
-        &.left {
-            left: -600px;
         }
     }
 }

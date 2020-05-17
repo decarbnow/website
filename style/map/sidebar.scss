@@ -24,13 +24,28 @@
             grid-template-columns: 100%;
             margin: 100px 0;
         }
-        .tweet.loaded {
-            opacity: 0.5;
-            transition: all 1s linear;
-            // margin: 20px 0;
+        .tweet {
+            position: relative;
+            &.loaded {
+                opacity: 0.5;
+                transition: all 1s linear;
 
-            &.selected {
-                opacity: 1;
+                .overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 100%;
+                    width: 100%;
+                    // background-color: white;
+                }
+
+                &.selected {
+                    opacity: 1;
+                    .overlay {
+                        display: none;
+                    }
+                }
+
             }
         }
     }

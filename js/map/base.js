@@ -103,15 +103,10 @@ let base = {
     },
 
     getState: function() {
-        let layers = [];
-        Object.keys(base.layers).forEach((k) => {
-            layers.push(...base.layers[k].getActiveLayersByName())
-        });
-
         return {
             center: base.map.getCenter(),
             zoom: base.map.getZoom(),
-            layers: layers,
+            layers: base.getVisibleLayerIds()
         }
     },
 
@@ -119,10 +114,10 @@ let base = {
         let s = {...initialState, ...state};
 
         s.layers.forEach((n) => {
-            base.activateLayer(n, ['tiles']);
+            base.showLayerId(n, ['tiles']);
         });
         // default tile layer
-        if (base.layers.tiles.getActiveLayers().length == 0)
+        if (base.layers.tiles.getVisibleLayers().length == 0)
             base.map.addLayer(base.layers.tiles.layers['light'])
 
         let p = state.center || L.GeoIP.getPosition();
@@ -132,10 +127,10 @@ let base = {
         base.map.flyTo(p, z);
         base.afterNextMove = function() {
             s.layers.forEach((n) => {
-                base.activateLayer(n);
+                base.showLayerId(n);
             });
             // default polltion layer
-            if (base.layers.pollutions.getActiveLayers().length == 0)
+            if (base.layers.pollutions.getVisibleLayers().length == 0)
                 base.map.addLayer(base.layers.pollutions.layers['empty'])
 
             base.addControls();
@@ -146,12 +141,28 @@ let base = {
         }
     },
 
-    activateLayer: function(id, layerSets = Object.keys(base.layers)) {
+    showLayerId: function(id, layerSets = Object.keys(base.layers)) {
         layerSets.forEach(k => {
             let ls = base.layers[k];
-            if (id in ls.layers)
+            if (id in ls.layers && !base.map.hasLayer(ls.layers[id]))
                 base.map.addLayer(ls.layers[id])
         });
+    },
+
+    hideLayerId: function(id, layerSets = Object.keys(base.layers)) {
+        layerSets.forEach(k => {
+            let ls = base.layers[k];
+            if (id in ls.layers && base.map.hasLayer(ls.layers[id]))
+                base.map.removeLayer(ls.layers[id])
+        });
+    },
+
+    getVisibleLayerIds: function(id, layerSets = Object.keys(base.layers)) {
+        let layers = [];
+        layerSets.forEach((k) => {
+            layers.push(...base.layers[k].getVisibleLayerIds())
+        });
+        return layers;
     },
 
     addControls: function() {

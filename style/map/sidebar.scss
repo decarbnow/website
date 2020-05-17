@@ -1,14 +1,15 @@
 .leaflet-sidebar {
     .close {
-        z-index: 800;
-        color: rgba(0, 0, 0, 0.4);
-        line-height: 0.9em;
-        width: 25px;
-        height: 25px;
-        right: 5px;
-        top: 15px;
-        font-size: 20px;
-        background: transparent;
+        // z-index: 800;
+        // color: rgba(0, 0, 0, 0.4);
+        // line-height: 0.9em;
+        // width: 25px;
+        // height: 25px;
+        // right: 5px;
+        // top: 15px;
+        // font-size: 20px;
+        // background: transparent;
+        display: none;
     }
 
     h3 {
@@ -17,16 +18,20 @@
     }
 
     #show-tweet-sidebar {
+        .story {
+            margin-bottom: 500px;
+        }
         .tweet.loaded {
-            opacity: 0.5;
-            margin-bottom: 200px;
+            opacity: 0.3;
+            margin-top: 20px;
+            margin-bottom: 20px;
 
             &.selected {
                 opacity: 1;
-                background-color: #00acee;
-                &.selected .control {
-                    background-color: #00acee;
-                }
+                // background-color: #00acee;
+                // &.selected .control {
+                //     background-color: #00acee;
+                // }
             }
 
             .control {
@@ -74,4 +79,10 @@
             float: right;
         }
     }
+}
+
+
+.leaflet-sidebar > .leaflet-control {
+    background-color: transparent;
+    box-shadow: none;
 }

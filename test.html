@@ -8,27 +8,22 @@
         const API_URL = 'https://decarbnow.space/api';
 
         let tweets = [];
-        let stories = {};
 
         $.get(API_URL + "/poi?size=100", function(data) {
             data._embedded.poi.forEach(function(item) {
               if(item.expandedUrl){
                   let tweetId = item.tweetId
-                  //tweets[tweetId] = {};
 
                   let sp_hash = item.expandedUrl.indexOf('/@') + 2;
                   let ep_hash = item.expandedUrl.indexOf('/',sp_hash);
-                  //tweets[tweetId]["@"]  = item.expandedUrl.substring(sp_hash,ep_hash)
 
                   //get zoomLevel
                   let sp_z = item.expandedUrl.indexOf('/z=') + 3;
                   let ep_z = item.expandedUrl.indexOf('/',sp_z);
-                  //tweets[tweetId]['z'] = item.expandedUrl.substring(sp_z,ep_z)
 
                   //get layers
                   let sp_ls = item.expandedUrl.indexOf('/ls=') + 4;
                   let ep_ls = item.expandedUrl.length;
-                  //tweets[tweetId]['ls']  = item.expandedUrl.substring(sp_ls,ep_ls).split(",")
 
                   tweets.push({ 'tweetId': tweetId,
                                 '@': item.expandedUrl.substring(sp_hash,ep_hash),
@@ -38,17 +33,11 @@
                                 'replyFromSameUser': item.replyFromSameUser,
                                 'ls': item.expandedUrl.substring(sp_ls,ep_ls).split(",")})
 
-                  if(!item.replyFromSameUser){
-                      stories[tweetId] = [];
-                      stories[tweetId].push(tweetId)
-                  }
-
               }
           })
         })
 
-        var arry = [
-                    { "tweetId": "3", "Name": "c", "parentTweetId": "4", "attr": "ass" },
+        var arry = [{ "tweetId": "3", "Name": "c", "parentTweetId": "4", "attr": "ass" },
                     { "tweetId": "1", "Name": "a", "parentTweetId": null, "attr": "ass" },
                     { "tweetId": "2", "Name": "b", "parentTweetId": "1", "attr": "ass" },
                     { "tweetId": "4", "Name": "d", "parentTweetId": null, "attr": "ass" }];

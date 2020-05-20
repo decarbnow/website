@@ -35,9 +35,9 @@
     #show-tweet-sidebar {
         .story {
             display: grid;
-            grid-gap: 0px;
+            grid-gap: 50px;
             grid-template-columns: 100%;
-            margin: 100px 0;
+            margin: 0 0 500px 0;
         }
         .tweet {
             position: relative;
@@ -54,18 +54,20 @@
                     margin-top: 0px;
                     cursor:pointer;
                     // background-color: white;
+                    /*
                     .top-up {
-                      position: absolute;
-                      top: -8px;
-                      left: 50%;
-                      opacity: 1 !important;
+                        position: absolute;
+                        top: -8px;
+                        left: 50%;
+                        opacity: 1;
                     }
                     .bottom-down {
-                      position: absolute;
-                      bottom: -12px;
-                      left: 50%;
-                      opacity: 1 !important;
+                        position: absolute;
+                        bottom: -12px;
+                        left: 50%;
+                        opacity: 1;
                     }
+                    */
                 }
 
                 &.selected {
@@ -133,5 +135,5 @@
     // ::-webkit-scrollbar {
     //      display: none;
     //  }
-    overflow: hidden; /* Hide scrollbars */
+    //overflow: hidden; /* Hide scrollbars */
 }

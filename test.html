@@ -7,11 +7,12 @@
 
         const API_URL = 'https://decarbnow.space/api';
 
-        let tweets = [];
         let finalArray = [];
+        let ltweets = [];
+
 
         function receiveData(data) {
-            let ltweets = data._embedded.poi.filter(filterData).map(mapToInternalStructure);
+            ltweets = data._embedded.poi.filter(filterData).map(mapToInternalStructure);
             return getTweetArray(createDataTree(ltweets));
         }
 

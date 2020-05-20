@@ -139,7 +139,7 @@ let base = {
         twitter.init();
 
         if (state.tweet)
-            tweets.openSidebar(statetweet, false)
+            tweets.openSidebar(state.tweet, false)
     },
 
     showLayerId: function(id, layerSets = Object.keys(base.layerSets)) {

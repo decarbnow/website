@@ -45,31 +45,61 @@ let manager = {
             }
         }
 
-        // wheel scroll
-        $('#show-tweet-sidebar').bind('wheel scroll', function(e) {
-            if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
-                if (e.originalEvent.wheelDelta / 120 <= 0) {
-                    scrollAction('down')
-                } else {
-                    scrollAction('up')
-                }
-            }
-        });
+        //scroll
 
-        // touch display
-        let ts = null;
-        $('#show-tweet-sidebar').bind('touchstart', function(e) {
-            ts = e.originalEvent.touches[0].clientY;
-        });
-        $('#show-tweet-sidebar').bind('touchmove', function(e) {
+        $('#show-tweet-sidebar').bind('scroll wheel', function(e) {
             if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
-                if (ts > e.originalEvent.changedTouches[0].clientY) {
-                    scrollAction('down')
-                } else {
-                    scrollAction('up')
-                }
+                let selectedTop = $('#show-tweet-sidebar .tweet.selected').position().top;
+                let selectedHeight = $('#show-tweet-sidebar .tweet.selected').height();
+                let scrollWindowHeight = $('#show-tweet-sidebar').height();
+
+                let scrollDirection = null;
+                if (e.originalEvent.wheelDelta / 120 <= 0)
+                    scrollDirection = "down";
+                else
+                    scrollDirection = "up";
+
+                let positionDirection = null;
+                if(selectedTop + selectedHeight < scrollWindowHeight - 50)
+                    positionDirection = "down"
+                if(selectedTop > 0)
+                    positionDirection = "up"
+
+                console.log(e.originalEvent.wheelDelta)
+                console.log(scrollDirection)
+
+                if (positionDirection == scrollDirection)
+                    scrollAction(positionDirection)
             }
-        });
+        })
+
+
+
+        // // wheel scroll
+        // $('#show-tweet-sidebar').bind('wheel scroll', function(e) {
+        //     if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
+        //         if (e.originalEvent.wheelDelta / 120 <= 0) {
+        //             scrollAction('down')
+        //         } else {
+        //             scrollAction('up')
+        //         }
+        //     }
+        // });
+        //
+        // // touch display
+        // let ts = null;
+        // $('#show-tweet-sidebar').bind('touchstart', function(e) {
+        //     ts = e.originalEvent.touches[0].clientY;
+        // });
+        // $('#show-tweet-sidebar').bind('touchmove', function(e) {
+        //     if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling) {
+        //         if (ts > e.originalEvent.changedTouches[0].clientY) {
+        //             scrollAction('down')
+        //         } else {
+        //             scrollAction('up')
+        //         }
+        //     }
+        // });
 
         //Move on click:
         /*
@@ -123,7 +153,7 @@ let manager = {
 
         manager.autoScrolling = true;
         $('#show-tweet-sidebar').animate({
-            scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top - 100
+            scrollTop: $('#show-tweet-sidebar').scrollTop() + tweetDiv.position().top
         }, 500, function() {
             setTimeout(function() {
                 manager.autoScrolling = false;
@@ -151,7 +181,7 @@ let manager = {
             return `
                 <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
                     <div class="widget"></div>
-                    <div class="overlay"><div class="top-up"><i class="arrow down"></i></div><div class="bottom-down"><i class="arrow up"></i></div></div>
+                    <div class="overlay"></div>
                 </div>
                 `;
         });

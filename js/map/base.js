@@ -8,7 +8,6 @@ import './marker/control.js';
 import twitter from './twitter.js';
 import { layerSets, layers } from './layers/sets.js'
 import tweets from './tweets.js';
-import tweetsLegacy from './tweets.legacy.js';
 import url from './url.js';
 
 let initialState = {
@@ -134,7 +133,7 @@ let base = {
             base.map.addLayer(base.layerSets.pollutions.layers['empty'])
 
         base.addControls();
-        tweetsLegacy.init();
+        // tweetsLegacy.init();
         tweets.init();
         twitter.init();
 
@@ -147,7 +146,7 @@ let base = {
         //     base.map.addLayer(base.layers[id]);
 
         layerSets.forEach(k => {
-            console.log(k)
+            // console.log(k)
             let layers = base.layerSets[k].layers;
             if (id in layers && !base.map.hasLayer(layers[id]))
                 base.map.addLayer(layers[id])

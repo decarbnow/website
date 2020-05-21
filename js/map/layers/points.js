@@ -77,9 +77,6 @@ let layersList = {
             }
         }
     },
-    'tweetsLegacy': {
-        name: "Tweets Legacy",
-    },
     'tweets': {
         name: "Tweets",
     }

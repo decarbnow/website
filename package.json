@@ -5,7 +5,8 @@
   "main": "webpack.config.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --config webpack.config.dev.js",
+    "map": "webpack-dev-server --config webpack.config.dev.map.js",
+    "intro": "webpack-dev-server --config webpack.config.dev.intro.js",
     "build": "webpack --config webpack.config.prod.js",
     "abteil": "rsync -arv -e 'ssh -p 9022' dist/ decarbnow@server.abteil.org:/var/www/html/decarbnow/public/"
   },

@@ -2,7 +2,8 @@ import base from "./base.js";
 import { encode, decode } from '@alexpavlov/geohash-js';
 
 let url = {
-    prefix: '/map/',
+    //prefix: '/map/',
+    prefix: '/',
     keyValueDivider: '=',
     specialKeys: ['@'],
     listDivider: ',',

@@ -10,9 +10,9 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 module.exports = {
     entry: {
         map: './js/map.js',
-        start: './js/start.js',
+        intro: './js/intro.js',
         mapStyle: './style/map.scss',
-        startStyle: './style/start.scss',
+        introStyle: './style/intro.scss',
     },
     module: {
         rules: [{
@@ -40,14 +40,14 @@ module.exports = {
         }),
         new FixStyleOnlyEntriesPlugin(),
         new HtmlWebpackPlugin({
-            filename: 'map/index.html',
+            filename: 'map.html',
             chunks: ['map', 'mapStyle'],
             template: 'map.html'
         }),
         new HtmlWebpackPlugin({
-            filename: 'index.html',
-            chunks: ['start', 'startStyle'],
-            template: 'start.html'
+            filename: 'intro.html',
+            chunks: ['intro', 'introStyle'],
+            template: 'intro.html'
         }),
     ],
     output: {

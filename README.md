@@ -9,7 +9,7 @@ to be written
 This webpage can be run locally with:
 
     npm install
-    npm run start
+    npm run map
 
 ## Contribution
 

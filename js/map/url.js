@@ -44,8 +44,8 @@ let url = {
         return url.prefix + parts.join(url.divider)
     },
 
-    _urlToState: function() {
-        let parts = window.location.pathname.substring(url.prefix.length).split(url.divider);
+    _urlToState: function(path) {
+        let parts = path.split(url.divider);
 
         let rs = {};
         parts.forEach((n) => {
@@ -98,7 +98,8 @@ let url = {
     },
 
     getState: function() {
-        return url._urlToState();
+        // console.log(window.location.pathname.substring(url.prefix.length))
+        return url._urlToState(window.location.pathname.substring(url.prefix.length));
     },
 }
 

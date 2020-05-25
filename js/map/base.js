@@ -137,8 +137,11 @@ let base = {
         tweets.init();
         twitter.init();
 
-        if (state.tweet)
-            tweets.openSidebar(state.tweet, false)
+        if (state.tweet) {
+            $(tweets).on("loaded", function() {
+                tweets.openSidebar(state.tweet, false)
+            });
+        }
     },
 
     showLayerId: function(id, layerSets = Object.keys(base.layerSets)) {

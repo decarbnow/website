@@ -1,17 +1,22 @@
 import 'leaflet';
 import twemoji from 'twemoji';
-import { encode, decode } from '@alexpavlov/geohash-js';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import base from "./base.js";
 import { icons } from "./marker/icons.js";
-import tweetList from './tweets.json';
 import url from './url.js';
+
+const API_URL = 'http://127.0.0.1:5000/'
 
 let manager = {
     sidebar: null,
     activeTweet: null,
     autoScrolling: false,
     sidebarDiv: null,
+    data: {
+        date: null,
+        tweets: [],
+        stories: [],
+    },
 
     clusters: L.markerClusterGroup({
         disableClusteringAtZoom: 19,
@@ -33,35 +38,34 @@ let manager = {
         manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         base.layerSets.points.layers.tweets.addLayer(manager.clusters);
 
-        manager.createMarkers();
+        manager.loadMarkers();
         manager.addEventHandlers();
     },
 
     activate: function(id, move = true) {
-        let tweetInfo = tweetList.tweets[id];
+        let tweetInfo = manager.data.tweets[id];
         let tweetDiv = $(`#tweet-${id}`);
 
-        if (tweetInfo.ls) {
+        if (tweetInfo.layers) {
             let visibleLayers = base.getVisibleLayerIds()
 
-            let hide = visibleLayers.filter(x => !tweetInfo.ls.includes(x));
+            let hide = visibleLayers.filter(x => !tweetInfo.layers.includes(x));
             hide.forEach((lid) => {
                 base.hideLayerId(lid)
             });
 
-            let show = tweetInfo.ls.filter(x => !visibleLayers.includes(x) );
+            let show = tweetInfo.layers.filter(x => !visibleLayers.includes(x) );
             show.forEach((lid) => {
                 base.showLayerId(lid)
             });
         }
 
-        let z = 10;
-        if (tweetInfo.z)
-            z = tweetInfo.z
+        let zoom = 10;
+        if (tweetInfo.zoom)
+            zoom = tweetInfo.zoom
 
         if (move) {
-            let latlng = manager.getLatLng(tweetInfo);
-            base.map.flyTo(base.map.unproject(base.map.project(latlng, z).subtract([manager.sidebarOffset / 2, 0]), z), z);
+            base.map.flyTo(base.map.unproject(base.map.project(tweetInfo.center, zoom).subtract([manager.sidebarOffset / 2, 0]), zoom), zoom);
         }
 
         manager.autoScrolling = true;
@@ -81,11 +85,12 @@ let manager = {
     },
 
     openSidebar: function(id, move = true) {
-        let tweetInfo = tweetList.tweets[id];
+        let tweetInfo = manager.data.tweets[id];
 
         let ids = [id];
+
         if (tweetInfo.story)
-            ids = tweetList.stories[tweetInfo.story];
+            ids = manager.data.stories[tweetInfo.story];
 
         let entries = ids.map(tweetId => {
             let classes = ['tweet', 'unloaded'];
@@ -121,32 +126,37 @@ let manager = {
         url.pushState();
     },
 
-    getLatLng: function(tweetInfo) {
-        let t = decode(tweetInfo['@']);
-        return {
-            lat: t.latitude,
-            lng: t.longitude,
-        }
-    },
-
     tweetsLoaded: function() {
         return (manager.sidebarDiv.find('.tweet.unloaded').length == 0);
     },
 
-    createMarkers: function() {
-        Object.keys(tweetList.tweets).forEach((id) => {
-            let tweetInfo = tweetList.tweets[id];
-            L.marker(manager.getLatLng(tweetInfo), {icon: icons[tweetInfo.tags[0]]})
-                .addTo(manager.clusters)
-                .on('click', function () {
-                    // IS OPEN
-                    if (tweetInfo.story && manager.sidebar.isVisible() & $(`#story-${tweetInfo.story}`).length) {
-                        manager.activate(id);
-                    } else {
-                        manager.openSidebar(id);
-                    }
-                })
-        });
+    loadMarkers: function() {
+        $.getJSON(API_URL + 'poi', function(data) {
+            manager.data.tweets = {...manager.data.tweets, ...data.tweets};
+            manager.data.date = data.date;
+            Object.keys(data.tweets).forEach((id) => {
+                let tweetRaw = data.tweets[id];
+                let tweetInfo = {...url._urlToState(tweetRaw.url), ...tweetRaw}
+                manager.data.tweets[id] = tweetInfo;
+                if (tweetInfo.story) {
+                    if (!manager.data.stories[tweetInfo.story])
+                        manager.data.stories[tweetInfo.story] = [];
+                    manager.data.stories[tweetInfo.story].push(id);
+                }
+
+                L.marker(tweetInfo.center, {icon: icons['pollution']})
+                    .addTo(manager.clusters)
+                    .on('click', function () {
+                        // IS OPEN
+                        if (tweetInfo.story && manager.sidebar.isVisible() & $(`#story-${tweetInfo.story}`).length) {
+                            manager.activate(id);
+                        } else {
+                            manager.openSidebar(id);
+                        }
+                    })
+            });
+            $(manager).trigger('loaded');
+        })
     },
 
     addEventHandlers: function() {
@@ -209,5 +219,7 @@ let manager = {
         });
     }
 }
+
+window.tweets = manager;
 
 export default manager

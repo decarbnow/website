@@ -5,7 +5,7 @@ import base from "./base.js";
 import { icons } from "./marker/icons.js";
 import url from './url.js';
 
-const API_URL = 'http://127.0.0.1:5000/'
+import api from './api/proxy.js';
 
 let manager = {
     sidebar: null,
@@ -16,6 +16,7 @@ let manager = {
         date: null,
         tweets: [],
         stories: [],
+        pathToTweetId: {}
     },
 
     clusters: L.markerClusterGroup({
@@ -38,6 +39,7 @@ let manager = {
         manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         base.layerSets.points.layers.tweets.addLayer(manager.clusters);
 
+        api.init(__API__);
         manager.loadMarkers();
         manager.addEventHandlers();
     },
@@ -131,11 +133,15 @@ let manager = {
     },
 
     loadMarkers: function() {
-        $.getJSON(API_URL + 'poi', function(data) {
-            manager.data.tweets = {...manager.data.tweets, ...data.tweets};
-            manager.data.date = data.date;
-            Object.keys(data.tweets).forEach((id) => {
-                let tweetRaw = data.tweets[id];
+        api.getTweets().then(function(data) {
+            // console.log(data)
+            manager.data.tweets = data;
+            // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
+            // manager.data.date = data.date;
+            // console.log(manager.data.tweets)
+            Object.keys(manager.data.tweets).forEach((id) => {
+                let tweetRaw = manager.data.tweets[id];
+                manager.data.pathToTweetId[tweetRaw.url] = id;
                 let tweetInfo = {...url._urlToState(tweetRaw.url), ...tweetRaw}
                 manager.data.tweets[id] = tweetInfo;
                 if (tweetInfo.story) {

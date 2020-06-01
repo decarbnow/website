@@ -11,16 +11,16 @@ import tweets from './tweets.js';
 import url from './url.js';
 
 let initialState = {
-    zoom: 3,
+    zoom: 6,
     center: {
         lat: 22, // 48.2082,
         lng: 0, // 16.3738,
     },
     layers: [
         'light',
-        'power-plants',
-        'no2_2020_03',
-        'tweets'
+        // 'power-plants',
+        // 'no2_2020_03',
+        'tweets',
     ],
 }
 
@@ -102,25 +102,25 @@ let base = {
 
         let p = state.center || L.GeoIP.getPosition();
         // let p = state.center || s.center;
-        let z = state.zoom || 10;
+        // let z = state.zoom || s.zoom;
 
-        base.map.flyTo(p, z);
+        base.map.flyTo(p, s.zoom);
         base.afterNextMove = function() {
             base.finalInit(s)
             base.afterNextMove = null;
         }
     },
 
-    showSidebar: function(mod, content = null) {
+    showSidebar: function(module, content = null) {
         [tweets, twitter].forEach((m) => {
-            if (m != mod) {
+            if (m != module) {
                 m.sidebar.hide();
             }
         });
 
-        mod.sidebar.show();
+        module.sidebar.show();
         if (content)
-            mod.sidebar.setContent(content);
+            module.sidebar.setContent(content);
         return module.sidebar;
     },
 
@@ -137,11 +137,18 @@ let base = {
         tweets.init();
         twitter.init();
 
-        if (state.tweet) {
-            $(tweets).on("loaded", function() {
-                tweets.openSidebar(state.tweet, false)
-            });
-        }
+        $(tweets).on("loaded", function() {
+            if (state.tweet) {
+                // Tweet Id set, open sidebar
+                tweets.openSidebar(state.tweet, false);
+            } else {
+                // No tweet Id set, check if url exists
+                let path = url.getPath()
+                //console.log(path)
+                if (path in tweets.data.pathToTweetId)
+                    tweets.openSidebar(tweets.data.pathToTweetId[path], false);
+            }
+        });
     },
 
     showLayerId: function(id, layerSets = Object.keys(base.layerSets)) {

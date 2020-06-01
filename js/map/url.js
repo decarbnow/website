@@ -4,6 +4,7 @@ import { encode, decode } from '@alexpavlov/geohash-js';
 let url = {
     //prefix: '/map/',
     prefix: '/',
+    //prefix: '',
     keyValueDivider: '=',
     specialKeys: ['@'],
     listDivider: ',',
@@ -99,7 +100,11 @@ let url = {
 
     getState: function() {
         // console.log(window.location.pathname.substring(url.prefix.length))
-        return url._urlToState(window.location.pathname.substring(url.prefix.length));
+        return url._urlToState(url.getPath());
+    },
+
+    getPath: function() {
+        return window.location.pathname;
     },
 }
 

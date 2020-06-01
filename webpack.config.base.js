@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -6,6 +8,20 @@ const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
 //const path = require('path');
+// let api = {
+//     format: 'java',
+//     server: 'https://decarbnow.space/api/',
+// }
+//
+let api = {
+    format: 'python',
+    server: 'https://api.decarbnow.abteil.org/',
+}
+
+// let api = {
+//     format: 'file'
+// }
+
 
 module.exports = {
     entry: {
@@ -49,6 +65,9 @@ module.exports = {
             chunks: ['intro', 'introStyle'],
             template: 'intro.html'
         }),
+        new webpack.DefinePlugin({
+            __API__: JSON.stringify(api)
+        })
     ],
     output: {
         publicPath: '/'

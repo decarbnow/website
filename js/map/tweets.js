@@ -39,7 +39,7 @@ let manager = {
         manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         base.layerSets.points.layers.tweets.addLayer(manager.clusters);
 
-        api.init(__API__);
+        api.init();
         manager.loadMarkers();
         manager.addEventHandlers();
     },
@@ -134,7 +134,7 @@ let manager = {
 
     loadMarkers: function() {
         api.getTweets().then(function(data) {
-            // console.log(data)
+            console.log(data)
             manager.data.tweets = data;
             // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
             // manager.data.date = data.date;

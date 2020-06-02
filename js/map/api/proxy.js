@@ -3,7 +3,7 @@ import prepareJavaTweets from './java.js';
 
 
 window.recodeJavaBackend = function() {
-    return $.get('https://decarbnow.space/api/poi').then(function(data) {
+    return $.get('https://decarbnow.space/api/poi?size=100').then(function(data) {
         let pd = prepareJavaTweets(data);
         console.log('GOT:')
         console.log(pd)

@@ -7,20 +7,10 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 
-//const path = require('path');
-// let api = {
-//     format: 'java',
-//     server: 'https://decarbnow.space/api/',
-// }
-//
-let api = {
-    format: 'python',
-    server: 'https://api.decarbnow.abteil.org/',
-}
+const config = require('./config.json')
 
-// let api = {
-//     format: 'file'
-// }
+//const path = require('path');
+
 
 
 module.exports = {
@@ -66,7 +56,7 @@ module.exports = {
             template: 'intro.html'
         }),
         new webpack.DefinePlugin({
-            __API__: JSON.stringify(api)
+            __BACKEND__: JSON.stringify(config.backend)
         })
     ],
     output: {

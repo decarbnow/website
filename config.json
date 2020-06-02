@@ -1,0 +1,22 @@
+{
+    "backend": {
+        "default": "live",
+        "list": {
+            "live": {
+                "format": "java",
+                "server": "https://decarbnow.space/api/"
+            },
+            "devServer": {
+                "format": "python",
+                "server": "https://api.decarbnow.abteil.org/"
+            },
+            "devLocal": {
+                "format": "python",
+                "server": "http://127.0.0.1:5000/"
+            },
+            "file": {
+                "format": "file"
+            }
+        }
+    }
+}

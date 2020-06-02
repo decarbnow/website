@@ -1,24 +1,18 @@
 import fileTweets from './file.json';
 import prepareJavaTweets from './java.js';
 
-
-window.recodeJavaBackend = function() {
-    return $.get('https://decarbnow.space/api/poi?size=100').then(function(data) {
-        let pd = prepareJavaTweets(data);
-        console.log('GOT:')
-        console.log(pd)
-    });
-};
+let backends = __BACKEND__;
 
 let api = {
     settings: null,
-    init: function(settings) {
-        api.settings = settings;
+    init: function(backend = backends.default) {
+        // console.log(backend)
+        api.settings = backends.list[backend];
 
         switch(api.settings.format) {
             case 'java':
             api.getTweets = function() {
-                return $.get(`${api.settings.server}/poi`).then(function(data) {
+                return $.get(`${api.settings.server}/poi?size=100`).then(function(data) {
                     return prepareJavaTweets(data);
                 });
             };

@@ -181,6 +181,8 @@ let manager = {
             if(selectedTop > 0)
                 positionAllows.push("up");
 
+            console.log("direction:" + direction)
+            console.log("postion allows:" + positionAllows)
             if (positionAllows.includes(direction)) {
                 if (direction == 'down')
                     tn = t.next('.tweet');
@@ -192,9 +194,10 @@ let manager = {
             }
         }
 
-        // scroll bar
+        //scroll bar
         var lastScrollTop = 0;
         manager.sidebarDiv.bind('scroll', function(e) {
+            console.log("scrolling")
             let scrollTop = $(this).scrollTop()
             if(manager.tweetsLoaded()  && !manager.autoScrolling)
                 scrollAction(scrollTop > lastScrollTop ? 'down' : 'up')
@@ -202,9 +205,16 @@ let manager = {
         })
 
         // mouse wheel
-        manager.sidebarDiv.bind('wheel DOMMouseScroll', function(e) {
-            if(manager.tweetsLoaded()  && !manager.autoScrolling)
-                scrollAction(e.originalEvent.wheelDelta < 0 ? 'down' : 'up')
+        manager.sidebarDiv.bind('wheel', function(e) {
+            console.log("wheel scrolling")
+            if(manager.tweetsLoaded()  && !manager.autoScrolling){
+                //https://www.h3xed.com/programming/javascript-mouse-scroll-wheel-events-in-firefox-and-chrome
+                //let delta = e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -e.detail;
+                let delta = e.originalEvent.deltaY;
+                console.log("orgwheeld:" + delta)
+                scrollAction(delta < 0 ? 'down' : 'up')
+            }
+
         })
 
         // touch display

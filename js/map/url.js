@@ -75,7 +75,7 @@ let url = {
             };
 
         if (rs.z)
-            s.zoom = rs.z;
+            s.zoom = parseInt(rs.z);
 
         if (rs.ls)
             s.layers = rs.ls.split(url.listDivider);

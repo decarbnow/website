@@ -38,9 +38,11 @@ module.exports = {
     plugins: [
         new FaviconsWebpackPlugin(),
         new CleanWebpackPlugin(),
-        new CopyWebpackPlugin([
-            { from: 'data', to: 'data' }
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: 'data', to: 'data' }
+            ],
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css'
         }),

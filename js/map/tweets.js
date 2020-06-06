@@ -1,5 +1,4 @@
 import 'leaflet';
-import twemoji from 'twemoji';
 import MarkerClusterGroup from 'leaflet.markercluster';
 import base from "./base.js";
 import { icons } from "./marker/icons.js";

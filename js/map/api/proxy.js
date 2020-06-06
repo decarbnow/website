@@ -19,7 +19,7 @@ let api = {
             break;
             case 'python':
                 api.getTweets = function() {
-                    return $.get(`${api.settings.server}/poi`).then(function(data) {
+                    return $.get(`${api.settings.server}/tweets/`).then(function(data) {
                         return data.tweets
                     });
                 };

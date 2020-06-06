@@ -1,6 +1,6 @@
 {
     "backend": {
-        "default": "live",
+        "default": "devServer",
         "list": {
             "live": {
                 "format": "java",

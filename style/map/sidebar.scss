@@ -30,34 +30,19 @@
         font-size: 1.5em;
         margin: 20px 0;
     }
-    .arrow {
-      border: solid black;
-      border-width: 0 5px 5px 0;
-      display: inline-block;
-      padding: 5px;
-    }
 
-    .up {
-      transform: rotate(-135deg);
-      -webkit-transform: rotate(-135deg);
-    }
-
-    .down {
-      transform: rotate(45deg);
-      -webkit-transform: rotate(45deg);
-    }
     #show-tweet-sidebar {
         .story {
             display: grid;
-            grid-gap: 0px;
+            grid-gap: 50px;
             grid-template-columns: 100%;
             // margin: 0 0 500px 0;
         }
         .tweet {
             position: relative;
-            &.loaded {
+            &:not(.loading) {
                 opacity: 0.4;
-                transition: all 1s linear;
+                transition: all 0.2s linear;
 
                 .overlay {
                     position: absolute;

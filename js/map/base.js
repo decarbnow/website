@@ -5,12 +5,12 @@ import 'leaflet-control-geocoder';
 
 import './geoip.js';
 import './marker/control.js';
-import twitter from './twitter.js';
+//import twitter from './twitter.js';
 import { layerSets, layers } from './layers/sets.js'
 import tweets from './tweets.js';
 import url from './url.js';
 
-let initialState = {
+let defaultState = {
     zoom: 6,
     center: {
         lat: 22, // 48.2082,
@@ -29,8 +29,8 @@ let base = {
     sidebars: {},
     layerSets: {},
     layers: {},
-    pushingState: false,
-    afterNextMove: null,
+    pushState: false,
+    sidebarOffset: null,
 
     init: function() {
         // init leaflet map
@@ -62,8 +62,6 @@ let base = {
             //             dummy.select();
             //             document.execCommand('copy');
             //             document.body.removeChild(dummy);
-            //
-            //             base.afterNextMove = null;
             //         }
             //     }
             // }]
@@ -72,12 +70,31 @@ let base = {
         //base.addLayers()
         base.addEventHandlers();
 
-        base.map.setView(initialState.center, initialState.zoom);
+        base.map.setView(defaultState.center, defaultState.zoom);
 
         base.layerSets = layerSets;
         base.layers = layers;
 
-        base.setState(url.getState());
+        tweets.init();
+
+        let state = url.getState();
+
+        base.setState(state);
+
+        $(base.map).one('moveend', function () {
+            let tweet = state.tweet;
+            if (!state.tweet) {
+                let path = url.getPath()
+                //console.log(path)
+                if (path in tweets.data.pathToTweetId)
+                    tweet = tweets.data.pathToTweetId[path];
+            }
+            if (tweet)
+                tweets.show(tweet);
+            base.addControls();
+        })
+        base.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
+        // twitter.init();
         base.pushingState = true;
     },
 
@@ -85,34 +102,45 @@ let base = {
         return {
             center: base.map.getCenter(),
             zoom: base.map.getZoom(),
-            layers: base.getVisibleLayerIds(),
+            layers: base.getVisibleLayers(),
             tweet: tweets.activeTweet,
         }
     },
 
     setState: function(state) {
-        let s = {...initialState, ...state};
-
-        s.layers.forEach((n) => {
-            base.showLayerId(n, ['tiles']);
-        });
-        // default tile layer
-        if (base.layerSets.tiles.getVisibleLayers().length == 0)
-            base.map.addLayer(base.layerSets.tiles.layers['light'])
+        let s = {...defaultState, ...state};
+        base.pushState = false;
 
         let p = state.center || L.GeoIP.getPosition();
         // let p = state.center || s.center;
         // let z = state.zoom || s.zoom;
 
-        base.map.flyTo(p, s.zoom);
-        base.afterNextMove = function() {
-            base.finalInit(s)
-            base.afterNextMove = null;
+        // Only show tile layer in fly-to animation
+        let layers = base.layerSets.tiles.getVisibleLayers();
+        if (layers.length == 0) {
+            // get that in state
+            let tileLayers = Object.keys(base.layerSets.tiles.layers)
+            layers = s.layers.filter(x => tileLayers.includes(x))
         }
+        base.showLayers(layers);
+
+        base.map.flyTo(p, s.zoom);
+
+        $(base.map).one('moveend', function () {
+            base.showLayers(s.layers);
+            base.pushState = true;
+            url.pushState()
+        })
+    },
+
+    getSidebarCorrectedCenter: function(center, zoom) {
+        return base.map.unproject(base.map.project(center, zoom).subtract([base.sidebarOffset / 2, 0]), zoom);
     },
 
     showSidebar: function(module, content = null) {
-        [tweets, twitter].forEach((m) => {
+        //let sbs = [tweets, twitter]
+        let sbs = [tweets]
+        sbs.forEach((m) => {
             if (m != module) {
                 m.sidebar.hide();
             }
@@ -124,57 +152,38 @@ let base = {
         return module.sidebar;
     },
 
-    finalInit: function(state) {
-        state.layers.forEach((n) => {
-            base.showLayerId(n);
+
+    showLayers: function(ids) {
+        let visibleLayers = base.getVisibleLayers()
+
+        ids.forEach((id) => {
+            base.showLayer(id);
         });
-        // default polltion layer
+
+        // Hide layers visible, but not in ids
+        let hide = visibleLayers.filter(x => !ids.includes(x));
+        hide.forEach((id) => {
+            base.hideLayer(id)
+        });
+
+        if (base.layerSets.tiles.getVisibleLayers().length == 0)
+            base.map.addLayer(base.layerSets.tiles.layers['light'])
+
         if (base.layerSets.pollutions.getVisibleLayers().length == 0)
             base.map.addLayer(base.layerSets.pollutions.layers['empty'])
-
-        base.addControls();
-        // tweetsLegacy.init();
-        tweets.init();
-        twitter.init();
-
-        $(tweets).on("loaded", function() {
-            if (state.tweet) {
-                // Tweet Id set, open sidebar
-                tweets.openSidebar(state.tweet, false);
-            } else {
-                // No tweet Id set, check if url exists
-                let path = url.getPath()
-                //console.log(path)
-                if (path in tweets.data.pathToTweetId)
-                    tweets.openSidebar(tweets.data.pathToTweetId[path], false);
-            }
-        });
     },
 
-    showLayerId: function(id, layerSets = Object.keys(base.layerSets)) {
-        // if (id in base.layers && !base.map.hasLayer(base.layers[id]))
-        //     base.map.addLayer(base.layers[id]);
-
-        layerSets.forEach(k => {
-            // console.log(k)
-            let layers = base.layerSets[k].layers;
-            if (id in layers && !base.map.hasLayer(layers[id]))
-                base.map.addLayer(layers[id])
-        });
+    showLayer: function(id) {
+        if (!base.map.hasLayer(base.layers[id]))
+            base.map.addLayer(base.layers[id])
     },
 
-    hideLayerId: function(id, layerSets = Object.keys(base.layerSets)) {
-        // if (id in base.layers && !base.map.hasLayer(base.layers[id]))
-        //     base.map.removeLayer(base.layers[id]);
-
-        layerSets.forEach(k => {
-            let layers = base.layerSets[k].layers;
-            if (id in layers && base.map.hasLayer(layers[id]))
-                base.map.removeLayer(layers[id])
-        });
+    hideLayer: function(id) {
+        if (base.map.hasLayer(base.layers[id]))
+            base.map.removeLayer(base.layers[id])
     },
 
-    getVisibleLayerIds: function() {
+    getVisibleLayers: function() {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
     },
 
@@ -187,14 +196,14 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
+        L.control.layers(layerSets.tiles.getNameObject(), null, {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layers(layerSets.tiles.getNameObject(), null, {
+        L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
-            collapsed: false
+            collapsed: true
         }).addTo(base.map);
 
         // Object.values(base.sidebars).forEach(s => {
@@ -204,25 +213,23 @@ let base = {
 
     addEventHandlers: function() {
         base.map.on("moveend", function () {
-            if (base.pushingState) {
-                if (base.afterNextMove)
-                    base.afterNextMove();
+            if (base.pushState) {
                 url.pushState()
             }
         });
 
         base.map.on("contextmenu", function (e) {
             base.map.flyTo(e.latlng);
-            twitter.openSidebar(e.latlng)
+            //twitter.openSidebar(e.latlng)
         });
 
         base.map.on("click", function (e) {
             tweets.closeSidebar();
-            twitter.closeSidebar();
+            //twitter.closeSidebar();
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {
-            if (base.pushingState)
+            if (base.pushState)
                 url.pushState();
             return true;
         });

@@ -94,7 +94,7 @@ let url = {
             Title: `Lat: ${state.center.lat}, Lng: ${state.center.lng}`,
             Url: url._stateToUrl(state)
         };
-
+        console.log(obj.Url)
         history.pushState(obj, obj.Title, obj.Url);
     },
 

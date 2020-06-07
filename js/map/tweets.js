@@ -9,6 +9,7 @@ import api from './api/proxy.js';
 let manager = {
     sidebar: null,
     activeTweet: null,
+    activeStory: null,
     autoScrolling: false,
     sidebarDiv: null,
     data: {
@@ -35,7 +36,6 @@ let manager = {
         base.map.addControl(manager.sidebar)
         manager.sidebarDiv = $('#show-tweet-sidebar')
 
-        manager.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         base.layerSets.points.layers.tweets.addLayer(manager.clusters);
 
         api.init();
@@ -43,31 +43,8 @@ let manager = {
         manager.addEventHandlers();
     },
 
-    activate: function(id, move = true) {
-        let tweetInfo = manager.data.tweets[id];
+    scrollAndActivateTweet: function(id) {
         let tweetDiv = $(`#tweet-${id}`);
-
-        if (tweetInfo.layers) {
-            let visibleLayers = base.getVisibleLayerIds()
-
-            let hide = visibleLayers.filter(x => !tweetInfo.layers.includes(x));
-            hide.forEach((lid) => {
-                base.hideLayerId(lid)
-            });
-
-            let show = tweetInfo.layers.filter(x => !visibleLayers.includes(x) );
-            show.forEach((lid) => {
-                base.showLayerId(lid)
-            });
-        }
-
-        let zoom = 10;
-        if (tweetInfo.zoom)
-            zoom = tweetInfo.zoom
-
-        if (move) {
-            base.map.flyTo(base.map.unproject(base.map.project(tweetInfo.center, zoom).subtract([manager.sidebarOffset / 2, 0]), zoom), zoom);
-        }
 
         manager.autoScrolling = true;
         manager.sidebarDiv.animate({
@@ -80,21 +57,83 @@ let manager = {
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
         tweetDiv.addClass('selected');
-
-        manager.activeTweet = id;
-        url.pushState()
     },
 
-    openSidebar: function(id, move = true) {
+    show: function(id, updateState = true) {
+        if (id == manager.activateTweet)
+            return;
+
+        let tweetInfo = manager.data.tweets[id];
+        let tweetDiv = $(`#tweet-${id}`);
+
+        if (tweetInfo.story && manager.activeStory == tweetInfo.story) {
+            manager.scrollAndActivateTweet(id);
+        } else {
+            manager.openSidebar(id);
+        }
+
+        let s = {...tweetInfo.state};
+        s.center = base.getSidebarCorrectedCenter(s.center, s.zoom);
+        base.setState(s);
+
+        manager.activeTweet = id;
+        manager.activeStory = tweetInfo.story;
+    },
+
+    // activate: function(id, move = true) {
+    //     let tweetInfo = manager.data.tweets[id];
+    //     let tweetDiv = $(`#tweet-${id}`);
+    //
+    //     if (move)
+    //         base.setState(tweetInfo.state);
+    //     //
+    //     // if (tweetInfo.layers) {
+    //     //     let visibleLayers = base.getVisibleLayers()
+    //     //
+    //     //     let hide = visibleLayers.filter(x => !tweetInfo.layers.includes(x));
+    //     //     hide.forEach((lid) => {
+    //     //         base.hideLayer(lid)
+    //     //     });
+    //     //
+    //     //     let show = tweetInfo.layers.filter(x => !visibleLayers.includes(x) );
+    //     //     show.forEach((lid) => {
+    //     //         base.showLayer(lid)
+    //     //     });
+    //     // }
+    //     //
+    //     // let zoom = 10;
+    //     // if (tweetInfo.zoom)
+    //     //     zoom = tweetInfo.zoom
+    //     //
+    //     // if (move) {
+    //     //     base.map.flyTo(base.map.unproject(base.map.project(tweetInfo.center, zoom).subtract([manager.sidebarOffset / 2, 0]), zoom), zoom);
+    //     // }
+    //
+    //     manager.autoScrolling = true;
+    //     manager.sidebarDiv.animate({
+    //         scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top
+    //     }, 400, function() {
+    //         setTimeout(function() {
+    //             manager.autoScrolling = false;
+    //         }, 200);
+    //     })
+    //
+    //     tweetDiv.parent().find('.tweet.selected').removeClass('selected');
+    //     tweetDiv.addClass('selected');
+    //
+    //     manager.activeTweet = id;
+    //     url.pushState()
+    // },
+
+    openSidebar: function(id) {
         let tweetInfo = manager.data.tweets[id];
 
         let ids = [id];
-
         if (tweetInfo.story)
             ids = manager.data.stories[tweetInfo.story];
 
         let entries = ids.map(tweetId => {
-            let classes = ['tweet', 'unloaded'];
+            let classes = ['tweet', 'loading'];
             if (id == tweetId)
                 classes.push('selected');
             return `
@@ -113,22 +152,24 @@ let manager = {
         manager.sidebarDiv.find('.tweet').each((i, e) => {
             let te = $(e);
             window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(function () {
-                te.addClass('loaded');
-                te.removeClass('unloaded');
-                if (manager.tweetsLoaded())
-                    manager.activate(id, move);
+                te.removeClass('loading');
+                if (manager.tweetsLoaded()) {
+                    manager.scrollAndActivateTweet(id);
+                }
+
             });
         });
     },
 
     closeSidebar: function() {
         manager.activeTweet = null;
+        manager.activeStory = null;
         manager.sidebar.hide();
         url.pushState();
     },
 
     tweetsLoaded: function() {
-        return (manager.sidebarDiv.find('.tweet.unloaded').length == 0);
+        return (manager.sidebarDiv.find('.tweet.loading').length == 0);
     },
 
     loadMarkers: function() {
@@ -139,9 +180,11 @@ let manager = {
             // manager.data.date = data.date;
             // console.log(manager.data.tweets)
             Object.keys(manager.data.tweets).forEach((id) => {
-                let tweetRaw = manager.data.tweets[id];
-                manager.data.pathToTweetId[tweetRaw.url] = id;
-                let tweetInfo = {...url._urlToState(tweetRaw.url), ...tweetRaw}
+                let tweetInfo = manager.data.tweets[id];
+
+                manager.data.pathToTweetId[tweetInfo.url] = id;
+                tweetInfo.state = url._urlToState(tweetInfo.url)
+
                 manager.data.tweets[id] = tweetInfo;
                 if (tweetInfo.story) {
                     if (!manager.data.stories[tweetInfo.story])
@@ -149,15 +192,10 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                L.marker(tweetInfo.center, {icon: icons['pollution']})
+                L.marker(tweetInfo.state.center, {icon: icons['pollution']})
                     .addTo(manager.clusters)
                     .on('click', function () {
-                        // IS OPEN
-                        if (tweetInfo.story && manager.sidebar.isVisible() & $(`#story-${tweetInfo.story}`).length) {
-                            manager.activate(id);
-                        } else {
-                            manager.openSidebar(id);
-                        }
+                        manager.show(id)
                     })
             });
             $(manager).trigger('loaded');
@@ -175,7 +213,7 @@ let manager = {
                 scrollWindowHeight = manager.sidebarDiv.height();
 
             let positionAllows = [];
-            if(selectedTop + selectedHeight < scrollWindowHeight /* - SOMETHING */)
+            if(selectedTop + selectedHeight < scrollWindowHeight - 25/* - SOMETHING */)
                 positionAllows.push("down");
             if(selectedTop > 0)
                 positionAllows.push("up");
@@ -189,7 +227,7 @@ let manager = {
                     tn = t.prev('.tweet');
 
                 if (tn.length > 0)
-                    manager.activate(tn.data('tweet'));
+                    manager.show(tn.data('tweet'));
             }
         }
 
@@ -211,7 +249,7 @@ let manager = {
                 //let delta = e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -e.detail;
                 let delta = e.originalEvent.deltaY;
                 console.log("orgwheeld:" + delta)
-                scrollAction(delta < 0 ? 'down' : 'up')
+                scrollAction(delta > 0 ? 'down' : 'up')
             }
 
         })
@@ -229,8 +267,8 @@ let manager = {
         });
 
         // click activate
-        manager.sidebarDiv.on('click', '.tweet.loaded .overlay', function(e) {
-            manager.activate($(this).parents('.tweet').data('tweet'));
+        manager.sidebarDiv.on('click', '.tweet .overlay', function(e) {
+            manager.show($(this).parents('.tweet').data('tweet'));
         });
     }
 }

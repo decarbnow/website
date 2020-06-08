@@ -32,7 +32,7 @@ let layersList = {
             subdomains:['mt0','mt1','mt2','mt3']
         }),
         name: 'Light'
-    }
+    },
 };
 
 export default {

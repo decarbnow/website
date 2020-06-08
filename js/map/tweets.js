@@ -36,7 +36,7 @@ let manager = {
         base.map.addControl(manager.sidebar)
         manager.sidebarDiv = $('#show-tweet-sidebar')
 
-        base.layerSets.points.layers.tweets.addLayer(manager.clusters);
+        base.layerSets.tweets.layers.tweets.addLayer(manager.clusters);
 
         api.init();
         manager.loadMarkers();
@@ -52,7 +52,7 @@ let manager = {
         }, 400, function() {
             setTimeout(function() {
                 manager.autoScrolling = false;
-            }, 200);
+            }, 400);
         })
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
@@ -79,51 +79,6 @@ let manager = {
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
     },
-
-    // activate: function(id, move = true) {
-    //     let tweetInfo = manager.data.tweets[id];
-    //     let tweetDiv = $(`#tweet-${id}`);
-    //
-    //     if (move)
-    //         base.setState(tweetInfo.state);
-    //     //
-    //     // if (tweetInfo.layers) {
-    //     //     let visibleLayers = base.getVisibleLayers()
-    //     //
-    //     //     let hide = visibleLayers.filter(x => !tweetInfo.layers.includes(x));
-    //     //     hide.forEach((lid) => {
-    //     //         base.hideLayer(lid)
-    //     //     });
-    //     //
-    //     //     let show = tweetInfo.layers.filter(x => !visibleLayers.includes(x) );
-    //     //     show.forEach((lid) => {
-    //     //         base.showLayer(lid)
-    //     //     });
-    //     // }
-    //     //
-    //     // let zoom = 10;
-    //     // if (tweetInfo.zoom)
-    //     //     zoom = tweetInfo.zoom
-    //     //
-    //     // if (move) {
-    //     //     base.map.flyTo(base.map.unproject(base.map.project(tweetInfo.center, zoom).subtract([manager.sidebarOffset / 2, 0]), zoom), zoom);
-    //     // }
-    //
-    //     manager.autoScrolling = true;
-    //     manager.sidebarDiv.animate({
-    //         scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top
-    //     }, 400, function() {
-    //         setTimeout(function() {
-    //             manager.autoScrolling = false;
-    //         }, 200);
-    //     })
-    //
-    //     tweetDiv.parent().find('.tweet.selected').removeClass('selected');
-    //     tweetDiv.addClass('selected');
-    //
-    //     manager.activeTweet = id;
-    //     url.pushState()
-    // },
 
     openSidebar: function(id) {
         let tweetInfo = manager.data.tweets[id];
@@ -174,7 +129,7 @@ let manager = {
 
     loadMarkers: function() {
         api.getTweets().then(function(data) {
-            console.log(data)
+            // console.log(data)
             manager.data.tweets = data;
             // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
             // manager.data.date = data.date;
@@ -218,8 +173,8 @@ let manager = {
             if(selectedTop > 0)
                 positionAllows.push("up");
 
-            console.log("direction:" + direction)
-            console.log("postion allows:" + positionAllows)
+            // console.log("direction:" + direction)
+            // console.log("postion allows:" + positionAllows)
             if (positionAllows.includes(direction)) {
                 if (direction == 'down')
                     tn = t.next('.tweet');
@@ -234,7 +189,7 @@ let manager = {
         //scroll bar
         var lastScrollTop = 0;
         manager.sidebarDiv.bind('scroll', function(e) {
-            console.log("scrolling")
+            // console.log("scrolling")
             let scrollTop = $(this).scrollTop()
             if(manager.tweetsLoaded()  && !manager.autoScrolling)
                 scrollAction(scrollTop > lastScrollTop ? 'down' : 'up')
@@ -243,12 +198,12 @@ let manager = {
 
         // mouse wheel
         manager.sidebarDiv.bind('wheel', function(e) {
-            console.log("wheel scrolling")
+            // console.log("wheel scrolling")
             if(manager.tweetsLoaded()  && !manager.autoScrolling){
                 //https://www.h3xed.com/programming/javascript-mouse-scroll-wheel-events-in-firefox-and-chrome
                 //let delta = e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -e.detail;
                 let delta = e.originalEvent.deltaY;
-                console.log("orgwheeld:" + delta)
+                // console.log("orgwheeld:" + delta)
                 scrollAction(delta > 0 ? 'down' : 'up')
             }
 

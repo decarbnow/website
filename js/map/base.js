@@ -78,8 +78,9 @@ let base = {
         tweets.init();
 
         let state = url.getState();
-
-        base.setState(state);
+        if (!state.center)
+            state.center = L.GeoIP.getPosition();
+        base.setState({...defaultState, ...state});
 
         $(base.map).one('moveend', function () {
             let tweet = state.tweet;
@@ -95,7 +96,6 @@ let base = {
         })
         base.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         // twitter.init();
-        base.pushingState = true;
     },
 
     getState: function() {
@@ -108,29 +108,29 @@ let base = {
     },
 
     setState: function(state) {
-        let s = {...defaultState, ...state};
         base.pushState = false;
-
-        let p = state.center || L.GeoIP.getPosition();
-        // let p = state.center || s.center;
-        // let z = state.zoom || s.zoom;
-
-        // Only show tile layer in fly-to animation
-        let layers = base.layerSets.tiles.getVisibleLayers();
-        if (layers.length == 0) {
-            // get that in state
-            let tileLayers = Object.keys(base.layerSets.tiles.layers)
-            layers = s.layers.filter(x => tileLayers.includes(x))
-        }
-        base.showLayers(layers);
-
-        base.map.flyTo(p, s.zoom);
-
+        base.flyTo(state);
         $(base.map).one('moveend', function () {
-            base.showLayers(s.layers);
+            base.showLayers(state.layers);
             base.pushState = true;
             url.pushState()
         })
+    },
+
+    flyTo: function(state) {
+        // Only show tile layer in fly-to animation
+        let tileLayers = Object.keys(base.layerSets.tiles.layers)
+        let layers = state.layers.filter(x => tileLayers.includes(x))
+
+        // let layers = base.layerSets.tiles.getVisibleLayers();
+        // if (layers.length == 0) {
+        //     // get that in state
+        //     let tileLayers = Object.keys(base.layerSets.tiles.layers)
+        //     layers = state.layers.filter(x => tileLayers.includes(x))
+        // }
+
+        base.showLayers(layers);
+        base.map.flyTo(state.center, state.zoom);
     },
 
     getSidebarCorrectedCenter: function(center, zoom) {
@@ -156,19 +156,22 @@ let base = {
     showLayers: function(ids) {
         let visibleLayers = base.getVisibleLayers()
 
+        // Show
         ids.forEach((id) => {
             base.showLayer(id);
         });
 
         // Hide layers visible, but not in ids
-        let hide = visibleLayers.filter(x => !ids.includes(x));
-        hide.forEach((id) => {
-            base.hideLayer(id)
+        visibleLayers.forEach((id) => {
+            if (!ids.includes(id))
+                base.hideLayer(id)
         });
 
+        // Default to light tiles
         if (base.layerSets.tiles.getVisibleLayers().length == 0)
             base.map.addLayer(base.layerSets.tiles.layers['light'])
 
+        // Default to empty pollution layer
         if (base.layerSets.pollutions.getVisibleLayers().length == 0)
             base.map.addLayer(base.layerSets.pollutions.layers['empty'])
     },
@@ -196,7 +199,7 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(layerSets.tiles.getNameObject(), null, {
+        L.control.layers(layerSets.tiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topright',
             collapsed: false
         }).addTo(base.map);

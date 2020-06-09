@@ -30,7 +30,6 @@ let base = {
     layerSets: {},
     layers: {},
     pushState: false,
-    sidebarOffset: null,
 
     init: function() {
         // init leaflet map
@@ -70,13 +69,24 @@ let base = {
         //base.addLayers()
         base.addEventHandlers();
 
-        base.map.setView(defaultState.center, defaultState.zoom);
-
         base.layerSets = layerSets;
         base.layers = layers;
 
         tweets.init();
+        base.setInitialState();
+    },
 
+    getState: function() {
+        return {
+            center: base.map.getCenter(),
+            zoom: base.map.getZoom(),
+            layers: base.getVisibleLayers(),
+            tweet: tweets.activeTweet,
+        }
+    },
+
+    setInitialState: function() {
+        base.map.setView(defaultState.center, defaultState.zoom);
         let state = url.getState();
         if (!state.center)
             state.center = L.GeoIP.getPosition();
@@ -94,17 +104,6 @@ let base = {
                 tweets.show(tweet);
             base.addControls();
         })
-        base.sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
-        // twitter.init();
-    },
-
-    getState: function() {
-        return {
-            center: base.map.getCenter(),
-            zoom: base.map.getZoom(),
-            layers: base.getVisibleLayers(),
-            tweet: tweets.activeTweet,
-        }
     },
 
     setState: function(state) {
@@ -134,7 +133,8 @@ let base = {
     },
 
     getSidebarCorrectedCenter: function(center, zoom) {
-        return base.map.unproject(base.map.project(center, zoom).subtract([base.sidebarOffset / 2, 0]), zoom);
+        let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
+        return base.map.unproject(base.map.project(center, zoom).subtract([sidebarOffset / 2, 0]), zoom);
     },
 
     showSidebar: function(module, content = null) {

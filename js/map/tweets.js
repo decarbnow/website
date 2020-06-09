@@ -64,17 +64,15 @@ let manager = {
             return;
 
         let tweetInfo = manager.data.tweets[id];
-        let tweetDiv = $(`#tweet-${id}`);
 
-        if (tweetInfo.story && manager.activeStory == tweetInfo.story) {
+        if (tweetInfo.story && manager.activeStory == tweetInfo.story)
             manager.scrollAndActivateTweet(id);
-        } else {
+        else
             manager.openSidebar(id);
-        }
 
-        let s = {...tweetInfo.state};
-        s.center = base.getSidebarCorrectedCenter(s.center, s.zoom);
-        base.setState(s);
+        let state = {...tweetInfo.state};
+        state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
+        base.setState(state);
 
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
@@ -108,10 +106,8 @@ let manager = {
             let te = $(e);
             window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(function () {
                 te.removeClass('loading');
-                if (manager.tweetsLoaded()) {
+                if (manager.tweetsLoaded())
                     manager.scrollAndActivateTweet(id);
-                }
-
             });
         });
     },

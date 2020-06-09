@@ -147,7 +147,7 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                L.marker(tweetInfo.state.center, {icon: icons['pollution']})
+                L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
                     .addTo(manager.clusters)
                     .on('click', function () {
                         manager.show(id)

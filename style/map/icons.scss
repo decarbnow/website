@@ -20,7 +20,8 @@
         border-radius: 50%;
     }
     &.action::after {
-        background: rgba(255, 233, 46, 1) !important;
+        //background: rgba(255, 233, 46, 1) !important;
+        background: rgb(42, 66, 64) !important;
     }
     &.transition::after {
         background: rgb(57, 219, 113) !important;
@@ -43,7 +44,8 @@
 }
 
 .custom-div-icon i.action {
-    color: rgba(234, 36, 97, 1) !important;
+    //color: rgba(234, 36, 97, 1) !important;
+    color: white !important;
     font-size: 11px !important;
     margin: 12px auto;
     padding-top: 2px;

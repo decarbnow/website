@@ -1,10 +1,10 @@
 {
     "backend": {
-        "default": "devServer",
+        "default": "live",
         "list": {
             "live": {
-                "format": "java",
-                "server": "https://decarbnow.space/api/"
+                "format": "python",
+                "server": "https://dev.decarbnow.space/"
             },
             "devServer": {
                 "format": "python",

@@ -1,6 +1,6 @@
 import { map } from 'leaflet';
 import 'leaflet-sidebar';
-//import 'leaflet-contextmenu';
+import 'leaflet-contextmenu';
 import 'leaflet-control-geocoder';
 
 import './geoip.js';
@@ -37,9 +37,9 @@ let base = {
             zoomControl: false,
             tap: true,
             maxZoom: 19,
-            // contextmenu: true,
-            // contextmenuWidth: 140,
-            // contextmenuItems: [{
+            contextmenu: true,
+            contextmenuWidth: 200,
+            contextmenuItems: [{
             //     text: 'Tweet ...',
             //     callback: function(e) {
             //         base.sidebar.hide();
@@ -47,23 +47,38 @@ let base = {
             //         twitter.showTweetBox(e.latlng)
             //     }
             // }, {
-            //     text: 'Copy View Link',
-            //     callback: function(e) {
-            //         base.map.flyTo(e.latlng);
-            //         base.afterNextMove = function() {
-            //             url.pushState();
-            //
-            //             var dummy = document.createElement('input'),
-            //                 text = window.location.href;
-            //
-            //             document.body.appendChild(dummy);
-            //             dummy.value = text;
-            //             dummy.select();
-            //             document.execCommand('copy');
-            //             document.body.removeChild(dummy);
-            //         }
-            //     }
-            // }]
+                text: 'Copy area link',
+                callback: function(e) {
+                    var dummy = document.createElement('input'),
+                        text = window.location.href;
+
+                    document.body.appendChild(dummy);
+                    dummy.value = text;
+                    dummy.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummy);
+                }
+            }, {
+                text: 'Center here and copy area link',
+                callback: function(e) {
+                    base.map.flyTo(e.latlng);
+                    $(base.map).one('moveend', function () {
+                        var dummy = document.createElement('input'),
+                            text = window.location.href;
+
+                        document.body.appendChild(dummy);
+                        dummy.value = text;
+                        dummy.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(dummy);
+                    })
+                }
+            }, {
+                text: 'Center here ...',
+                callback: function(e) {
+                    base.map.flyTo(e.latlng);
+                }
+            }]
         });
 
         //base.addLayers()
@@ -221,10 +236,10 @@ let base = {
             }
         });
 
-        base.map.on("contextmenu", function (e) {
-            base.map.flyTo(e.latlng);
-            //twitter.openSidebar(e.latlng)
-        });
+        // base.map.on("contextmenu", function (e) {
+        //     //base.map.flyTo(e.latlng);
+        //     //twitter.openSidebar(e.latlng)
+        // });
 
         base.map.on("click", function (e) {
             tweets.closeSidebar();

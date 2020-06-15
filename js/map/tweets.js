@@ -48,7 +48,7 @@ let manager = {
 
         manager.autoScrolling = true;
         manager.sidebarDiv.animate({
-            scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top
+            scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top - 80
         }, 400, function() {
             setTimeout(function() {
                 manager.autoScrolling = false;
@@ -164,7 +164,7 @@ let manager = {
                 scrollWindowHeight = manager.sidebarDiv.height();
 
             let positionAllows = [];
-            if(selectedTop + selectedHeight < scrollWindowHeight - 25/* - SOMETHING */)
+            if(selectedTop + selectedHeight < scrollWindowHeight - 200/* - SOMETHING */)
                 positionAllows.push("down");
             if(selectedTop > 0)
                 positionAllows.push("up");

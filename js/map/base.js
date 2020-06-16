@@ -18,8 +18,8 @@ let defaultState = {
     },
     layers: [
         'light',
-        // 'power-plants',
-        // 'no2_2020_03',
+        'power-plants',
+        'no2_2019',
         'tweets',
     ],
 }

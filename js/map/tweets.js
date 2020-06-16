@@ -143,6 +143,9 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
+                if (tweetInfo.hashtags.includes('private'))
+                    return;
+                    
                 L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
                     .addTo(manager.clusters)
                     .on('click', function () {

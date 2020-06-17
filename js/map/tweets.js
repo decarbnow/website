@@ -104,7 +104,8 @@ let manager = {
 
         manager.sidebarDiv.find('.tweet').each((i, e) => {
             let te = $(e);
-            window.twttr.widgets.createTweet(te.data('tweet'), te.find('.widget')[0], {conversation: 'none'}).then(function () {
+            let tweetId = te.data('tweet').toString();
+            window.twttr.widgets.createTweet(tweetId, document.getElementById(`tweet-${tweetId}`).getElementsByClassName("widget")[0], {conversation: 'none'}).then(function () {
                 te.removeClass('loading');
                 if (manager.tweetsLoaded())
                     manager.scrollAndActivateTweet(id);
@@ -145,7 +146,7 @@ let manager = {
 
                 if (tweetInfo.hashtags.includes('private'))
                     return;
-                    
+
                 L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
                     .addTo(manager.clusters)
                     .on('click', function () {

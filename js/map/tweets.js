@@ -144,7 +144,7 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                if (tweetInfo.hashtags.includes('private'))
+                if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
                     return;
 
                 L.marker(tweetInfo.state.center, {icon: icons['climateaction']})

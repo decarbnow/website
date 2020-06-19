@@ -52,7 +52,7 @@ let manager = {
         }, 400, function() {
             setTimeout(function() {
                 manager.autoScrolling = false;
-            }, 400);
+            }, 700);
         })
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
@@ -168,7 +168,7 @@ let manager = {
                 scrollWindowHeight = manager.sidebarDiv.height();
 
             let positionAllows = [];
-            if(selectedTop + selectedHeight < scrollWindowHeight - 200/* - SOMETHING */)
+            if(selectedTop + selectedHeight < scrollWindowHeight - 70/* - SOMETHING */)
                 positionAllows.push("down");
             if(selectedTop > 0)
                 positionAllows.push("up");

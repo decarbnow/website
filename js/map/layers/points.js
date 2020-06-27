@@ -76,40 +76,7 @@ let layersList = {
                                 '</table>');
             }
         }
-    },
-    'countries': {
-        file: "countries.geojson",
-        name: "Countries <i class='fa fa-info-circle'></i>",
-        attr: {
-            style: {
-                color: '#d3d3d3'
-            },
-            // pointToLayer: function(feature, latlng) {
-            //     return new L.polygon(latlng, {fill: 'red'});
-            // },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.CNTRY_NAME + '</td></tr>' +
-                                '</table>');
-            }
-        }
-    },
-    'countries_at': {
-        file: "countries_at.geojson",
-        name: "Countries at <i class='fa fa-info-circle'></i>",
-        attr: {
-            style: {
-                color: 'red',
-                stroke: false
-            },
-            // pointToLayer: function(feature, latlng) {
-            //     return new L.polygon(latlng, {fill: 'red'});
-            // },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.CNTRY_NAME + '</td></tr>' +
-                                '</table>');
-            }
-        }
-    },
+    }
 };
 
 export default {

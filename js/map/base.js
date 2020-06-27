@@ -224,6 +224,10 @@ let base = {
             collapsed: true
         }).addTo(base.map);
 
+        L.control.layers(null, layerSets.countries.getNameObject(), {
+            position: 'topright',
+            collapsed: true
+        }).addTo(base.map);
         // Object.values(base.sidebars).forEach(s => {
         //     base.map.addControl(s);
         // });

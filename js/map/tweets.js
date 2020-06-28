@@ -137,6 +137,9 @@ let manager = {
                 manager.data.pathToTweetId[tweetInfo.url] = id;
                 tweetInfo.state = url._urlToState(tweetInfo.url)
 
+                if (!tweetInfo.state.center)
+                    return;
+                    
                 manager.data.tweets[id] = tweetInfo;
                 if (tweetInfo.story) {
                     if (!manager.data.stories[tweetInfo.story])

@@ -8,8 +8,8 @@
     "map": "webpack-dev-server --config webpack.config.dev.map.js",
     "intro": "webpack-dev-server --config webpack.config.dev.intro.js",
     "build": "webpack --config webpack.config.prod.js",
-    "live": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.space:/var/www/html/decarbnow/public/",
-    "abteil": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.abteil.org:/var/www/html/decarbnow/dev/"
+    "live": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.space:/var/www/html/decarbnow/live/",
+    "dev": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.abteil.org:/var/www/html/decarbnow/dev/"
   },
   "author": "decarbnow group",
   "license": "MIT",

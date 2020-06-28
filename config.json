@@ -1,6 +1,6 @@
 {
     "backend": {
-        "default": "live",
+        "default": "devServer",
         "list": {
             "live": {
                 "format": "python",
@@ -8,7 +8,7 @@
             },
             "devServer": {
                 "format": "python",
-                "server": "https://api.decarbnow.abteil.org/"
+                "server": "https://backend.decarbnow.abteil.org/"
             },
             "devLocal": {
                 "format": "python",

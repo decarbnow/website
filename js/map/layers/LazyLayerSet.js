@@ -10,7 +10,13 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         L.LayerGroup.prototype.initialize.call(this);
         L.setOptions(this, options);
 
-        this.loaded = !this.options.file;
+        let source = null;
+
+        this.source = this.options.url;
+        if (this.options.file)
+            this.source = `/data/layers/${this.options.file}`
+
+        this.loaded = !this.source;
 
         this.on('add', function() {
             if (!this.loaded)
@@ -21,7 +27,8 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         // console.log(`LazyLayerGroupI ('${this.id}'): load`)
         let self = this;
         base.map.spin(true);
-        $.getJSON(`/data/layers/${self.options.file}`, function(data) {
+
+        $.getJSON(self.source, function(data) {
             self.addLayer(L.geoJson(data, {...self.options.parent.defaultAttr, ...self.options.attr}))
             self.loaded = true
             base.map.spin(false);

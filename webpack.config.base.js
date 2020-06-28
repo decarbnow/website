@@ -40,7 +40,7 @@ module.exports = {
         new CleanWebpackPlugin(),
         new CopyWebpackPlugin({
             patterns: [
-                { from: 'data', to: 'data' }
+                { from: 'static', to: 'static' }
             ],
         }),
         new MiniCssExtractPlugin({

@@ -50,15 +50,17 @@ module.exports = {
         new HtmlWebpackPlugin({
             filename: 'map.html',
             chunks: ['map', 'mapStyle'],
-            template: 'map.html'
+            template: 'map.ejs',
+            environment: config
         }),
         new HtmlWebpackPlugin({
             filename: 'intro.html',
             chunks: ['intro', 'introStyle'],
-            template: 'intro.html'
+            template: 'intro.ejs'
         }),
         new webpack.DefinePlugin({
-            __BACKEND__: JSON.stringify(config.backend)
+            __BACKEND__: JSON.stringify(config.backend),
+            __URL__: JSON.stringify(config.url)
         })
     ],
     output: {

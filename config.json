@@ -1,4 +1,5 @@
 {
+    "url": "https://map.decarbnow.abteil.org",
     "backend": {
         "default": "devServer",
         "list": {

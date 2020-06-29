@@ -24,6 +24,7 @@ export default {
     style: {
         fillColor: "#0000FF",
         stroke: false,
+        interactive: false,
     },
     list: layersList
 };

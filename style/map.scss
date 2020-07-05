@@ -9,6 +9,14 @@
 @import 'nerdfonts/css/bootstrap-grid.min.css';
 @import '../node_modules/reset-css/sass/reset';
 
+@import '../node_modules/choices.js/public/assets/styles/base.min.css';
+@import '../node_modules/choices.js/public/assets/styles/choices.min.css';
+
+// <!-- Include base CSS (optional) -->
+// <link rel="stylesheet" href="public/assets/styles/base.min.css" />
+// <!-- Include Choices CSS -->
+// <link rel="stylesheet" href="public/assets/styles/choices.min.css" />
+
 
 html {
     font-family: Helvetica, Arial;

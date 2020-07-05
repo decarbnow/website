@@ -3,6 +3,9 @@ import 'leaflet-sidebar';
 import 'leaflet-contextmenu';
 import 'leaflet-control-geocoder';
 
+import './controls/LayerSelectionControl';
+
+
 import './geoip.js';
 import './marker/control.js';
 //import twitter from './twitter.js';
@@ -24,6 +27,57 @@ let defaultState = {
     ],
 }
 
+let defaultOptions = {
+    zoomControl: false,
+    tap: true,
+    maxZoom: 19
+}
+
+let contextmenuOptions = {
+    contextmenu: true,
+    contextmenuWidth: 200,
+    contextmenuItems: [{
+    //     text: 'Tweet ...',
+    //     callback: function(e) {
+    //         base.sidebar.hide();
+    //         base.map.flyTo(e.latlng);
+    //         twitter.showTweetBox(e.latlng)
+    //     }
+    // }, {
+        text: 'Copy area link',
+        callback: function(e) {
+            var dummy = document.createElement('input'),
+                text = window.location.href;
+
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+        }
+    }, {
+        text: 'Center here and copy area link',
+        callback: function(e) {
+            base.map.flyTo(e.latlng);
+            $(base.map).one('moveend', function () {
+                var dummy = document.createElement('input'),
+                    text = window.location.href;
+
+                document.body.appendChild(dummy);
+                dummy.value = text;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+            })
+        }
+    }, {
+        text: 'Center here ...',
+        callback: function(e) {
+            base.map.flyTo(e.latlng);
+        }
+    }]
+}
+
 let base = {
     map: null,
     sidebars: {},
@@ -34,51 +88,8 @@ let base = {
     init: function() {
         // init leaflet map
         base.map = map('map', {
-            zoomControl: false,
-            tap: true,
-            maxZoom: 19,
-            contextmenu: true,
-            contextmenuWidth: 200,
-            contextmenuItems: [{
-            //     text: 'Tweet ...',
-            //     callback: function(e) {
-            //         base.sidebar.hide();
-            //         base.map.flyTo(e.latlng);
-            //         twitter.showTweetBox(e.latlng)
-            //     }
-            // }, {
-                text: 'Copy area link',
-                callback: function(e) {
-                    var dummy = document.createElement('input'),
-                        text = window.location.href;
-
-                    document.body.appendChild(dummy);
-                    dummy.value = text;
-                    dummy.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(dummy);
-                }
-            }, {
-                text: 'Center here and copy area link',
-                callback: function(e) {
-                    base.map.flyTo(e.latlng);
-                    $(base.map).one('moveend', function () {
-                        var dummy = document.createElement('input'),
-                            text = window.location.href;
-
-                        document.body.appendChild(dummy);
-                        dummy.value = text;
-                        dummy.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(dummy);
-                    })
-                }
-            }, {
-                text: 'Center here ...',
-                callback: function(e) {
-                    base.map.flyTo(e.latlng);
-                }
-            }]
+            ...defaultOptions,
+            ...contextmenuOptions
         });
 
         //base.addLayers()
@@ -217,6 +228,11 @@ let base = {
         L.control.layers(layerSets.tiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topright',
             collapsed: false
+        }).addTo(base.map);
+
+        L.control.layerSelectionControl(layerSets.countries.layers, {
+            position: 'topright',
+            collapsed: true
         }).addTo(base.map);
 
         L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {

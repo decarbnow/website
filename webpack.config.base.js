@@ -60,6 +60,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             __BACKEND__: JSON.stringify(config.backend),
+            __DATA__: JSON.stringify(config.data),
             __URL__: JSON.stringify(config.url)
         })
     ],

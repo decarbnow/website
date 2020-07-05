@@ -1,6 +1,6 @@
 let layersList = {
     'e-prtr': {
-        url: "https://raw.githubusercontent.com/decarbnow/data/master/layers/e-prtr/points-big.geojson",
+        url: "/e-prtr/points-big.geojson",
         name: "PRTR biggest <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
@@ -20,7 +20,7 @@ let layersList = {
         }
     },
     'e-prtr2': {
-        url: "https://raw.githubusercontent.com/decarbnow/data/master/layers/e-prtr/points-small.geojson",
+        url: "/e-prtr/points-small.geojson",
         name: "PRTR smallest <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
@@ -40,7 +40,7 @@ let layersList = {
         }
     },
     'power-plants': {
-        url: "https://raw.githubusercontent.com/decarbnow/data/master/layers/power-plants/points.geojson",
+        url: "/power-plants/points.geojson",
         name: "Big coal power stations <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
@@ -60,7 +60,7 @@ let layersList = {
         }
     },
     'big-cities': {
-        url: "https://raw.githubusercontent.com/decarbnow/data/master/layers/cities/points.geojson",
+        url: "/cities/points.geojson",
         name: "Big cities <i class='fa fa-info-circle'></i>",
         attr: {
             style: {

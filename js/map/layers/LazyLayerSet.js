@@ -2,6 +2,8 @@ import base from '../base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
 
+let data = __DATA__;
+let urlPrefix = data.list[data.default];
 
 L.LazyLayerGroup = L.LayerGroup.extend({
     initialize: function(id, options) {
@@ -10,11 +12,12 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         L.LayerGroup.prototype.initialize.call(this);
         L.setOptions(this, options);
 
-        let source = null;
-
-        this.source = this.options.url;
+        this.source = null;
         if (this.options.file)
             this.source = `/data/layers/${this.options.file}`
+
+        if (this.options.url)
+            this.source = `${urlPrefix}layers/${this.options.url}`
 
         this.loaded = !this.source;
 
@@ -44,19 +47,19 @@ class LazyLayerSet {
         this.defaultAttr = options.style;
 
         this.layers = {};
-        Object.keys(options.list).forEach(n => {
-            let o = options.list[n];
-            o.parent = self;
-            o.attr = o.attr || {};
+        Object.keys(options.list).forEach(layerId => {
+            let layerOptions = options.list[layerId];
+            layerOptions.parent = self;
+            layerOptions.attr = layerOptions.attr || {};
 
-            let layer = o.layer;
+            let layer = layerOptions.layer;
 
             if (!layer)
-                layer = new L.LazyLayerGroup(n, o);
+                layer = new L.LazyLayerGroup(layerId, layerOptions);
             else
-                L.setOptions(layer, o);
+                L.setOptions(layer, layerOptions);
 
-            self.layers[n] = layer;
+            self.layers[layerId] = layer;
         })
     }
 

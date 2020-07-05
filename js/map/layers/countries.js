@@ -16,7 +16,7 @@ let layersList = {};
 countriesSorted.forEach((iso2) => {
     layersList[`countries!${iso2}`] = {
         name: countries[iso2],
-        url: `https://raw.githubusercontent.com/decarbnow/data/master/layers/countries/${iso2}.geojson`
+        url: `countries/${iso2}.geojson`
     };
 });
 

@@ -8,15 +8,8 @@
 @import '../node_modules/leaflet-contextmenu/dist/leaflet.contextmenu.css';
 @import 'nerdfonts/css/bootstrap-grid.min.css';
 @import '../node_modules/reset-css/sass/reset';
-
 @import '../node_modules/choices.js/public/assets/styles/base.min.css';
 @import '../node_modules/choices.js/public/assets/styles/choices.min.css';
-
-// <!-- Include base CSS (optional) -->
-// <link rel="stylesheet" href="public/assets/styles/base.min.css" />
-// <!-- Include Choices CSS -->
-// <link rel="stylesheet" href="public/assets/styles/choices.min.css" />
-
 
 html {
     font-family: Helvetica, Arial;
@@ -28,75 +21,7 @@ html, body, #map {
     margin: 0;
 }
 
-// select.icon-menu option {
-//     background-repeat:no-repeat;
-//     background-position:bottom left;
-//     padding-left:30px;
-// }
-
-// img.emoji {
-//     height: 1em;
-//     width: 1em;
-//     margin: 0 .05em 0 .1em;
-//     vertical-align: -0.1em;
-// }
-
-// .nextTweet {
-//     display: none;
-// }
-
 @import 'map/sidebar.scss';
-
 @import 'map/icons.scss';
-
 @import 'map/popup.scss';
-
-#feature_infos {
-    z-index: 800;
-
-    font-size: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    position: absolute;
-    bottom:50px;
-    left: 50%;
-    padding:5px;
-    border:1px solid grey;
-    display:none;
-}
-
-// .permanent .glow {
-//     z-index: -2;
-//     background: -webkit-radial-gradient(rgba(66, 186, 255, 1), rgba(255, 223, 67, 0) 70%)!important;
-//     -webkit-animation: highlight1 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
-// }
-//
-// .permanent .flare {
-//     z-index: -2;
-//     background: rgba(66, 186, 255, 1) !important;
-//     -webkit-animation: highlight 4s infinite cubic-bezier(0.68, -0.55, 0.265, 1.55);
-// }
-// @-webkit-keyframes highlight1 {
-//     0% {
-//         width: 0px;
-//         height: 0px;
-//         opacity: 0;
-//     }
-//     100% {
-//         width: 100px;
-//         height: 100px;
-//         opacity: 0.4;
-//     }
-// }
-//
-// @-webkit-keyframes highlight {
-//     0% {
-//         width: 0px;
-//         height: 0px;
-//         opacity: 0;
-//     }
-//     100% {
-//         width: 20px;
-//         height: 20px;
-//         opacity: 0.6;
-//     }
-// }
+@import 'map/controls.scss';

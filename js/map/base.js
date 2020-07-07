@@ -230,20 +230,22 @@ let base = {
             collapsed: false
         }).addTo(base.map);
 
-        L.control.layerSelectionControl(layerSets.countries.layers, {
-            position: 'topright',
-            collapsed: true
-        }).addTo(base.map);
-
         L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
             collapsed: true
         }).addTo(base.map);
 
-        L.control.layers(null, layerSets.countries.getNameObject(), {
+        L.control.layerSelectionControl(layerSets.countries.layers, {
             position: 'topright',
-            collapsed: true
+            collapsed: true,
+            name: 'Countries'
         }).addTo(base.map);
+
+        // L.control.layers(null, layerSets.countries.getNameObject(), {
+        //     position: 'topright',
+        //     collapsed: true
+        // }).addTo(base.map);
+
         // Object.values(base.sidebars).forEach(s => {
         //     base.map.addControl(s);
         // });

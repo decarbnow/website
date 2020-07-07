@@ -1,0 +1,24 @@
+.selection-control {
+    .choices__list--multiple .choices__item {
+        background-color: #0000FF66;
+        border: #0000FF66;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 16px;
+        margin: 1px 2px;
+    }
+
+    .choices__input {
+        //padding: 2px 8px;
+        margin: 1px 2px;
+    }
+
+    .choices__inner {
+        padding: 4px;
+        min-height: 38px;
+    }
+
+    .leaflet-control-layers-list {
+        width: 450px;
+    }
+}

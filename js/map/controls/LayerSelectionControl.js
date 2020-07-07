@@ -10,7 +10,7 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
         // this._layerControlInputs = [];
         this._layers = layers;
         // this._lastZIndex = 0;
-        this._handling = false;
+        // this._handling = false;
         //
         // for (var i in baseLayers) {
         //     this._addLayer(baseLayers[i], i);
@@ -52,16 +52,14 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
             // selected = selected.filter(item => item !== e.target.id)
             this._choices.removeActiveItemsByValue(e.target.id)
         }
-        // console.log('AFTER')
-        // console.log(selected)
-        // this._choices.clearChoices();(selected);
-
     },
 
     _initLayout: function () {
 		var className = 'leaflet-control-layers',
 		    container = this._container = DomUtil.create('div', className),
 		    collapsed = this.options.collapsed;
+
+        container.classList.add("selection-control");
 
 		// makes this work on IE touch devices by stopping it from firing a mouseout event when the touch is released
 		container.setAttribute('aria-haspopup', true);
@@ -110,14 +108,14 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
             })
         });
 
-        section.style = 'min-width: 500px'
+        var title = DomUtil.create('span', className + '-title');
+        title.innerHTML = this.options.name;
+        section.appendChild(title)
 
         section.appendChild(choicesElement)
         this._choices = new Choices(choicesElement, {
             choices: choices
         })
-
-        window.choices = this._choices;
 
         let self = this;
 

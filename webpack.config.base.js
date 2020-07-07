@@ -43,10 +43,10 @@ module.exports = {
                 { from: 'static', to: 'static' }
             ],
         }),
+        new FixStyleOnlyEntriesPlugin({ ignore: 'webpack-dev-server' }),
         new MiniCssExtractPlugin({
             filename: '[name].[chunkhash].css'
         }),
-        new FixStyleOnlyEntriesPlugin(),
         new HtmlWebpackPlugin({
             filename: 'map.html',
             chunks: ['map', 'mapStyle'],

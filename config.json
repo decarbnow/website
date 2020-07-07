@@ -14,7 +14,7 @@
         }
     },
     "backend": {
-        "default": "devServer",
+        "default": "live",
         "list": {
             "live": {
                 "format": "python",

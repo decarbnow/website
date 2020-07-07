@@ -1,5 +1,11 @@
 {
-    "url": "https://map.decarbnow.abteil.org",
+    "url": {
+        "default": "live",
+        "list": {
+            "dev": "https://map.decarbnow.abteil.org",
+            "live": "https://map.decarbnow.space"
+        }
+    },
     "data": {
         "default": "github",
         "list": {

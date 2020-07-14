@@ -16,7 +16,7 @@ let layersList = {};
 countriesSorted.forEach((iso2) => {
     layersList[`countries!${iso2}`] = {
         name: countries[iso2],
-        url: `countries_10/${iso2}.geojson`
+        url: `countries/res_03/${iso2}.geojson`
     };
 });
 

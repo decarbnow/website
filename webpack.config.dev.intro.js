@@ -3,7 +3,6 @@ const merge = require('webpack-merge');
 
 module.exports = merge(baseConfig, {
     mode: 'development',
-
     devServer: {
         index: 'intro.html',
         host: 'www.localhost',

@@ -33,6 +33,16 @@ let layersList = {
         }),
         name: 'Light'
     },
+    sentinal: {
+        layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
+            attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
+        	  ' Sentinel data 2016 by ' +
+        	  '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
+            minZoom: 5,
+            maxZoom: 14
+        }),
+        name: 'Sentinal 2 (2016)'
+    },
 };
 
 export default {

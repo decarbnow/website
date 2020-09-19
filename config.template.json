@@ -13,20 +13,23 @@
             "local": "http://127.0.0.1:8088/"
         }
     },
+    "keys": {
+        "sentinalmap": "xxx"
+    },
     "backend": {
         "default": "live",
         "list": {
             "live": {
                 "format": "python",
-                "server": "https://dev.decarbnow.space/"
+                "server": "https://dev.decarbnow.space"
             },
             "devServer": {
                 "format": "python",
-                "server": "https://backend.decarbnow.abteil.org/"
+                "server": "https://backend.decarbnow.abteil.org"
             },
             "devLocal": {
                 "format": "python",
-                "server": "http://127.0.0.1:5000/"
+                "server": "http://127.0.0.1:5000"
             },
             "file": {
                 "format": "file"

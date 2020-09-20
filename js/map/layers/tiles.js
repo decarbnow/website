@@ -33,15 +33,43 @@ let layersList = {
         }),
         name: 'Light'
     },
-    sentinalmap16: {
-        layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
-            attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
-        	  ' Sentinel data 2016 by ' +
-        	  '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
-            minZoom: 5,
-            maxZoom: 14
+    // sentinalmap16: {
+    //     layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
+    //         attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
+    //     	   ' Sentinel data 2016 by ' +
+    //     	   '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
+    //         minZoom: 5,
+    //         maxZoom: 14
+    //     }),
+    //     name: 'Sentinal (2016, SentinelMap)'
+    // },
+    s2maps19: {
+        layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2019_3857/default/g/{z}/{y}/{x}.jpg', {
+            attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2019)',
+            maxZoom: 20
         }),
-        name: 'Sentinal (2016)'
+        name: 'Sentinal (2019, EOX)'
+    },
+    s2maps18: {
+        layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2018_3857/default/g/{z}/{y}/{x}.jpg', {
+            attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2018 &amp; 2017)',
+            maxZoom: 20
+        }),
+        name: 'Sentinal (2018, EOX)'
+    },
+    s2maps17: {
+        layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg', {
+            attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2017)',
+            maxZoom: 20
+        }),
+        name: 'Sentinal (2017, EOX)'
+    },
+    s2maps16: {
+        layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg', {
+            attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2016 &amp; 2017)',
+            maxZoom: 20
+        }),
+        name: 'Sentinal (2016, EOX)'
     },
 };
 

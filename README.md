@@ -7,8 +7,9 @@ to be written
 ## Run Webpage Locally
 
 This webpage can be run locally with:
+
     npm install
-    cp config.template.json config.json # Adjust your config file
+    cp config.template.json config.json # Adjust the config.json file
     npm run map
 
 

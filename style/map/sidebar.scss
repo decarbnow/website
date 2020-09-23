@@ -44,6 +44,7 @@
                 opacity: 0.4;
                 transition: all 0.2s linear;
 
+
                 .overlay {
                     position: absolute;
                     top: 0;
@@ -52,6 +53,7 @@
                     width: 100%;
                     margin-top: 0px;
                     cursor:pointer;
+                    display:none;
                 }
 
                 &.selected {

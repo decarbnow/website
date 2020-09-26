@@ -13,10 +13,11 @@ let manager = {
     autoScrolling: false,
     sidebarDiv: null,
     data: {
-        date: null,
+        //date: null,
         tweets: [],
         stories: [],
-        pathToTweetId: {}
+        pathToTweetId: {},
+        tweetIdToMarker: {}
     },
 
     clusters: L.markerClusterGroup({
@@ -36,7 +37,7 @@ let manager = {
         base.map.addControl(manager.sidebar)
         manager.sidebarDiv = $('#show-tweet-sidebar')
 
-        base.layerSets.tweets.layers.tweets.addLayer(manager.clusters);
+        // base.layerSets.tweets.layers.tweets.addLayer(manager.clusters);
 
         api.init();
         manager.loadMarkers();
@@ -59,9 +60,23 @@ let manager = {
         tweetDiv.addClass('selected');
     },
 
+    activateMarker: function(id) {
+        let marker = manager.data.tweetIdToMarker[id.toString()];
+        manager.deactivateMarkers();
+        if (marker && marker._icon)
+            L.DomUtil.addClass(marker._icon, 'selected');
+    },
+
+    deactivateMarkers: function() {
+        $('.leaflet-marker-icon.selected').removeClass('selected');
+    },
+
     show: function(id, updateState = true) {
+        //console.log(`tweets manager.show(${id})`)
         if (id == manager.activateTweet)
             return;
+
+        manager.activateMarker(id);
 
         let tweetInfo = manager.data.tweets[id];
 
@@ -114,6 +129,8 @@ let manager = {
     },
 
     closeSidebar: function() {
+        //console.log(`tweets manager.closeSidebar`)
+        manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
         manager.sidebar.hide();
@@ -150,11 +167,13 @@ let manager = {
                 if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
                     return;
 
-                L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
-                    .addTo(manager.clusters)
-                    .on('click', function () {
-                        manager.show(id)
-                    })
+                let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
+                //marker.addTo(manager.clusters)
+                marker.addTo(base.layerSets.tweets.layers.tweets)
+                marker.on('click', function () {
+                    manager.show(id)
+                })
+                manager.data.tweetIdToMarker[id] = marker
             });
             $(manager).trigger('loaded');
         })

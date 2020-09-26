@@ -1,4 +1,7 @@
 
+
+
+
 .marker-pin {
     width: 24px;
     height: 24px;
@@ -15,13 +18,12 @@
         width: 20px;
         height: 20px;
         margin: 2px 0 0 2px;
-        background: rgb(251, 99, 107);
+        //background: rgb(251, 99, 107);
         position: absolute;
         border-radius: 50%;
     }
     &.action::after {
-        //background: rgba(255, 233, 46, 1) !important;
-        background: rgb(42, 66, 64) !important;
+        background: rgb(42, 66, 64) //!important;
     }
     &.transition::after {
         background: rgb(57, 219, 113) !important;
@@ -30,6 +32,8 @@
         background: rgba(226, 57, 66, 1) !important;
     }
 }
+
+
 
 
 
@@ -64,6 +68,29 @@
     padding-top: 0px;
 }
 
+.selected .marker-pin {
+    // width: 32px;
+    // height: 32px;
+    // margin: -18px 0 0 -18px;
+    // &.action::after {
+    //     //background: rgb(0, 0, 0) !important;
+    // }
+
+    &::after {
+        // width: 26px;
+        // height: 26px;
+        // margin: 3px 0 0 3px;
+        background: rgb(200, 100, 10);
+    }
+}
+
+// .selected.custom-div-icon i.action {
+//     //color: rgba(234, 36, 97, 1) !important;
+//     color: white !important;
+//     font-size: 13px !important;
+//     margin: 12px auto;
+//     padding-top: 2px;
+// }
 
 .bubble {
     position: relative;

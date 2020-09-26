@@ -139,7 +139,7 @@ let manager = {
 
                 if (!tweetInfo.state.center)
                     return;
-                    
+
                 manager.data.tweets[id] = tweetInfo;
                 if (tweetInfo.story) {
                     if (!manager.data.stories[tweetInfo.story])
@@ -192,11 +192,11 @@ let manager = {
         //scroll bar
         var lastScrollTop = 0;
         manager.sidebarDiv.bind('scroll', function(e) {
-            // console.log("scrolling")
-            let scrollTop = $(this).scrollTop()
+            let scrollTop = $(this).scrollTop();
             if(manager.tweetsLoaded()  && !manager.autoScrolling)
                 scrollAction(scrollTop > lastScrollTop ? 'down' : 'up')
             lastScrollTop = scrollTop;
+            e.stopPropagation();
         })
 
         // mouse wheel
@@ -209,7 +209,7 @@ let manager = {
                 // console.log("orgwheeld:" + delta)
                 scrollAction(delta > 0 ? 'down' : 'up')
             }
-
+            e.stopPropagation();
         })
 
         // touch display

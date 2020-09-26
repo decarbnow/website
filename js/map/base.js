@@ -147,6 +147,10 @@ let base = {
         let tileLayers = Object.keys(base.layerSets.tiles.layers)
         let layers = state.layers.filter(x => tileLayers.includes(x))
 
+        // Keep tweets layer
+        if (state.layers.includes('tweets'))
+            layers.push('tweets')
+
         // let layers = base.layerSets.tiles.getVisibleLayers();
         // if (layers.length == 0) {
         //     // get that in state
@@ -184,7 +188,8 @@ let base = {
 
         // Show
         ids.forEach((id) => {
-            base.showLayer(id);
+            if(!visibleLayers.includes(id))
+                base.showLayer(id);
         });
 
         // Hide layers visible, but not in ids

@@ -222,6 +222,7 @@ let base = {
     },
 
     addControls: function() {
+        let width = $(window).width()
         // L.control.markers({ position: 'topleft' }).addTo(base.map);
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
 
@@ -232,12 +233,14 @@ let base = {
 
         L.control.layers(layerSets.tiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topright',
-            collapsed: false
+            collapsed: width < 512
         }).addTo(base.map);
+
+        console.log(window.screen.availWidth)
 
         L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
-            collapsed: true
+            collapsed: width < 1024
         }).addTo(base.map);
 
         L.control.layerSelectionControl(layerSets.countries.layers, {

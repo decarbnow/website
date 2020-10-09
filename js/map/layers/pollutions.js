@@ -9,7 +9,7 @@ omiYears.forEach(n => {
     }
 });
 
-let tropomiDates = [[2019, 12], [2020, 1], [2020, 2], [2020, 3], [2020, 4], [2020, 5], [2020, 6]];
+let tropomiDates = [[2019, 12], [2020, 1], [2020, 2], [2020, 3], [2020, 4], [2020, 5], [2020, 6], [2020, 7]];
 tropomiDates.forEach(n => {
     layersList[`no2_${n[0]}_${String(n[1]).padStart(2, '0')}`] = {
         //file: `no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,

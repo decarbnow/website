@@ -114,7 +114,8 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
 
         section.appendChild(choicesElement)
         this._choices = new Choices(choicesElement, {
-            choices: choices
+            choices: choices,
+            removeItemButton: true
         })
 
         let self = this;

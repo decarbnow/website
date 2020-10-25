@@ -44,17 +44,26 @@ let manager = {
         manager.addEventHandlers();
     },
 
-    scrollAndActivateTweet: function(id) {
+    scrollAndActivateTweet: function(id, tweetActivated = false) {
         let tweetDiv = $(`#tweet-${id}`);
 
         manager.autoScrolling = true;
-        manager.sidebarDiv.animate({
-            scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top - 80
-        }, 400, function() {
-            setTimeout(function() {
-                manager.autoScrolling = false;
-            }, 700);
-        })
+        if(!tweetActivated)
+            manager.sidebarDiv.animate({
+                scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top - 80
+            }, 600, function() {
+                setTimeout(function() {
+                    manager.autoScrolling = false;
+                }, 1);
+            })
+        else
+            manager.sidebarDiv.animate({
+                scrollTop: manager.sidebarDiv.scrollTop()
+            }, 0, function() {
+                setTimeout(function() {
+                    manager.autoScrolling = false;
+                }, 1);
+            })
 
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
         tweetDiv.addClass('selected');
@@ -81,7 +90,7 @@ let manager = {
         let tweetInfo = manager.data.tweets[id];
 
         if (tweetInfo.story && manager.activeStory == tweetInfo.story)
-            manager.scrollAndActivateTweet(id);
+            manager.scrollAndActivateTweet(id, true);
         else
             manager.openSidebar(id);
 
@@ -123,7 +132,7 @@ let manager = {
             window.twttr.widgets.createTweet(tweetId, document.getElementById(`tweet-${tweetId}`).getElementsByClassName("widget")[0], {conversation: 'none'}).then(function () {
                 te.removeClass('loading');
                 if (manager.tweetsLoaded())
-                    manager.scrollAndActivateTweet(id);
+                    manager.scrollAndActivateTweet(id, false);
             });
         });
     },
@@ -190,9 +199,9 @@ let manager = {
                 scrollWindowHeight = manager.sidebarDiv.height();
 
             let positionAllows = [];
-            if(selectedTop + selectedHeight < scrollWindowHeight - 70/* - SOMETHING */)
+            if(selectedTop + selectedHeight < scrollWindowHeight - 500/* - SOMETHING */)
                 positionAllows.push("down");
-            if(selectedTop > 0)
+            if(selectedTop > 0 + selectedHeight + 0)
                 positionAllows.push("up");
 
             // console.log("direction:" + direction)

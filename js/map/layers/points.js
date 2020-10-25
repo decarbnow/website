@@ -16,11 +16,20 @@ let layersList = {
                                 '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
                                 '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
                                 '</table>');
+
+                let isClicked = false
+
                 layer.on('mouseover', function (e) {
-                            this.openPopup();
+                            if(!isClicked)
+                                this.openPopup();
                 });
                 layer.on('mouseout', function (e) {
-                            this.closePopup();
+                            if(!isClicked)
+                                this.closePopup();
+                });
+                layer.on('click', function (e) {
+                            isClicked = true;
+                            this.openPopup();
                 });
             }
         }
@@ -42,11 +51,20 @@ let layersList = {
                                 '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
                                 '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
                                 '</table>');
+
+                let isClicked = false
+
                 layer.on('mouseover', function (e) {
-                            this.openPopup();
+                            if(!isClicked)
+                                this.openPopup();
                 });
                 layer.on('mouseout', function (e) {
-                            this.closePopup();
+                            if(!isClicked)
+                                this.closePopup();
+                });
+                layer.on('click', function (e) {
+                            isClicked = true;
+                            this.openPopup();
                 });
             }
         }
@@ -68,11 +86,20 @@ let layersList = {
                                 '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
                                 '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
                                 '</table>');
+
+                let isClicked = false
+
                 layer.on('mouseover', function (e) {
-                            this.openPopup();
+                            if(!isClicked)
+                                this.openPopup();
                 });
                 layer.on('mouseout', function (e) {
-                            this.closePopup();
+                            if(!isClicked)
+                                this.closePopup();
+                });
+                layer.on('click', function (e) {
+                            isClicked = true;
+                            this.openPopup();
                 });
             }
         }
@@ -92,11 +119,20 @@ let layersList = {
                                 '<tr><td>Population:</td><td>' + parseFloat(feature.properties.population).toLocaleString() + '</td></tr>'+
                                 '<tr><td>Country:</td><td>' + feature.properties.country + '</td></tr>'+
                                 '</table>');
+
+                let isClicked = false
+
                 layer.on('mouseover', function (e) {
-                            this.openPopup();
+                            if(!isClicked)
+                                this.openPopup();
                 });
                 layer.on('mouseout', function (e) {
-                            this.closePopup();
+                            if(!isClicked)
+                                this.closePopup();
+                });
+                layer.on('click', function (e) {
+                            isClicked = true;
+                            this.openPopup();
                 });
             }
         }

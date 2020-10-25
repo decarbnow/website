@@ -1,6 +1,6 @@
 .leaflet-sidebar {
     padding: 0;
-
+    -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
     .leaflet-control {
         // background-color: rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0.5);
@@ -34,7 +34,7 @@
     #show-tweet-sidebar {
         .story {
             display: grid;
-            grid-gap: 25px;
+            grid-gap: 200px;
             grid-template-columns: 100%;
             // margin: 0 0 500px 0;
         }

@@ -243,7 +243,7 @@ let base = {
 
         L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
-            collapsed: width < 1024
+            collapsed: width < 1370
         }).addTo(base.map);
 
         L.control.layerSelectionControl(layerSets.countries.layers, {

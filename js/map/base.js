@@ -144,7 +144,7 @@ let base = {
 
     flyTo: function(state) {
         // Only show tile layer in fly-to animation
-        let tileLayers = Object.keys(base.layerSets.tiles.layers)
+        let tileLayers = Object.keys(base.layerSets.baseTiles.layers)
         let layers = state.layers.filter(x => tileLayers.includes(x))
 
         // Keep tweets layer
@@ -199,7 +199,7 @@ let base = {
         });
 
         // Default to light tiles
-        if (base.layerSets.tiles.getVisibleLayers().length == 0)
+        if (base.layerSets.baseTiles.getVisibleLayers().length == 0)
             base.map.addLayer(base.layerSets.tiles.layers['light'])
 
         // Default to empty pollution layer
@@ -231,12 +231,15 @@ let base = {
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 
-        L.control.layers(layerSets.tiles.getNameObject(), layerSets.tweets.getNameObject(), {
+        L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topright',
             collapsed: width < 512
         }).addTo(base.map);
 
-        console.log(window.screen.availWidth)
+        L.control.layers(null, layerSets.overlayTiles.getNameObject(), {
+            position: 'topright',
+            collapsed: width < 1024
+        }).addTo(base.map);
 
         L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',

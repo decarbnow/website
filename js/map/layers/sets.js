@@ -1,13 +1,15 @@
 import LazyLayerSet from './LazyLayerSet.js';
 
-import tiles from './tiles.js';
+import baseTiles from './baseTiles.js';
+import overlayTiles from './overlayTiles.js';
 import pollutions from './pollutions.js';
 import points from './points.js';
 import tweets from './tweets.js';
 import countries from './countries.js';
 
 let layerSets = {
-    tiles: new LazyLayerSet('tiles', tiles),
+    baseTiles: new LazyLayerSet('baseTiles', baseTiles),
+    overlayTiles: new LazyLayerSet('overlayTiles', overlayTiles),
     pollutions: new LazyLayerSet('pollutions', pollutions),
     points: new LazyLayerSet('points', points),
     countries: new LazyLayerSet('countries', countries),

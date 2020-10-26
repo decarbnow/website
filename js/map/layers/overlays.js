@@ -80,7 +80,7 @@ legend += "</div>";
 
 
 layersList['tempDiff'] = {
-    layer: L.tileLayer(`${urlPrefix}layers/tempDiff80.89-15.19/{z}/{x}/{y}.png`, {
+    layer: L.tileLayer(`${urlPrefix}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
         attribution: '© CDS',
         minZoom: 0,
         maxZoom: 10,

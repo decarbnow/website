@@ -202,9 +202,9 @@ let base = {
         if (base.layerSets.baseTiles.getVisibleLayers().length == 0)
             base.map.addLayer(base.layerSets.tiles.layers['light'])
 
-        // Default to empty pollution layer
-        if (base.layerSets.pollutions.getVisibleLayers().length == 0)
-            base.map.addLayer(base.layerSets.pollutions.layers['empty'])
+        // Default to empty overlays layer
+        if (base.layerSets.overlays.getVisibleLayers().length == 0)
+            base.map.addLayer(base.layerSets.overlays.layers['empty'])
     },
 
     showLayer: function(id) {
@@ -236,12 +236,7 @@ let base = {
             collapsed: width < 512
         }).addTo(base.map);
 
-        L.control.layers(null, layerSets.overlayTiles.getNameObject(), {
-            position: 'topright',
-            collapsed: width < 1024
-        }).addTo(base.map);
-
-        L.control.layers(layerSets.pollutions.getNameObject(), layerSets.points.getNameObject(), {
+        L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
             collapsed: width < 1370
         }).addTo(base.map);

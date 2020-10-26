@@ -71,6 +71,9 @@ let layersList = {
         }),
         name: 'Sentinel-2 (2016, EOX)'
     },
+    empty: {
+        name: 'Disabled'
+    }
 };
 
 export default {

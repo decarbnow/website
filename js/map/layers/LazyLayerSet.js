@@ -24,6 +24,10 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         this.on('add', function() {
             if (!this.loaded)
                 this.load();
+
+            if (this.legend) {
+                console.log('LOAD LEGNED')
+            }
         })
     },
     load: function() {
@@ -58,6 +62,25 @@ class LazyLayerSet {
                 layer = new L.LazyLayerGroup(layerId, layerOptions);
             else
                 L.setOptions(layer, layerOptions);
+
+
+            if (layerOptions.legend) {
+                let legend = null;
+                layer.on('add', function() {
+                    legend = L.control({ position: "bottomleft" });
+                    legend.onAdd = function(map) {
+                        var div = L.DomUtil.create("div", "legend");
+                        div.innerHTML = layerOptions.legend;
+                        return div;
+                    };
+                    legend.addTo(base.map);
+                })
+
+                layer.on('remove', function() {
+                    console.log(legend)
+                    legend.remove(base.map);
+                })
+            }
 
             self.layers[layerId] = layer;
         })

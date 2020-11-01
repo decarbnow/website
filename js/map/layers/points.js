@@ -1,3 +1,7 @@
+//import GeoJSON from geojson;
+var GeoJSON = require('geojson');
+
+
 let layersList = {
     'e-prtr': {
         url: "/e-prtr/points-big.geojson",
@@ -119,6 +123,41 @@ let layersList = {
                                 '<tr><td>Population:</td><td>' + parseFloat(feature.properties.population).toLocaleString() + '</td></tr>'+
                                 '<tr><td>Country:</td><td>' + feature.properties.country + '</td></tr>'+
                                 '</table>');
+
+                let isClicked = false
+
+                layer.on('mouseover', function (e) {
+                            if(!isClicked)
+                                this.openPopup();
+                });
+                layer.on('mouseout', function (e) {
+                            if(!isClicked)
+                                this.closePopup();
+                });
+                layer.on('click', function (e) {
+                            isClicked = true;
+                            this.openPopup();
+                });
+            }
+        }
+    }, 'fridaysforfuture': {
+        url: "https://allforeco.github.io/fridaysforfuture/fff-global-map.json",
+        hidden: true,
+        extern: true,
+        name: "fridaysforfuture Events <i class='fa fa-info-circle'></i>",
+        transform: function (data) {
+            data = GeoJSON.parse(data.data, {Point: ['Lat', 'Lon'], include: ['Country']});
+            return data;
+        },
+        attr: {
+            style: {
+                color: '#00FF00'
+            },
+            pointToLayer: function(feature, latlng) {
+                return new L.CircleMarker(latlng, {radius: 10, stroke: false, fillOpacity: 0.5});
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.Country + '</td></tr></table>');
 
                 let isClicked = false
 

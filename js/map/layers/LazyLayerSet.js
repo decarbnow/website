@@ -16,8 +16,11 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         if (this.options.file)
             this.source = `/data/layers/${this.options.file}`
 
-        if (this.options.url)
-            this.source = `${urlPrefix}layers/${this.options.url}`
+        if (this.options.url )
+            if (this.options.extern)
+                this.source = this.options.url
+            else
+                this.source = `${urlPrefix}layers/${this.options.url}`
 
         this.loaded = !this.source;
 
@@ -36,6 +39,8 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         base.map.spin(true);
 
         $.getJSON(self.source, function(data) {
+            if (self.options.transform)
+                data = self.options.transform(data)
             self.addLayer(L.geoJson(data, {...self.options.parent.defaultAttr, ...self.options.attr}))
             self.loaded = true
             base.map.spin(false);
@@ -53,6 +58,7 @@ class LazyLayerSet {
         this.layers = {};
         Object.keys(options.list).forEach(layerId => {
             let layerOptions = options.list[layerId];
+
             layerOptions.parent = self;
             layerOptions.attr = layerOptions.attr || {};
 
@@ -91,7 +97,9 @@ class LazyLayerSet {
     }
 
     getNameObject() {
-        return Object.assign({}, ...Object.values(this.layers).map(l => ({[l.options.name]: l})))
+        return Object.assign({}, ...Object.values(this.layers).filter(function (entry) {
+            return !entry.options.hidden;
+        }).map(l => ({[l.options.name]: l})))
     }
 }
 

@@ -1,6 +1,16 @@
 //import GeoJSON from geojson;
 var GeoJSON = require('geojson');
 
+function getColor(stype) {
+         switch (stype) {
+           case 'Oil':
+             return  'black';
+           case 'Coal':
+             return 'red';
+           case 'Gas':
+             return 'blue';
+         }
+}
 
 let layersList = {
     'e-prtr': {
@@ -81,7 +91,7 @@ let layersList = {
                 color: '#FF0000'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.8});
+                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.8, fillColor: getColor(feature.properties.primary_fuel)});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +

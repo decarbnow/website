@@ -75,7 +75,7 @@ let layersList = {
     },
     'power-plants': {
         url: "/power-plants/points.geojson",
-        name: "Big coal power stations <i class='fa fa-info-circle'></i>",
+        name: "Foss. fuel power stations <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
                 color: '#FF0000'

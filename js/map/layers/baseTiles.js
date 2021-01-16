@@ -33,6 +33,18 @@ let layersList = {
         }),
         name: 'Light'
     },
+    terrain: {
+        layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service, '+
+                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                           '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+        }),
+        name: 'Terrain'
+    },
     // sentinalmap16: {
     //     layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
     //         attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +

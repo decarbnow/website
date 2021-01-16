@@ -3,7 +3,7 @@ let layersList = {};
 let data = __DATA__;
 let urlPrefix = data.list[data.default];
 
-let omiYears = [2007, 2011, 2015, 2019];
+let omiYears = [2007, 2011, 2015, 2019, 2020];
 omiYears.forEach(n => {
     layersList[`no2_${n}`] = {
         //file: `no2/World_${n}_rastered.geojson`,

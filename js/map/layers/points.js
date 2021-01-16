@@ -8,7 +8,7 @@ function getColor(stype) {
            case 'Coal':
              return 'red';
            case 'Gas':
-             return 'blue';
+             return 'brown';
          }
 }
 

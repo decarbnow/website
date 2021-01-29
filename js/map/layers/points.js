@@ -21,7 +21,7 @@ let layersList = {
                 color: '#0000FF'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.TotalQuantityCO2/100000000), stroke: false, fillOpacity: 0.5});
+                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.TotalQuantityCO2/100000000)), stroke: false, fillOpacity: 0.5});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
@@ -56,7 +56,7 @@ let layersList = {
                 color: '#0000FF'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.TotalQuantityCO2/100000000), stroke: false, fillOpacity: 0.5});
+                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.TotalQuantityCO2/100000000)), stroke: false, fillOpacity: 0.5});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
@@ -91,7 +91,7 @@ let layersList = {
                 color: '#FF0000'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: feature.properties.capacity_mw/1000/0.5, stroke: false, fillOpacity: 0.8, fillColor: getColor(feature.properties.primary_fuel)});
+                return new L.CircleMarker(latlng, {radius: Math.max(2, feature.properties.capacity_mw/1000/0.5), stroke: false, fillOpacity: 0.8, fillColor: getColor(feature.properties.primary_fuel)});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
@@ -126,7 +126,7 @@ let layersList = {
                 color: '#00FF00'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.sqrt(feature.properties.population/70000), stroke: false, fillOpacity: 0.5});
+                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.population/70000)), stroke: false, fillOpacity: 0.5});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +

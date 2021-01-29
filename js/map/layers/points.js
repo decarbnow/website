@@ -4,7 +4,7 @@ var GeoJSON = require('geojson');
 function getColor(stype) {
          switch (stype) {
            case 'Oil':
-             return  'black';
+             return  '#313131';
            case 'Coal':
              return 'red';
            case 'Gas':

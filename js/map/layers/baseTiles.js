@@ -45,6 +45,18 @@ let layersList = {
         }),
         name: 'Terrain'
     },
+    dark: {
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png', {
+          attribution: 'Tiles &copy; Esri &mdash; Source: US National Park Service, '+
+                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                           '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+        }),
+        name: 'Dark'
+    },
     // sentinalmap16: {
     //     layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
     //         attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +

@@ -20,7 +20,7 @@ let defaultState = {
         lng: 0, // 16.3738,
     },
     layers: [
-        'light',
+        'dark',
         'power-plants',
         'no2_2020',
         'tweets',

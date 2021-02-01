@@ -227,7 +227,7 @@ let base = {
         L.control.zoom({ position: 'topleft' }).addTo(base.map);
 
         L.Control.geocoder({
-            position: 'topleft',
+            position: 'topleft'
             // defaultMarkGeocode: false,
         }).addTo(base.map);
 

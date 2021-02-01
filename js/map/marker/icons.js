@@ -9,7 +9,8 @@ let iconsInfo = {
         desc: "Register and pinpoint polluters."
     },
     climateaction: {
-        fonticon: "fa fa-bullhorn",
+        //fonticon: "fa fa-bullhorn",
+        fonticon: "nf nf-fa-twitter",
         cssname: "action",
         title: "Climate Action",
         question: "Who took action?",
@@ -30,8 +31,9 @@ Object.keys(iconsInfo).forEach((k) => {
     icons[k] = L.divIcon({
         className: 'custom-div-icon',
         html: `<div class='marker-pin ${i.cssname}'></div><i class='${i.fonticon} ${i.cssname}'>`,
-        iconSize: [24, 34],
-        iconAnchor: [12, 34]
+        iconSize: [20, 34],
+        //iconAnchor: [12, 34]
+        iconAnchor: [10, 10]
     });
 });
 

@@ -101,7 +101,7 @@ export default {
     style: {
         fillColor: "#FF0000",
         stroke: true,
-        weight: 0.5,
+        weight: 0.1,
         opacity: 0.7,
         color: "#F1EFE8",
         interactive: false,

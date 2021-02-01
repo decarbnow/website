@@ -4,63 +4,28 @@ var GeoJSON = require('geojson');
 function getColor(stype) {
          switch (stype) {
            case 'Oil':
-             return  '#313131';
+             return  '#ffcf09';
            case 'Coal':
-             return 'red';
+             return '#ff000d';
            case 'Gas':
-             return 'brown';
+             return '#fe01b1';
          }
 }
 
 let layersList = {
     'e-prtr': {
-        url: "/e-prtr/points-big.geojson",
-        name: "PRTR biggest <i class='fa fa-info-circle'></i>",
+        url: "/e-prtr/points.geojson",
+        name: "E-PRTR <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#0000FF'
+                color: '#6600ff'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.TotalQuantityCO2/100000000)), stroke: false, fillOpacity: 0.5});
+                return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
                                 '<tr><td>CO2-Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
-                                '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
-                                '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
-                                '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
-                                '</table>');
-
-                let isClicked = false
-
-                layer.on('mouseover', function (e) {
-                            if(!isClicked)
-                                this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                            if(!isClicked)
-                                this.closePopup();
-                });
-                layer.on('click', function (e) {
-                            isClicked = true;
-                            this.openPopup();
-                });
-            }
-        }
-    },
-    'e-prtr2': {
-        url: "/e-prtr/points-small.geojson",
-        name: "PRTR smallest <i class='fa fa-info-circle'></i>",
-        attr: {
-            style: {
-                color: '#0000FF'
-            },
-            pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.TotalQuantityCO2/100000000)), stroke: false, fillOpacity: 0.5});
-            },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
-                                '<tr><td>CO2 Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
                                 '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
                                 '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
                                 '<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
@@ -91,7 +56,7 @@ let layersList = {
                 color: '#FF0000'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.max(2, feature.properties.capacity_mw/1000/0.5), stroke: false, fillOpacity: 0.8, fillColor: getColor(feature.properties.primary_fuel)});
+                return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
@@ -123,10 +88,10 @@ let layersList = {
         name: "Big cities <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#00FF00'
+                color: '#39ff14'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.CircleMarker(latlng, {radius: Math.max(2, Math.sqrt(feature.properties.population/70000)), stroke: false, fillOpacity: 0.5});
+                return new L.circle(latlng, {radius: 5000, stroke: false, weight: 0.3, fillOpacity: Math.min(0.8, Math.max(0.25, feature.properties.population/3000000))});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +

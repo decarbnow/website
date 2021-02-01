@@ -1,3 +1,9 @@
+.leaflet-sidebar.left.visible ~ .leaflet-left {
+    left: calc(17vw + 17vh); } /*make bigger here (move original map control)*/
+
+.leaflet-sidebar.right.visible ~ .leaflet-right {
+    right: calc(17vw + 17vh; } /*make bigger here (move original map control)*/
+
 .leaflet-sidebar {
     padding: 0;
     -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
@@ -6,12 +12,14 @@
         background-color: rgba(255, 255, 255, 0.5);
         box-shadow: none;
         padding: 0 8px;
+        width: calc(17vw + 17vh);
         //  scrollbar-color: transparent transparent;
         // ::-webkit-scrollbar {
         //      display: none;
         //  }
         //overflow: hidden; /* Hide scrollbars */
     }
+
 
     .close {
         // z-index: 800;
@@ -36,6 +44,7 @@
             display: grid;
             grid-gap: 200px;
             grid-template-columns: 100%;
+
             // margin: 0 0 500px 0;
         }
         .tweet {

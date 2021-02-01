@@ -3,21 +3,22 @@
 
 
 .marker-pin {
-    width: 24px;
-    height: 24px;
-    border-radius: 50% 50% 50% 0;
+    width: 20px;
+    height: 20px;
+    //border-radius: 50% 50% 50% 0;
+    border-radius: 50%;
     background: #fff !important;
     position: absolute;
-    transform: rotate(-45deg);
+    //transform: rotate(-45deg);
     left: 62%;
     top: 50%;
-    margin: -15px 0 0 -15px;
+    margin: -13px 0 0 -13px;
     z-index: -1;
     &::after {
         content: '';
-        width: 20px;
-        height: 20px;
-        margin: 2px 0 0 2px;
+        width: 18px;
+        height: 18px;
+        margin: 1px 0 0 1px;
         //background: rgb(251, 99, 107);
         position: absolute;
         border-radius: 50%;
@@ -50,7 +51,7 @@
 .custom-div-icon i.action {
     //color: rgba(234, 36, 97, 1) !important;
     color: white !important;
-    font-size: 10px !important;
+    font-size: 12px !important;
     margin: 12px auto;
     padding-top: 2px;
 }

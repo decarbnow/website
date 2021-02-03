@@ -14,7 +14,7 @@ import tweets from './tweets.js';
 import url from './url.js';
 
 let defaultState = {
-    zoom: 6,
+    zoom: 3,
     center: {
         lat: 22, // 48.2082,
         lng: 0, // 16.3738,
@@ -114,8 +114,12 @@ let base = {
     setInitialState: function() {
         base.map.setView(defaultState.center, defaultState.zoom);
         let state = url.getState();
-        if (!state.center)
-            state.center = L.GeoIP.getPosition();
+        if (!state.center){
+          //state.center = w(0, 0, zoom = 6)
+          //state.center = L.GeoIP.getPosition();
+          state.center = { lat: 37, lng: 24 }
+        }
+        console.log(state.center)
         base.setState({...defaultState, ...state});
 
         $(base.map).one('moveend', function () {

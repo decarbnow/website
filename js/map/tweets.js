@@ -157,7 +157,10 @@ let manager = {
             // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
             // manager.data.date = data.date;
             // console.log(manager.data.tweets)
+            let tweetOpacity = 0.02
+
             Object.keys(manager.data.tweets).forEach((id) => {
+
                 let tweetInfo = manager.data.tweets[id];
 
                 manager.data.pathToTweetId[tweetInfo.url] = id;
@@ -172,17 +175,27 @@ let manager = {
                         manager.data.stories[tweetInfo.story] = [];
                     manager.data.stories[tweetInfo.story].push(id);
                 }
-                console.log(tweetInfo)
-                if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide') || tweetInfo.state.zoom < 7)
+
+                if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
                     return;
 
-                let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction']})
-                //marker.addTo(manager.clusters)
-                marker.addTo(base.layerSets.tweets.layers.tweets)
-                marker.on('click', function () {
-                    manager.show(id)
-                })
-                manager.data.tweetIdToMarker[id] = marker
+                if (tweetInfo.state.zoom >= 6){
+                  let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
+
+                  if(tweetOpacity < 1)
+                    tweetOpacity = tweetOpacity + 0.006
+                  //marker.addTo(manager.clusters)
+                  marker.addTo(base.layerSets.tweets.layers.tweets)
+                  marker.on('click', function () {
+                      manager.show(id)
+                  })
+                  manager.data.tweetIdToMarker[id] = marker
+                }
+                else {
+                  return;
+                }
+
+
             });
             $(manager).trigger('loaded');
         })

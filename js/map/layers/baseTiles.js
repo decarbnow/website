@@ -8,7 +8,18 @@ let layersList = {
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
-        name: 'Satellite'
+        name: 'Google Satellite'
+    },
+    esri: {
+        layer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '© <a href="http://www.esri.com/">Esri</a>, '+
+                             'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community, '+
+                             '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                             '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                             '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+            maxZoom: 20,
+        }),
+        name: 'Esri Satellite'
     },
     streets: {
         layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {

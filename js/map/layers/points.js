@@ -1,3 +1,5 @@
+import { decode } from '@alexpavlov/geohash-js';
+
 //import GeoJSON from geojson;
 var GeoJSON = require('geojson');
 
@@ -150,6 +152,41 @@ let layersList = {
                 });
             }
         }
+    }, 'foam': {
+      url: 'https://map-api-direct.foam.space/poi/filtered?swLng=16&swLat=46&neLng=18&neLat=50&status=application&status=listing&sort=most_value&limit=10&offset=0',
+      name: "FOAM POIs <i class='fa fa-info-circle'></i>",
+      hidden: true,
+      extern: true,
+      transform: function (data) {
+          data = GeoJSON.parse(data, {Point: ['decode(geohash).latitude', 'decode(geohash).longitude'], include: ['geohash', 'name', 'owner']});
+          return data;
+      },
+      attr: {
+          style: {
+              color: '#00FF00'
+          },
+          pointToLayer: function(feature, latlng) {
+              return new L.CircleMarker(latlng, {radius: 10, stroke: true, fillOpacity: 0.5});
+          },
+          onEachFeature: function (feature, layer) {
+              layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr></table>');
+
+              let isClicked = false
+
+              layer.on('mouseover', function (e) {
+                          if(!isClicked)
+                              this.openPopup();
+              });
+              layer.on('mouseout', function (e) {
+                          if(!isClicked)
+                              this.closePopup();
+              });
+              layer.on('click', function (e) {
+                          isClicked = true;
+                          this.openPopup();
+              });
+          }
+      }
     }
 };
 

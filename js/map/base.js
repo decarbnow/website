@@ -119,7 +119,7 @@ let base = {
           //state.center = L.GeoIP.getPosition();
           state.center = { lat: 37, lng: 24 }
         }
-        console.log(state.center)
+        //console.log(state.center)
         base.setState({...defaultState, ...state});
 
         $(base.map).one('moveend', function () {
@@ -242,7 +242,7 @@ let base = {
 
         L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topright',
-            collapsed: width < 1370
+            collapsed: width < 1024
         }).addTo(base.map);
 
         L.control.layerSelectionControl(layerSets.countries.layers, {

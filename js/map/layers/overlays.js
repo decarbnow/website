@@ -1,7 +1,6 @@
-let layersList = {};
+import config from '../config.js'
 
-let data = __DATA__;
-let urlPrefix = data.list[data.default];
+let layersList = {};
 
 let omiYears = [2007, 2011, 2015, 2019, 2020];
 omiYears.forEach(n => {
@@ -80,7 +79,7 @@ legend += "</div>";
 
 
 layersList['tempDiff'] = {
-    layer: L.tileLayer(`${urlPrefix}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
+    layer: L.tileLayer(`${config.data.url}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
         attribution: '© CDS',
         minZoom: 0,
         maxZoom: 10,

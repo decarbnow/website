@@ -58,7 +58,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             __BACKEND__: JSON.stringify(config.backend),
-            __DATA__: JSON.stringify(config.data),
+            __DATA__: JSON.stringify(config.data.list[config.data.default]),
             __URL__: JSON.stringify(config.url),
             __KEYS__: JSON.stringify(config.keys)
         })

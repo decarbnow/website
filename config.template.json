@@ -9,8 +9,16 @@
     "data": {
         "default": "github",
         "list": {
-            "github": "https://raw.githubusercontent.com/decarbnow/data/master/",
-            "local": "http://127.0.0.1:8088/"
+            "github": {
+                "ignoreHidden": false,
+                "caching": true,
+                "url": "https://raw.githubusercontent.com/decarbnow/data/master/"
+            },
+            "local": {
+                "ignoreHidden": true,
+                "caching": true,
+                "url": "http://127.0.0.1:8088/"
+            }
         }
     },
     "keys": {

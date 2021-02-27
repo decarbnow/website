@@ -158,7 +158,16 @@ let layersList = {
       hidden: true,
       extern: true,
       transform: function (data) {
-          data = GeoJSON.parse(data, {Point: ['decode(geohash).latitude', 'decode(geohash).longitude'], include: ['geohash', 'name', 'owner']});
+          data = GeoJSON.parse(data.map(e => {
+              let coords = decode(e.geohash);
+              e.latitude = coords.latitude;
+              e.longitude = coords.longitude;
+              return e;
+          }), {
+              Point: ['latitude', 'longitude'],
+              include: ['geohash', 'name', 'owner']
+          });
+          console.log(data)
           return data;
       },
       attr: {

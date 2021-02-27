@@ -7,9 +7,9 @@ window.twttr = (function(d, s, id) {
     fjs.parentNode.insertBefore(js, fjs);
 
     t._e = [];
-    console.debug("initialising ready function");
+    //console.debug("initialising ready function");
     t.ready = function(f) {
-        console.debug("inside loading");
+        //console.debug("inside loading");
         t._e.push(f);
     };
 

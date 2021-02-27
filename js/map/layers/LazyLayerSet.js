@@ -2,8 +2,7 @@ import base from '../base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
 
-let data = __DATA__;
-let urlPrefix = data.list[data.default];
+import config from '../config.js'
 
 L.LazyLayerGroup = L.LayerGroup.extend({
     initialize: function(id, options) {
@@ -16,21 +15,22 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         if (this.options.file)
             this.source = `/data/layers/${this.options.file}`
 
-        if (this.options.url )
+        if (this.options.url) {
             if (this.options.extern)
                 this.source = this.options.url
             else
-                this.source = `${urlPrefix}layers/${this.options.url}`
+                this.source = `${config.data.url}layers/${this.options.url}`
+        }
 
         this.loaded = !this.source;
 
         this.on('add', function() {
-            if (!this.loaded)
+            if (!config.data.caching && this.source || !this.loaded)
                 this.load();
 
-            if (this.legend) {
-                console.log('LOAD LEGNED')
-            }
+            /* if (this.legend) {
+                 console.log('LOAD LEGNED')
+            } */
         })
     },
     load: function() {
@@ -83,7 +83,7 @@ class LazyLayerSet {
                 })
 
                 layer.on('remove', function() {
-                    console.log(legend)
+                    // console.log(legend)
                     legend.remove(base.map);
                 })
             }
@@ -98,7 +98,7 @@ class LazyLayerSet {
 
     getNameObject() {
         return Object.assign({}, ...Object.values(this.layers).filter(function (entry) {
-            return !entry.options.hidden;
+            return config.data.ignoreHidden || !entry.options.hidden;
         }).map(l => ({[l.options.name]: l})))
     }
 }

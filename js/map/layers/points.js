@@ -153,7 +153,7 @@ let layersList = {
             }
         }
     }, 'foam': {
-      url: 'https://map-api-direct.foam.space/poi/filtered?swLng=16&swLat=46&neLng=18&neLat=50&status=application&status=listing&sort=most_value&limit=10&offset=0',
+      url: 'https://map-api-direct.foam.space/poi/filtered?swLng=16&swLat=46&neLng=17&neLat=49&status=application&status=listing&sort=most_value&limit=70&offset=0',
       name: "FOAM POIs <i class='fa fa-info-circle'></i>",
       hidden: true,
       extern: true,
@@ -175,7 +175,7 @@ let layersList = {
               color: '#00FF00'
           },
           pointToLayer: function(feature, latlng) {
-              return new L.CircleMarker(latlng, {radius: 10, stroke: true, fillOpacity: 0.5});
+              return new L.circle(latlng, {radius: 8, stroke: false, fillOpacity: 0.5});
           },
           onEachFeature: function (feature, layer) {
               layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr></table>');

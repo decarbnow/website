@@ -44,18 +44,18 @@ let contextmenuOptions = {
     //         twitter.showTweetBox(e.latlng)
     //     }
     // }, {
-        text: 'Copy area link',
-        callback: function(e) {
-            var dummy = document.createElement('input'),
-                text = window.location.href;
-
-            document.body.appendChild(dummy);
-            dummy.value = text;
-            dummy.select();
-            document.execCommand('copy');
-            document.body.removeChild(dummy);
-        }
-    }, {
+    //     text: 'Copy area link',
+    //     callback: function(e) {
+    //         var dummy = document.createElement('input'),
+    //             text = window.location.href;
+    //
+    //         document.body.appendChild(dummy);
+    //         dummy.value = text;
+    //         dummy.select();
+    //         document.execCommand('copy');
+    //         document.body.removeChild(dummy);
+    //     }
+    // }, {
         text: 'Center here and copy area link',
         callback: function(e) {
             base.map.flyTo(e.latlng);

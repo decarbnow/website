@@ -12,7 +12,7 @@ import './marker/control.js';
 import { layerSets, layers } from './layers/sets.js'
 import tweets from './tweets.js';
 import url from './url.js';
-
+import twitter from './twitter.js'
 let defaultState = {
     zoom: 3,
     center: {
@@ -37,13 +37,13 @@ let contextmenuOptions = {
     contextmenu: true,
     contextmenuWidth: 200,
     contextmenuItems: [{
-    //     text: 'Tweet ...',
-    //     callback: function(e) {
-    //         base.sidebar.hide();
-    //         base.map.flyTo(e.latlng);
-    //         twitter.showTweetBox(e.latlng)
-    //     }
-    // }, {
+        text: 'Tweet ...',
+        callback: function(e) {
+            tweets.sidebar.hide();
+            base.map.flyTo(e.latlng);
+            twitter.showTweetBox(e)
+        }
+    }, {
     //     text: 'Copy area link',
     //     callback: function(e) {
     //         var dummy = document.createElement('input'),

@@ -2,6 +2,8 @@ import { icons } from "./marker/icons.js";
 import { encode } from '@alexpavlov/geohash-js';
 import 'twitter-widgets';
 import base from './base.js'
+import url from './url.js';
+
 
 const DEBOUNCE_TIMEOUT = 200;
 var twittermarker;
@@ -40,8 +42,13 @@ let twitter = {
 
         let hash = encode(e.latlng.lat, e.latlng.lng);
 
-        let text = '<p>Tweet about stuff here with the button below:</p>' +
-        '<center><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></center>'
+        let text = '<h3>What\'s happening here?</h3>' +
+        '<form>'+
+        '<textarea id="tweetText" ></textarea>' +
+        '</form>'+
+        '<div id="tweetBtn">'+
+        '<center><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></center>' +
+        '</div>';
 
         showGeoLoc
             .setLatLng(e.latlng)
@@ -64,56 +71,71 @@ let twitter = {
         });
 
         //here comes the beauty
-        // function onTweetSettingsChange(e) {
-        //     let tweettype = $('#new-tweet-sidebar select.icontype').val();
-        //
-        //     twitter.marker.setIcon(icons['climateaction'])
-        //
-        //     let tweet = $('#new-tweet-sidebar textarea').val();
-        //
-        //     if (tweet.search("#decarbnow") == -1)
-        //         tweet = '#decarbnow ' + tweet;
-        //
-        //     //tweet += ' https://decarbnow.space/map/' + hash + '/' + tweettype;
-        //
-        //     // Remove existing iframe
-        //     $('#new-tweet-sidebar .tweetBtn').html('');
-        //     // Generate new markup
-        //     var tweetBtn = $('<a></a>')
-        //         .addClass('twitter-share-button')
-        //         .attr('href', 'http://twitter.com/share')
-        //         .attr('data-url', 'https://decarbnow.space/map/')
-        //         //.attr('data-url', 'https://decarbnow.space/map/' + hash + '/' + tweettype)
-        //         .attr('data-text', tweet);
-        //     $('#new-tweet-sidebar .tweetBtn').append(tweetBtn);
-        //
-        //     if(window.twttr.widgets)
-        //         window.twttr.widgets.load();
-        // }
-        //
-        // function debounce(callback) {
-        //     // each call to debounce creates a new timeoutId
-        //     let timeoutId;
-        //     return function() {
-        //         // this inner function keeps a reference to
-        //         // timeoutId from the function outside of it
-        //         clearTimeout(timeoutId);
-        //         timeoutId = setTimeout(callback, DEBOUNCE_TIMEOUT);
-        //     }
-        // }
-        //
+        function onTweetSettingsChange(e) {
+            let tweettype = $('#new-tweet-sidebar select.icontype').val();
+
+            twitter.marker.setIcon(icons['climateaction'])
+            let tweet = $('#tweetText').val()
+            //let tweet = $('#new-tweet-sidebar textarea').val();
+
+            // if (tweet.search("#decarbnow") == -1)
+            //     tweet = '#decarbnow ' + tweet;
+            let state = url.getPath();
+            //tweet += ' https://map.decarbnow.space' + state;
+
+            // Remove existing iframe
+            //$('#new-tweet-sidebar .tweetBtn').html('');
+            $('#tweetBtn').html('');
+            // Generate new markup
+            // var tweetBtn = $('<a></a>')
+            //     .addClass('twitter-share-button')
+            //     .attr('href', 'http://twitter.com/share')
+            //     .attr('data-url', 'https://decarbnow.space/map/')
+            //     //.attr('data-url', 'https://decarbnow.space/map/' + hash + '/' + tweettype)
+            //     .attr('data-text', tweet);
+            // $('#new-tweet-sidebar .tweetBtn').append(tweetBtn);
+
+            var tweetBtn = $('<a></a>')
+                .addClass('twitter-share-button')
+                .attr('href', 'http://twitter.com/share')
+                .attr('data-url', 'https://map.decarbnow.space' + state)
+                .attr('data-text', tweet);
+            $('#tweetBtn').append(tweetBtn);
+            if(window.twttr.widgets){
+                window.twttr.widgets.load();
+            }
+
+            if(window.twttr.widgets)
+                window.twttr.widgets.load();
+        }
+
+        function debounce(callback) {
+            // each call to debounce creates a new timeoutId
+            let timeoutId;
+            return function() {
+                // this inner function keeps a reference to
+                // timeoutId from the function outside of it
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(callback, DEBOUNCE_TIMEOUT);
+            }
+        }
+
+        $('#tweetText').on('input', function() {
+            debounce(onTweetSettingsChange)();
+        });
         // $('#new-tweet-sidebar select.icontype').on('change', onTweetSettingsChange);
         //
         // $('#new-tweet-sidebar textarea').on('input', function() {
         //     debounce(onTweetSettingsChange)();
         // });
-        //
+
         // //init debounce
-        // debounce(onTweetSettingsChange)();
-        // //console.log(e);
-        // if(window.twttr.widgets){
-        //     window.twttr.widgets.load();
-        // }
+        debounce(onTweetSettingsChange)();
+        //console.log(e);
+        if(window.twttr.widgets){
+            window.twttr.widgets.load();
+        }
+
     },
     closeSidebar: function() {
         twitter.sidebar.hide();

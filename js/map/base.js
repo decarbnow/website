@@ -30,7 +30,8 @@ let defaultState = {
 let defaultOptions = {
     zoomControl: false,
     tap: true,
-    maxZoom: 19
+    maxZoom: 19,
+    touchZoom: 'center'
 }
 
 let contextmenuOptions = {

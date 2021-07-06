@@ -157,7 +157,7 @@ let manager = {
             // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
             // manager.data.date = data.date;
             // console.log(manager.data.tweets)
-            let tweetOpacity = 0.02
+            let tweetOpacity = 0.3
 
             Object.keys(manager.data.tweets).forEach((id) => {
 

@@ -38,7 +38,7 @@ let contextmenuOptions = {
     contextmenu: true,
     contextmenuWidth: 200,
     contextmenuItems: [{
-        text: 'Tweet ...',
+        text: 'Tweet here ...',
         callback: function(e) {
             tweets.sidebar.hide();
             base.map.flyTo(e.latlng);

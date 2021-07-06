@@ -34,19 +34,18 @@ let layersList = {
                                 '</table>');
 
                 let isClicked = false
-
-                layer.on('mouseover', function (e) {
-                            if(!isClicked)
-                                this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                            if(!isClicked)
-                                this.closePopup();
-                });
-                layer.on('click', function (e) {
-                            isClicked = true;
-                            this.openPopup();
-                });
+                  layer.on('mouseover', function (e) {
+                              if(!isClicked & base.map.getZoom() > 9)
+                                  this.openPopup();
+                  });
+                  layer.on('mouseout', function (e) {
+                              if(!isClicked)
+                                  this.closePopup();
+                  });
+                  layer.on('click', function (e) {
+                              isClicked = true;
+                              this.openPopup();
+                  });
             }
         }
     },
@@ -71,7 +70,7 @@ let layersList = {
                 let isClicked = false
 
                 layer.on('mouseover', function (e) {
-                            if(!isClicked)
+                            if(!isClicked & base.map.getZoom() > 9)
                                 this.openPopup();
                 });
                 layer.on('mouseout', function (e) {

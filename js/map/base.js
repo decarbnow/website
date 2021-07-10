@@ -107,6 +107,7 @@ let base = {
         return {
             center: base.map.getCenter(),
             zoom: base.map.getZoom(),
+            //ht: url.getHT(),
             layers: base.getVisibleLayers(),
             tweet: tweets.activeTweet,
         }

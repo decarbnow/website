@@ -156,7 +156,7 @@ let manager = {
             manager.data.tweets = data;
             // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
             // manager.data.date = data.date;
-            // console.log(manager.data.tweets)
+            //console.log(manager.data.tweets)
             let tweetOpacity = 0.3
 
             Object.keys(manager.data.tweets).forEach((id) => {
@@ -179,21 +179,46 @@ let manager = {
                 if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
                     return;
 
-                if (tweetInfo.state.zoom >= 6){
-                  let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
+                //console.log(tweetInfo.state);
 
-                  if(tweetOpacity < 1)
-                    tweetOpacity = tweetOpacity + 0.006
-                  //marker.addTo(manager.clusters)
-                  marker.addTo(base.layerSets.tweets.layers.tweets)
-                  marker.on('click', function () {
-                      manager.show(id)
-                  })
-                  manager.data.tweetIdToMarker[id] = marker
+                //Check URL For hashtag filter
+                let state = url.getState();
+
+                console.log(state.hashtag)
+                if(state.hashtag){
+                  if (tweetInfo.hashtags.includes(state.hashtag)){
+                    let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
+
+                    if(tweetOpacity < 1)
+                      tweetOpacity = tweetOpacity + 0.006
+                    //marker.addTo(manager.clusters)
+                    marker.addTo(base.layerSets.tweets.layers.tweets)
+                    marker.on('click', function () {
+                        manager.show(id)
+                    })
+                    manager.data.tweetIdToMarker[id] = marker
+                  }
+                  else {
+                    return;
+                  }
+                } else {
+                  if (tweetInfo.state.zoom >= 5){
+                    let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
+
+                    if(tweetOpacity < 1)
+                      tweetOpacity = tweetOpacity + 0.006
+                    //marker.addTo(manager.clusters)
+                    marker.addTo(base.layerSets.tweets.layers.tweets)
+                    marker.on('click', function () {
+                        manager.show(id)
+                    })
+                    manager.data.tweetIdToMarker[id] = marker
+                  }
+                  else {
+                    return;
+                  }
                 }
-                else {
-                  return;
-                }
+
 
 
             });

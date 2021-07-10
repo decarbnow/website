@@ -6,7 +6,7 @@ let url = {
     prefix: '/',
     //prefix: '',
     keyValueDivider: '=',
-    specialKeys: ['@'],
+    specialKeys: ['@', '$'],
     listDivider: ',',
     divider: '/',
     geoHash: true,
@@ -18,8 +18,10 @@ let url = {
 
         let vars = {
             z: s.zoom,
+            ht: s.hashtag,
             ls: layers.join(url.listDivider)
         }
+
 
         if (s.tweet) {
             vars = {...{
@@ -77,6 +79,13 @@ let url = {
         if (rs.z)
             s.zoom = parseInt(rs.z);
 
+        if (rs['$']) {
+            s.hashtag = rs['$'];
+        }
+
+        if (rs.ht)
+            s.hashtag = rs.ht;
+
         if (rs.ls)
             s.layers = rs.ls.split(url.listDivider);
 
@@ -103,9 +112,15 @@ let url = {
         return url._urlToState(url.getPath());
     },
 
+    getHT: function() {
+      var state = url.getState();
+      //console.log(state.hashtag)
+      return state.hashtag;
+    },
+
     getPath: function() {
         return window.location.pathname;
-    },
+    }
 }
 
 export default url;

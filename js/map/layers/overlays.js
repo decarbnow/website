@@ -2,7 +2,7 @@ import config from '../config.js'
 
 let layersList = {};
 
-let omiYears = [2007, 2011, 2015, 2019, 2020];
+let omiYears = [2007, 2011, 2015, 2019, 2020, 2021];
 omiYears.forEach(n => {
     layersList[`no2_${n}`] = {
         //file: `no2/World_${n}_rastered.geojson`,

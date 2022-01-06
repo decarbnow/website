@@ -22,7 +22,7 @@ let defaultState = {
     layers: [
         'dark',
         'power-plants',
-        'no2_2020',
+        'no2_2021',
         'tweets',
     ],
 }

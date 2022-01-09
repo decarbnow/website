@@ -1,8 +1,8 @@
 .leaflet-sidebar.left.visible ~ .leaflet-left {
-    left: calc(17vw + 17vh); } /*make bigger here (move original map control)*/
+    left: 330px; } /*make bigger here (move original map control)*/
 
 .leaflet-sidebar.right.visible ~ .leaflet-right {
-    right: calc(17vw + 17vh; } /*make bigger here (move original map control)*/
+    right: 330px; } /*make bigger here (move original map control)*/
 
 .leaflet-sidebar {
     padding: 0;
@@ -12,7 +12,8 @@
         background-color: rgba(255, 255, 255, 0.5);
         box-shadow: none;
         padding: 0 8px;
-        width: calc(17vw + 17vh);
+        width: 330px;
+        //width: calc(17vw + 17vh);
         //  scrollbar-color: transparent transparent;
         // ::-webkit-scrollbar {
         //      display: none;

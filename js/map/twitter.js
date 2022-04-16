@@ -99,7 +99,7 @@ let twitter = {
                 .addClass('twitter-share-button')
                 .attr('href', 'http://twitter.com/share')
                 .attr('data-url', 'https://map.decarbnow.space' + state)
-                .attr('data-text', tweet);
+                .attr('data-text', tweet + '\n\n🗺️');
             $('#tweetBtn').append(tweetBtn);
             if(window.twttr.widgets){
                 window.twttr.widgets.load();

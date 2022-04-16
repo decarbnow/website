@@ -6,6 +6,7 @@ module.exports = merge(baseConfig, {
     devServer: {
         index: 'map.html',
         host: 'map.localhost',
+        //host: '0.0.0.0',
         historyApiFallback: {
             rewrites: [
                 { from: /.*/, to: '/map.html' },

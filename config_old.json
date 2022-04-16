@@ -1,0 +1,39 @@
+{
+    "url": {
+        "default": "live",
+        "list": {
+            "dev": "https://map.decarbnow.abteil.org",
+            "live": "https://map.decarbnow.space"
+        }
+    },
+    "data": {
+        "default": "github",
+        "list": {
+            "github": "https://raw.githubusercontent.com/decarbnow/data/master/",
+            "local": "http://127.0.0.1:8088/"
+        }
+    },
+    "keys": {
+        "sentinalmap": "xxx"
+    },
+    "backend": {
+        "default": "live",
+        "list": {
+            "live": {
+                "format": "python",
+                "server": "https://dev.decarbnow.space"
+            },
+            "devServer": {
+                "format": "python",
+                "server": "https://backend.decarbnow.abteil.org"
+            },
+            "devLocal": {
+                "format": "python",
+                "server": "http://127.0.0.1:5000"
+            },
+            "file": {
+                "format": "file"
+            }
+        }
+    }
+}

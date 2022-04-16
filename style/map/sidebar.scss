@@ -23,16 +23,17 @@
 
 
     .close {
-        // z-index: 800;
-        // color: rgba(0, 0, 0, 0.4);
-        // line-height: 0.9em;
-        // width: 25px;
-        // height: 25px;
-        // right: 5px;
-        // top: 15px;
-        // font-size: 20px;
-        // background: transparent;
-        display: none;
+        z-index: 15000;
+        color: rgba(0, 0, 0, 0.6);
+        line-height: 0.9em;
+        width: 25px;
+        height: 25px;
+        //right: 330px;
+        left: 308px;
+        top: 1px;
+        font-size: 20px;
+        background: transparent;
+        //display: none;
     }
 
     h3 {

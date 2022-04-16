@@ -30,7 +30,7 @@ let manager = {
 
     init: function() {
         manager.sidebar = L.control.sidebar('show-tweet-sidebar', {
-            closeButton: false,
+            closeButton: true,
             position: 'left'
         });
 

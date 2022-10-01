@@ -8,7 +8,8 @@ omiYears.forEach(n => {
     layersList[`no2_${n}`] = {
         //file: `no2/World_${n}_rastered.geojson`,
         url: `/no2/World_${n}_rastered.geojson`,
-        name: `NO₂ ${n}`
+        name: `NO₂ ${n}`,
+        hidden: false
     }
 });
 
@@ -17,7 +18,8 @@ tropomiDates.forEach(n => {
     layersList[`no2_${n[0]}_${String(n[1]).padStart(2, '0')}`] = {
         //file: `no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         url: `/no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
-        //name: `NO<sub>2</sub> ${n[0]}-${String(n[1]).padStart(2, '0')}`
+        name: `NO₂ ${n[0]}-${String(n[1]).padStart(2, '0')}`,
+        hidden: true
     }
 });
 
@@ -94,7 +96,8 @@ legend += "</div>";
 // }
 
 layersList['empty'] = {
-    name: 'Disabled'
+    name: 'Disabled',
+    hidden: false
 };
 
 export default {

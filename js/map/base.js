@@ -292,8 +292,8 @@ let base = {
 
         base.map.on("click", function (e) {
             //tweets.closeSidebar();
-            //twitter.closeSidebar();
-            twitter.marker.remove()
+            tweets.closeSidebar();
+            twitter.marker.remove();
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

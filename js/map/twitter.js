@@ -72,13 +72,22 @@ function changeCheckboxState() {
 
 
 /* listen for the return message once the tweet has been loaded */
-window.onmessage = (oe) => {
-    if (oe.origin != "https://twitframe.com")
-        return;
-    if (oe.data.height && oe.data.element.match(/^tweet_/))
-        document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
-}
+// window.onmessage = (oe) => {
+//     if (oe.origin != "https://twitframe.com")
+//         return;
+//     if (oe.data.height && oe.data.element.match(/^tweet_/))
+//         document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
+// }
 
+
+//HAS TO BE FIXED
+function changeDropDownState() {
+    var selectedBaseLayer = url.getState().layers[0]
+    console.log(selectedBaseLayer)
+    console.log(document.getElementById("selectLayer").value)
+    if(selectedBaseLayer != document.getElementById("selectLayer").value)
+        document.getElementById("selectLayer").value = selectedBaseLayer;
+}
 
 window.SwitchLayer = function(event) {
   let res = event.value.toString()
@@ -89,27 +98,27 @@ window.SwitchLayer = function(event) {
   base.setState(getStateForSelection)
 }
 
-window.SwitchEPRT = function(event) {
-  let res = event.value.toString()
-  let getStateForSelection = url.getState();
-
-  getStateForSelection.layers[0] = res
-
-  base.setState(getStateForSelection)
-}
+// window.SwitchEPRT = function(event) {
+//   let res = event.value.toString()
+//   let getStateForSelection = url.getState();
+//
+//   getStateForSelection.layers[0] = res
+//
+//   base.setState(getStateForSelection)
+// }
 
 let twitter = {
     sidebar: null,
     marker: L.marker(null, {icon: icons['climateaction']}),
     init: function() {
-        twitter.sidebar = L.control.sidebar('new-tweet-sidebar', {
-            closeButton: false,
-            position: 'left'
-        });
-        base.map.addControl(twitter.sidebar)
-        twitter.sidebar.on('hide', function () {
-            twitter.marker.remove()
-        });
+        // twitter.sidebar = L.control.sidebar('new-tweet-sidebar', {
+        //     closeButton: false,
+        //     position: 'left'
+        // });
+        // base.map.addControl(twitter.sidebar)
+        // twitter.sidebar.on('hide', function () {
+        //     twitter.marker.remove()
+        // });
 
     },
     showTweetBox: function(e) {
@@ -193,16 +202,16 @@ let twitter = {
 
                    base.showLayer(layer);
 
-               } else {
+              } else {
                    base.hideLayer(layer);
-               }
+              }
 
-          let stateNow = url.getState()
+              let stateNow = url.getState()
 
-          stateNow.layers = base.getVisibleLayers()
-          //console.log(base.getVisibleLayers());
+              stateNow.layers = base.getVisibleLayers()
+              //console.log(base.getVisibleLayers());
 
-          url.pushState(stateNow);
+              url.pushState(stateNow);
 
          });
 
@@ -287,6 +296,7 @@ let twitter = {
         function debounce(callback) {
             // each call to debounce creates a new timeoutId
             let timeoutId;
+            //console.log("debouncing..");
             return function() {
                 // this inner function keeps a reference to
                 // timeoutId from the function outside of it
@@ -299,10 +309,13 @@ let twitter = {
             debounce(onTweetSettingsChange)();
         });
 
-        $('#selectLayer').on('input', function() {
-            debounce(onTweetSettingsChange)();
-        });
+        //
+        // $('#selectLayer').on('input', function() {
+        //     debounce(onTweetSettingsChange)();
+        // });
+        //
 
+        //Debouncing, hide NO2 layer does not count as overlay change (bug?)
         for (let i = 1; i < url.getState().layers.length; i++) {
           $('#layers-' + url.getState().layers[i]).on('input', function() {
               debounce(onTweetSettingsChange)();
@@ -311,8 +324,9 @@ let twitter = {
 
         base.map.on('baselayerchange overlayadd overlayremove zoomend', function(e) {
           //listenForLayerChange();
-          debounce(onTweetSettingsChange)(),
-          changeCheckboxState()
+          debounce(onTweetSettingsChange)();
+          changeCheckboxState();
+          //changeDropDownState()
         });
 
         // base.map.on('baselayerchange overlayadd overlayremove zoomend', function(e) {
@@ -326,7 +340,9 @@ let twitter = {
         // });
 
         // //init debounce Timeout not working!!
-        debounce(onTweetSettingsChange)();
+        //debounce(onTweetSettingsChange)();
+        tweets.closeSidebar();
+
         //console.log(e);
         if(window.twttr.widgets){
             window.twttr.widgets.load();

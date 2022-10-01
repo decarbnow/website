@@ -304,14 +304,14 @@ let manager = {
     //     });
     // },
     //
-    // closeSidebar: function() {
-    //     //console.log(`tweets manager.closeSidebar`)
-    //     manager.deactivateMarkers();
-    //     manager.activeTweet = null;
-    //     manager.activeStory = null;
-    //     manager.sidebar.hide();
-    //     url.pushState();
-    // },
+    closeSidebar: function() {
+        //console.log(`tweets manager.closeSidebar`)
+        manager.deactivateMarkers();
+        manager.activeTweet = null;
+        manager.activeStory = null;
+        //manager.sidebar.hide();
+        url.pushState();
+    },
 
     tweetsLoaded: function() {
         return (manager.sidebarDiv.find('.tweet.loading').length == 0);

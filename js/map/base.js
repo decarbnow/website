@@ -164,7 +164,7 @@ let base = {
         // }
 
         base.showLayers(layers);
-        base.map.flyTo(state.center, state.zoom);
+        base.map.flyTo(state.center, state.zoom, {noMoveStart: true});
     },
 
     getSidebarCorrectedCenter: function(center, zoom) {
@@ -184,9 +184,25 @@ let base = {
         module.sidebar.show();
         if (content)
             module.sidebar.setContent(content);
+
+
         return module.sidebar;
     },
+    //New bullshit
+    showPopup: function(module, content = null) {
+        let sbs = [tweets]
+        sbs.forEach((m) => {
+            if (m != module) {
+                map.closePopup();
+            }
+        });
 
+        if (content)
+            L.popup(popupOptions).setContent(content)
+
+
+        return module.popup;
+    },
 
     showLayers: function(ids) {
         let visibleLayers = base.getVisibleLayers()
@@ -233,12 +249,12 @@ let base = {
 
         L.Control.geocoder({
             position: 'topleft'
-            // defaultMarkGeocode: false,
+            // defaultMarkGeocode: false
         }).addTo(base.map);
 
         L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topright',
-            collapsed: width < 512
+            collapsed: width < 1024
         }).addTo(base.map);
 
         L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
@@ -246,11 +262,11 @@ let base = {
             collapsed: width < 1024
         }).addTo(base.map);
 
-        L.control.layerSelectionControl(layerSets.countries.layers, {
-            position: 'topright',
-            collapsed: true,
-            name: 'Countries'
-        }).addTo(base.map);
+        // L.control.layerSelectionControl(layerSets.countries.layers, {
+        //     position: 'topright',
+        //     collapsed: true,
+        //     name: 'Countries'
+        // }).addTo(base.map);
 
         // L.control.layers(null, layerSets.countries.getNameObject(), {
         //     position: 'topright',
@@ -275,8 +291,9 @@ let base = {
         // });
 
         base.map.on("click", function (e) {
-            tweets.closeSidebar();
+            //tweets.closeSidebar();
             //twitter.closeSidebar();
+            twitter.marker.remove()
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

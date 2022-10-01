@@ -68,16 +68,35 @@ let layersList = {
         }),
         name: 'Dark'
     },
-    // sentinalmap16: {
-    //     layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
-    //         attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
-    //     	   ' Sentinel data 2016 by ' +
-    //     	   '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
-    //         minZoom: 5,
-    //         maxZoom: 14
-    //     }),
-    //     name: 'Sentinal (2016, SentinelMap)'
-    // },
+    worldpop: {
+       layer: L.tileLayer('https://tile.casa.ucl.ac.uk/duncan/WorldPopDen2015b/{z}/{x}/{y}.png', {
+         attribution: 'Tiles &copy; <a href="https://www.casa.ucl.ac.uk/" target="_blank">CASA, UCL</a>, '+
+                          '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                          '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                          '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                          '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+           maxZoom: 10,
+           subdomains:['mt0','mt1','mt2','mt3']
+       }),
+       name: 'World Population'
+    },
+    //sentinalmap16: {
+    //    layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
+    //        attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
+    //    	   ' Sentinel data 2016 by ' +
+    //    	   '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
+    //        minZoom: 5,
+    //        maxZoom: 14
+    //    }),
+    //    name: 'Sentinal (2016, SentinelMap)'
+    //},
+    //s2maps21: {
+    //    layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg', {
+    //        attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2021)',
+    //        maxZoom: 20
+    //    }),
+    //    name: 'Sentinel-2 (2021, EOX)'
+    //},
     s2maps20: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2020)',

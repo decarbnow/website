@@ -3,11 +3,12 @@ import config from '../config.js'
 let layersList = {};
 
 let omiYears = [2007, 2011, 2015, 2019, 2020, 2021];
+//let omiYears = [2015, 2020, 2021];
 omiYears.forEach(n => {
     layersList[`no2_${n}`] = {
         //file: `no2/World_${n}_rastered.geojson`,
         url: `/no2/World_${n}_rastered.geojson`,
-        name: `NO<sub>2</sub> ${n}`
+        name: `NO₂ ${n}`
     }
 });
 
@@ -16,7 +17,7 @@ tropomiDates.forEach(n => {
     layersList[`no2_${n[0]}_${String(n[1]).padStart(2, '0')}`] = {
         //file: `no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         url: `/no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
-        name: `NO<sub>2</sub> ${n[0]}-${String(n[1]).padStart(2, '0')}`
+        //name: `NO<sub>2</sub> ${n[0]}-${String(n[1]).padStart(2, '0')}`
     }
 });
 
@@ -78,19 +79,19 @@ colors.forEach(function (color, i) {
 legend += "</div>";
 
 
-layersList['tempDiff'] = {
-    layer: L.tileLayer(`${config.data.url}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
-        attribution: '© CDS',
-        minZoom: 0,
-        maxZoom: 10,
-        maxNativeZoom: 2,
-        opacity: 0.6,
-        tms: false,
-        ext: 'png'
-    }),
-    legend: legend,
-    name: 'Temperature Diff. <i class="fa fa-info-circle" title="Average 1980-1989 compared with 2015-2019"></i>'
-}
+// layersList['tempDiff'] = {
+//     layer: L.tileLayer(`${config.data.url}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
+//         attribution: '© CDS',
+//         minZoom: 0,
+//         maxZoom: 10,
+//         maxNativeZoom: 2,
+//         opacity: 0.6,
+//         tms: false,
+//         ext: 'png'
+//     }),
+//     legend: legend,
+//     name: 'Temperature Diff. <i class="fa fa-info-circle" title="Average 1980-1989 compared with 2015-2019"></i>'
+// }
 
 layersList['empty'] = {
     name: 'Disabled'

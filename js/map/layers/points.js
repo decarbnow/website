@@ -14,6 +14,11 @@ function getColor(stype) {
          }
 }
 
+var minValue = 0.5;
+function calcRadius(val, zoom) {
+    return 1.00083 * Math.pow(val/minValue,0.5716) * (zoom / 2);
+}
+
 let layersList = {
     'e-prtr': {
         url: "/e-prtr/points.geojson",
@@ -57,7 +62,12 @@ let layersList = {
                 color: '#FF0000'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                //let circle = new L.CircleMarker(latlng, {radius: 2, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                let circle = new L.circle(latlng, {radius: 180, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                //circle._orgRadius = circle.getRadius();
+          			//circle.setRadius(calcRadius(circle._orgRadius,base.map.getZoom()))
+                return circle;
+
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +

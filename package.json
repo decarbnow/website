@@ -36,7 +36,7 @@
     "leaflet.marker.highlight": "0.0.3",
     "leaflet.markercluster": "1",
     "mini-css-extract-plugin": "^0.9.0",
-    "node-sass": "4",
+    "node-sass": "7",
     "popper.js": "1",
     "reset-css": "5",
     "sass-loader": "8",

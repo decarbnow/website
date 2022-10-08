@@ -1,5 +1,5 @@
 import { decode } from '@alexpavlov/geohash-js';
-
+//import * as omnivore from "@mapbox/leaflet-omnivore";
 //import GeoJSON from geojson;
 var GeoJSON = require('geojson');
 

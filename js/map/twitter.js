@@ -14,58 +14,57 @@ let showGeoLoc = L.popup().setContent(
 );
 
 function changeCheckboxState() {
-/* find all iframes with ids starting with "tweet_" */
-    var allIdsFromCheckbox = document.querySelectorAll("[id^='layers-']")
-    // allIdsFromCheckbox.forEach(elem =>
-    //   console.log(elem.getAttribute('id'))
-    // );
-    var a = []
-    allIdsFromCheckbox.forEach(elem => {
-        a.push(elem.getAttribute('id').replace("layers-", ""))
-      //var a =
+  /* find all iframes with ids starting with "tweet_" */
+  var allIdsFromCheckbox = document.querySelectorAll("[id^='layers-']")
+  // allIdsFromCheckbox.forEach(elem =>
+  //   console.log(elem.getAttribute('id'))
+  // );
+  var a = []
+  allIdsFromCheckbox.forEach(elem => {
+      a.push(elem.getAttribute('id').replace("layers-", ""))
+    //var a =
 
 
-      //elem.getAttribute('id').replace("layers-", "")
-    });
+    //elem.getAttribute('id').replace("layers-", "")
+  });
 
-    var b = url.getState().layers
+  var b = url.getState().layers
 
-    //console.log(a)
-    //console.log(b)
-
-
-    var activeCheckboxIds =  a.filter(function(v) {
-        return b.includes(v);
-      })
+  //console.log(a)
+  //console.log(b)
 
 
-    a.forEach((item, i) => {
-        document.getElementById("layers-" + item).checked = false;
-    });
-
-    activeCheckboxIds.forEach((item, i) => {
-        document.getElementById("layers-" + item).checked = true;
-    });
-
-    //console.log(url.getState());
-    //console.log(allIdsFromCheckbox[0])
-    // for (var i = 0; i < allIdsFromCheckbox.length; i++)
-    //     allIdsFromCheckbox[i].replace("layer-", "");
+  var activeCheckboxIds =  a.filter(function(v) {
+      return b.includes(v);
+    })
 
 
-    //console.log(tweetIframes)
-    //console.log(url.getState().layers)
-    // tweetIframes.forEach(element => {
-    //     element.onload=function() {
-    //     this.contentWindow.postMessage({ element: this.id, query: "checked" });
-    // };
-    // });
-    // tweetIframes.forEach(element => {
-    //     element.onload=function() {
-    //     this.contentWindow.postMessage({ element: this.id, query: "height" }, "https://twitframe.com");
-    // };
-    // });
+  a.forEach((item, i) => {
+      document.getElementById("layers-" + item).checked = false;
+  });
 
+  activeCheckboxIds.forEach((item, i) => {
+      document.getElementById("layers-" + item).checked = true;
+  });
+
+  //console.log(url.getState());
+  //console.log(allIdsFromCheckbox[0])
+  // for (var i = 0; i < allIdsFromCheckbox.length; i++)
+  //     allIdsFromCheckbox[i].replace("layer-", "");
+
+
+  //console.log(tweetIframes)
+  //console.log(url.getState().layers)
+  // tweetIframes.forEach(element => {
+  //     element.onload=function() {
+  //     this.contentWindow.postMessage({ element: this.id, query: "checked" });
+  // };
+  // });
+  // tweetIframes.forEach(element => {
+  //     element.onload=function() {
+  //     this.contentWindow.postMessage({ element: this.id, query: "height" }, "https://twitframe.com");
+  // };
+  // });
 }
 
 
@@ -79,23 +78,22 @@ function changeCheckboxState() {
 //         document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
 // }
 
-
-//HAS TO BE FIXED
 function changeDropDownState() {
-    var selectedBaseLayer = url.getState().layers[0]
-    console.log(selectedBaseLayer)
-    console.log(document.getElementById("selectLayer").value)
-    if(selectedBaseLayer != document.getElementById("selectLayer").value)
-        document.getElementById("selectLayer").value = selectedBaseLayer;
+    var selectedBaseLayer = url.getState().layers[0];
+    //console.log(selectedBaseLayer)
+    //console.log(document.getElementById("selectLayer").value)
+    //if(selectedBaseLayer != document.getElementById("selectLayer").value
+    document.getElementById("selectLayer").value = selectedBaseLayer;
 }
 
 window.SwitchLayer = function(event) {
-  let res = event.value.toString()
-  let getStateForSelection = url.getState();
-  //console.log(getStateForSelection)
-  getStateForSelection.layers[0] = res
-
-  base.setState(getStateForSelection)
+    let res = event.value.toString();
+    let getStateForSelection = url.getState();
+    //console.log(getStateForSelection)
+    //getStateForSelection.layers[0] = res;
+    //console.log('res:' + res)
+    base.hideLayer(getStateForSelection.layers[0]);
+    base.showLayer(res);
 }
 
 // window.SwitchEPRT = function(event) {
@@ -135,7 +133,7 @@ let twitter = {
 
         let hash = encode(e.latlng.lat, e.latlng.lng);
         function selectLayer(event) {
-          console.log('this is ' + event.value.toString())
+            console.log('this is ' + event.value.toString())
         }
 
         let text = '<label>Set appearance:</label>' +
@@ -180,41 +178,38 @@ let twitter = {
         }
 
         $('div#layercontrol input[type="checkbox"]').on('change', function() {
-             var checkbox = $(this);
-             var layer = checkbox.data().layer;
-             var baseLayer = 'base.layers[\"' + layer + '\"]'
-             // console.log(base.layers);
-             // console.log(layer);
-             // console.log(checkbox)
-             // toggle the layer
+            var checkbox = $(this);
+            var layer = checkbox.data().layer;
+            var baseLayer = 'base.layers[\"' + layer + '\"]'
+            // console.log(base.layers);
+            // console.log(layer);
+            // console.log(checkbox)
+            // toggle the layer
 
-             if ($(this).is(':checked')) {
-                   if(layer.indexOf('no2_') === 0) {
-                       //hide all layers that start with "no2"
-                       let arr = url.getState().layers
-                       arr = arr.filter(function (item) {
-                           return item.indexOf("no2_") === 0;
-                         });
+            if ($(this).is(':checked')) {
+                  if(layer.indexOf('no2_') === 0) {
+                      //hide all layers that start with "no2"
+                      let arr = url.getState().layers
+                      arr = arr.filter(function (item) {
+                          return item.indexOf("no2_") === 0;
+                        });
 
-                        if(arr.length == 1)
-                            base.hideLayer(arr)
-                   }
+                       if(arr.length == 1)
+                           base.hideLayer(arr)
+                  }
 
-                   base.showLayer(layer);
+                  base.showLayer(layer);
 
-              } else {
-                   base.hideLayer(layer);
-              }
+             } else {
+                  base.hideLayer(layer);
+             }
 
-              let stateNow = url.getState()
+             let stateNow = url.getState();
 
-              stateNow.layers = base.getVisibleLayers()
-              //console.log(base.getVisibleLayers());
-
-              url.pushState(stateNow);
-
-         });
-
+             stateNow.layers = base.getVisibleLayers();
+             //console.log(base.getVisibleLayers());
+             url.pushState(stateNow);
+      });
 
 
 
@@ -267,7 +262,7 @@ let twitter = {
             var tweetBtn = $('<a></a>')
                 .addClass('twitter-share-button')
                 .attr('href', 'http://twitter.com/share')
-                .attr('data-text', tweet + '\n\n🗺️');
+                .attr('data-text', tweet + '\n\n');
 
             if(!stateSet){
                 tweetBtn = tweetBtn
@@ -289,8 +284,8 @@ let twitter = {
                 window.twttr.widgets.load();
             }
 
-            if(window.twttr.widgets)
-                window.twttr.widgets.load();
+            // if(window.twttr.widgets)
+            //     window.twttr.widgets.load();
         }
 
         function debounce(callback) {
@@ -323,10 +318,13 @@ let twitter = {
         }
 
         base.map.on('baselayerchange overlayadd overlayremove zoomend', function(e) {
-          //listenForLayerChange();
-          debounce(onTweetSettingsChange)();
-          changeCheckboxState();
-          //changeDropDownState()
+          //console.log(base.tweetBoxActive)
+          if(base.tweetBoxActive){
+            debounce(onTweetSettingsChange)();
+            changeCheckboxState();
+            changeDropDownState();
+          }
+
         });
 
         // base.map.on('baselayerchange overlayadd overlayremove zoomend', function(e) {
@@ -348,7 +346,7 @@ let twitter = {
             window.twttr.widgets.load();
         }
 
-    },
+    }
     // closeSidebar: function() {
     //     twitter.sidebar.hide();
     // }

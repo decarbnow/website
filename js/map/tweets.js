@@ -27,7 +27,7 @@ function listenForTwitFrameResizes() {
     };
     });
 
-}
+};
 
 /* listen for the return message once the tweet has been loaded */
 window.onmessage = (oe) => {
@@ -35,7 +35,7 @@ window.onmessage = (oe) => {
         return;
     if (oe.data.height && oe.data.element.match(/^tweet_/))
         document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
-}
+};
 
 window.showIframeHeight = function() {
     return console.log($('iframe').contents().height() + ' is the height');
@@ -143,126 +143,152 @@ let manager = {
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
         listenForTwitFrameResizes()
+        //console.log(tweetInfo)
 
     },
 
-
-
-
-
     openPopup: function(id) {
-
-
-
       let tweetInfo = manager.data.tweets[id];
 
-      //console.log(tweetInfo);
-      let ids = [id];
-      //if (tweetInfo.story)
-      //    ids = manager.data.stories[tweetInfo.story];
-      //console.log(ids);
+      if (tweetInfo.reply){
+          let ids = [tweetInfo.reply];
+
+          let entries = ids.map(tweetId => {
+              let classes = ['tweet', 'loading'];
+
+              if (id == tweetId)
+                  classes.push('selected');
+
+              return `
+              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
+              `;
 
 
-      let entries = ids.map(tweetId => {
-          let classes = ['tweet', 'loading'];
+          });
 
-          if (id == tweetId)
-              classes.push('selected');
-          // return `
-          //     <table><tr height=400><td>
-          //     <iframe src="https://nttr.stream/i/status/${tweetId}/embed?theme=twitter" id="your-iframe-id" frameborder="0" style="overflow: hidden; height: 400px; width: 350px; position: relative; flex-grow: 1" ></iframe>
-          //     </td></tr></table>
-          // `;
-          return `
-          <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
-          `;
-          // return `
-          // <div  id="tweet" class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center></div>
-          // `;
+          let text = entries.join('');
 
-          // return `
-          // <blockquote class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center>
-          //   <a href="https://twitter.com/x/status/${tweetId}"></a>
-          // </blockquote>
-          // `;
+          let showTweet = L.popup(popupOptions).setContent(
+              '<p>Tell the World!</p>'
+          );
 
-      });
+          showTweet
+                .setLatLng(tweetInfo.state.center)
+                .setContent(text)
+                .openOn(base.map);
 
-      let text = entries.join('');
-      //if (tweetInfo.story)
-          //text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
-          //text = `<iframe src="https://nttr.stream/i/status/${tweetInfo.story}/embed" frameborder="0" style="overflow: hidden; height: 100%; width: 100%; position: absolute;"></iframe>`;
+      } else {
+        //console.log(tweetInfo);
+        let ids = [id];
+        //if (tweetInfo.story)
+        //    ids = manager.data.stories[tweetInfo.story];
+        //console.log(ids);
 
-      //base.bindPopup(text)
-      if (tweetInfo.story){
 
-          let ids_story = manager.data.stories[tweetInfo.story];
+        let entries = ids.map(tweetId => {
+            let classes = ['tweet', 'loading'];
 
-          let pos_previousID = ids_story.indexOf(ids[0])-1;
-          let pos_nextID = ids_story.indexOf(ids[0])+1;
+            if (id == tweetId)
+                classes.push('selected');
+            // return `
+            //     <table><tr height=400><td>
+            //     <iframe src="https://nttr.stream/i/status/${tweetId}/embed?theme=twitter" id="your-iframe-id" frameborder="0" style="overflow: hidden; height: 400px; width: 350px; position: relative; flex-grow: 1" ></iframe>
+            //     </td></tr></table>
+            // `;
+            return `
+            <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
+            `;
+            // return `
+            // <div  id="tweet" class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center></div>
+            // `;
 
-          if(pos_previousID > -1)
-              text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")'>Previous</button>"
+            // return `
+            // <blockquote class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center>
+            //   <a href="https://twitter.com/x/status/${tweetId}"></a>
+            // </blockquote>
+            // `;
 
-          if(pos_nextID < ids_story.length)
-              text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")'>Next</button>"
+        });
+
+        let text = entries.join('');
+        //if (tweetInfo.story)
+            //text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
+            //text = `<iframe src="https://nttr.stream/i/status/${tweetInfo.story}/embed" frameborder="0" style="overflow: hidden; height: 100%; width: 100%; position: absolute;"></iframe>`;
+
+        //base.bindPopup(text)
+        if (tweetInfo.story){
+
+            let ids_story = manager.data.stories[tweetInfo.story];
+
+            let pos_previousID = ids_story.indexOf(ids[0])-1;
+            let pos_nextID = ids_story.indexOf(ids[0])+1;
+
+            if(pos_previousID > -1)
+                text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")'>Previous</button>"
+
+            if(pos_nextID < ids_story.length)
+                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")'>Next</button>"
 
         };
 
-      let showTweet = L.popup(popupOptions).setContent(
-          '<p>Tell the World!</p>'
-      );
+        let showTweet = L.popup(popupOptions).setContent(
+            '<p>Tell the World!</p>'
+        );
 
-      showTweet
-            .setLatLng(tweetInfo.state.center)
-            .setContent(text)
-            .openOn(base.map);
+        showTweet
+              .setLatLng(tweetInfo.state.center)
+              .setContent(text)
+              .openOn(base.map);
 
-            /* listen for the return message once the tweet has been loaded */
+              /* listen for the return message once the tweet has been loaded */
 
 
-        //setTimeout(updateIframe(), 5000);
+          //setTimeout(updateIframe(), 5000);
 
-        //console.log($('iframe').contents().height() + ' is the height')
-        //setTimeout(window.showIframeHeight, 5000);
-        // $('iframe').on('load', function() {
-        //     setTimeout(iResize, 500);
-        //     // Safari and Opera need a kick-start.
-        //     var iSource = document.getElementById('your-iframe-id').src;
-        //     document.getElementById('your-iframe-id').src = '';
-        //     document.getElementById('your-iframe-id').src = iSource;
+          //console.log($('iframe').contents().height() + ' is the height')
+          //setTimeout(window.showIframeHeight, 5000);
+          // $('iframe').on('load', function() {
+          //     setTimeout(iResize, 500);
+          //     // Safari and Opera need a kick-start.
+          //     var iSource = document.getElementById('your-iframe-id').src;
+          //     document.getElementById('your-iframe-id').src = '';
+          //     document.getElementById('your-iframe-id').src = iSource;
+          // });
+          // function iResize() {
+          //     console.log($('iframe').contents().height() + ' is the height')
+          //     document.getElementById('your-iframe-id').style.height =
+          //     document.getElementById('your-iframe-id').contentWindow.document.body.offsetHeight + 'px';
+          // }
+
+
+        // let TwitterWidgetsLoader = require('twitter-widgets');
+        //
+        // TwitterWidgetsLoader.load(function(err, twttr) {
+        // 	if (err) {
+        // 		//do some graceful degradation / fallback
+        // 		return;
+        // 	}
+        //
+        // 	twttr.widgets.createTweet('20', document.getElementById('tweet'));
         // });
-        // function iResize() {
-        //     console.log($('iframe').contents().height() + ' is the height')
-        //     document.getElementById('your-iframe-id').style.height =
-        //     document.getElementById('your-iframe-id').contentWindow.document.body.offsetHeight + 'px';
-        // }
+        //
+        // TwitterWidgetsLoader.load(function(err, twttr) {
+        // 	if (err) {
+        // 		//do some graceful degradation / fallback
+        // 		return;
+        // 	}
+        //
+        // 	twttr.widgets.createFollowButton('Prinzhorn', document.getElementById('follow'));
+        // });
+        //
+        // //The callback is optional.
+        // TwitterWidgetsLoader.load();
+        // // at some point later `window.twttr` will be defined.
+        // //L.popup.bindPopup(tweetInfo.state.center, text)
+      }
 
 
-      // let TwitterWidgetsLoader = require('twitter-widgets');
-      //
-      // TwitterWidgetsLoader.load(function(err, twttr) {
-      // 	if (err) {
-      // 		//do some graceful degradation / fallback
-      // 		return;
-      // 	}
-      //
-      // 	twttr.widgets.createTweet('20', document.getElementById('tweet'));
-      // });
-      //
-      // TwitterWidgetsLoader.load(function(err, twttr) {
-      // 	if (err) {
-      // 		//do some graceful degradation / fallback
-      // 		return;
-      // 	}
-      //
-      // 	twttr.widgets.createFollowButton('Prinzhorn', document.getElementById('follow'));
-      // });
-      //
-      // //The callback is optional.
-      // TwitterWidgetsLoader.load();
-      // // at some point later `window.twttr` will be defined.
-      // //L.popup.bindPopup(tweetInfo.state.center, text)
+
 
 
 
@@ -311,6 +337,7 @@ let manager = {
         manager.activeStory = null;
         //manager.sidebar.hide();
         url.pushState();
+
     },
 
     tweetsLoaded: function() {

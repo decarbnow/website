@@ -34,6 +34,8 @@ let defaultOptions = {
     touchZoom: 'center'
 }
 
+let tweetBoxActive = false;
+
 let contextmenuOptions = {
     contextmenu: true,
     contextmenuWidth: 200,
@@ -42,7 +44,8 @@ let contextmenuOptions = {
         callback: function(e) {
             tweets.sidebar.hide();
             base.map.flyTo(e.latlng);
-            twitter.showTweetBox(e)
+            twitter.showTweetBox(e);
+            base.tweetBoxActive = true
         }
     }, {
     //     text: 'Copy area link',
@@ -137,7 +140,7 @@ let base = {
         })
     },
 
-    setState: function(state) {
+    setState: function(state){
         base.pushState = false;
         base.flyTo(state);
         $(base.map).one('moveend', function () {
@@ -146,6 +149,10 @@ let base = {
             url.pushState()
         })
     },
+
+    // setState: function(state) {
+    //     setTimeout(base.setStateTimeout(state), 10)
+    // },
 
     flyTo: function(state) {
         // Only show tile layer in fly-to animation
@@ -233,54 +240,68 @@ let base = {
             base.map.addLayer(base.layers[id])
     },
 
+    // showLayer: function(id) {
+    //     setTimeout(base.showLayerTimeout(id), 10)
+    // },
+
     hideLayer: function(id) {
         if (base.map.hasLayer(base.layers[id]))
             base.map.removeLayer(base.layers[id])
     },
 
+
+    // hideLayer: function(id) {
+    //     setTimeout(base.hideLayerTimeout(id), 10)
+    // },
+
     getVisibleLayers: function() {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
     },
 
+    addControlsTimeout: function() {
+      let width = $(window).width()
+      // L.control.markers({ position: 'topleft' }).addTo(base.map);
+      L.control.zoom({ position: 'topleft' }).addTo(base.map);
+
+      L.Control.geocoder({
+          position: 'topleft'
+          // defaultMarkGeocode: false
+      }).addTo(base.map);
+
+      L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
+          position: 'topright',
+          collapsed: width < 1024
+      }).addTo(base.map);
+
+      L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
+          position: 'topright',
+          collapsed: width < 1024
+      }).addTo(base.map);
+
+      // L.control.layerSelectionControl(layerSets.countries.layers, {
+      //     position: 'topright',
+      //     collapsed: true,
+      //     name: 'Countries'
+      // }).addTo(base.map);
+
+      // L.control.layers(null, layerSets.countries.getNameObject(), {
+      //     position: 'topright',
+      //     collapsed: true
+      // }).addTo(base.map);
+
+      // Object.values(base.sidebars).forEach(s => {
+      //     base.map.addControl(s);
+      // });
+    },
+
     addControls: function() {
-        let width = $(window).width()
-        // L.control.markers({ position: 'topleft' }).addTo(base.map);
-        L.control.zoom({ position: 'topleft' }).addTo(base.map);
-
-        L.Control.geocoder({
-            position: 'topleft'
-            // defaultMarkGeocode: false
-        }).addTo(base.map);
-
-        L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
-            position: 'topright',
-            collapsed: width < 1024
-        }).addTo(base.map);
-
-        L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
-            position: 'topright',
-            collapsed: width < 1024
-        }).addTo(base.map);
-
-        // L.control.layerSelectionControl(layerSets.countries.layers, {
-        //     position: 'topright',
-        //     collapsed: true,
-        //     name: 'Countries'
-        // }).addTo(base.map);
-
-        // L.control.layers(null, layerSets.countries.getNameObject(), {
-        //     position: 'topright',
-        //     collapsed: true
-        // }).addTo(base.map);
-
-        // Object.values(base.sidebars).forEach(s => {
-        //     base.map.addControl(s);
-        // });
+        setTimeout(base.addControlsTimeout(), 10)
     },
 
     addEventHandlers: function() {
         base.map.on("moveend", function () {
             if (base.pushState) {
+                //console.log("moveend")
                 url.pushState()
             }
         });
@@ -289,9 +310,9 @@ let base = {
         //     //base.map.flyTo(e.latlng);
         //     //twitter.openSidebar(e.latlng)
         // });
-
         base.map.on("click", function (e) {
             //tweets.closeSidebar();
+            base.tweetBoxActive = false;
             tweets.closeSidebar();
             twitter.marker.remove();
         });
@@ -302,6 +323,8 @@ let base = {
             return true;
         });
     }
+
+
 }
 
 export default base

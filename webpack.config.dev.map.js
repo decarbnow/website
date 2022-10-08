@@ -1,10 +1,10 @@
 const baseConfig = require('./webpack.config.base.js');
-const merge = require('webpack-merge');
+const { merge } = require('webpack-merge');
 
 module.exports = merge(baseConfig, {
     mode: 'development',
     devServer: {
-        index: 'map.html',
+        static: 'map.html',
         host: 'map.localhost',
         //host: '0.0.0.0',
         historyApiFallback: {
@@ -12,7 +12,7 @@ module.exports = merge(baseConfig, {
                 { from: /.*/, to: '/map.html' },
             ]
         },
-        disableHostCheck: true,
+        allowedHosts: "all",
         open: true,
         liveReload: true
     },

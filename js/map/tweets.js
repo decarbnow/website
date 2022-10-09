@@ -123,6 +123,8 @@ let manager = {
         //console.log(`tweets manager.show(${id})`)
 
         base.map.closePopup();
+        base.hideCrosshair();
+
         if (id == manager.activateTweet)
             return;
 
@@ -139,6 +141,7 @@ let manager = {
         //state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
         base.setState(state);
         $(base.map).one('moveend', function () {
+                    base.hideCrosshair();
                     manager.openPopup(id);
                     listenForTwitFrameResizes()
         })
@@ -151,6 +154,7 @@ let manager = {
     },
 
     openPopup: function(id) {
+      base.hideCrosshair()
       let tweetInfo = manager.data.tweets[id];
 
       if (tweetInfo.reply){
@@ -338,6 +342,7 @@ let manager = {
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
+        base.showCrosshair();
         //manager.sidebar.hide();
         url.pushState();
 

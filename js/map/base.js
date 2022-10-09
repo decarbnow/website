@@ -34,6 +34,13 @@ let defaultOptions = {
     touchZoom: 'center'
 }
 
+let crosshairIcon = L.icon({
+    iconUrl: '../../static/crosshair.png',
+    iconSize:     [80, 80], // size of the icon
+    iconAnchor:   [40, 40], // point of the icon which will correspond to marker's location
+});
+
+
 let tweetBoxActive = false;
 
 let contextmenuOptions = {
@@ -86,6 +93,7 @@ let base = {
     map: null,
     sidebars: {},
     layerSets: {},
+    crosshair: L.marker(null, {icon: crosshairIcon, interactive:false}),
     layers: {},
     pushState: false,
 
@@ -102,8 +110,11 @@ let base = {
         base.layerSets = layerSets;
         base.layers = layers;
 
+
+
         tweets.init();
         base.setInitialState();
+
     },
 
     getState: function() {
@@ -139,7 +150,10 @@ let base = {
             if (tweet)
                 tweets.show(tweet);
             base.addControls();
+
         })
+
+        base.showCrosshair();
     },
 
     setState: function(state){
@@ -242,6 +256,22 @@ let base = {
             base.map.addLayer(base.layers[id])
     },
 
+    showCrosshair: function() {
+        base.hideCrosshair()
+
+        base.crosshair = L.marker(null, {icon: crosshairIcon, interactive:false}),
+        base.crosshair.setLatLng(base.map.getCenter());
+        base.crosshair.addTo(base.map)
+
+
+        base.map.on('move', function(e) {
+            base.crosshair.setLatLng(base.map.getCenter());
+        });
+    },
+
+    hideCrosshair: function() {
+      base.map.removeLayer(base.crosshair)
+    },
     // showLayer: function(id) {
     //     setTimeout(base.showLayerTimeout(id), 10)
     // },
@@ -316,6 +346,7 @@ let base = {
             //tweets.closeSidebar();
             base.tweetBoxActive = false;
             tweets.closeSidebar();
+            base.showCrosshair();
             twitter.marker.remove();
         });
 

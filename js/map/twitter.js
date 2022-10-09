@@ -340,6 +340,7 @@ let twitter = {
         // //init debounce Timeout not working!!
         //debounce(onTweetSettingsChange)();
         tweets.closeSidebar();
+        base.hideCrosshair();
 
         //console.log(e);
         if(window.twttr.widgets){

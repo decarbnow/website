@@ -6,6 +6,7 @@ import 'leaflet-spin';
 //import * as omnivore from "@mapbox/leaflet-omnivore";
 //import 'topojson-simplify';
 import config from '../config.js'
+import 'leaflet.vectorgrid'
 
 L.LazyLayerGroup = L.LayerGroup.extend({
     initialize: function(id, options) {
@@ -44,10 +45,63 @@ L.LazyLayerGroup = L.LayerGroup.extend({
         $.getJSON(self.source, function(data) {
             if (self.options.transform)
                 data = self.options.transform(data)
-            self.addLayer(L.geoJson(data, {...self.options.parent.defaultAttr, ...self.options.attr}))
+
+            self.addLayer(L.vectorGrid.slicer(data, {
+              ...self.options.parent.defaultAttr,
+              ...self.options.attr,
+              rendererFactory: L.svg.tile,
+              zIndex: 10,
+        			vectorTileLayerStyles: {
+        				sliced: function(properties, zoom) {
+
+        					var p = self.options.attr.style;
+                  //console.log(self)
+                  if(zoom < 7){
+                    var pradius = 1
+                  } else if (zoom < 10 & zoom > 6) {
+                    var pradius = 3
+                  } else if (zoom > 9){
+                    var prdius = 5
+                  }
+
+                  // if (typeof self.options.attr.onEachFeature !== 'undefined') {
+                  //     //self.options.attr.onEachFeature(properties)
+                  //     console.log("feat exist")
+                  // }
+
+        					return {
+        						fillColor: p.fillColor,
+        						fillOpacity: eval(p.fillOpacity),
+        	 					//fillOpacity: 1,
+        						stroke: p.stroke,
+        						fill: true,
+        						color: p.color,
+                    radius: pradius,
+         							//opacity: 0.2,
+        						weight: p.weight
+        					}
+
+
+        				}
+        			},
+
+        			interactive: self.options.attr.style.interactive,
+        			getFeatureId: function(f) {
+        				return f.properties.self;
+              }
+
+
+
+            })
+
+
+
+          )
+
             self.loaded = true
             base.map.spin(false);
         })
+
     }
 });
 

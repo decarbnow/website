@@ -8,7 +8,8 @@ let layersList = {
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
-        name: 'Google Satellite'
+        name: 'Google Satellite',
+        zIndex: 1
     },
     esri: {
         layer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -19,7 +20,8 @@ let layersList = {
                              '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
             maxZoom: 20,
         }),
-        name: 'Esri Satellite'
+        name: 'Esri Satellite',
+        zIndex: 1
     },
     streets: {
         layer: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,7 +32,8 @@ let layersList = {
             maxZoom: 20,
             ext: 'png'
         }),
-        name: 'Streets'
+        name: 'Streets',
+        zIndex: 1
     },
     light: {
         layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
@@ -42,7 +45,8 @@ let layersList = {
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
-        name: 'Light'
+        name: 'Light',
+        zIndex: 1
     },
     terrain: {
         layer: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', {
@@ -54,7 +58,8 @@ let layersList = {
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
-        name: 'Terrain'
+        name: 'Terrain',
+        zIndex: 1
     },
     dark: {
         layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png', {
@@ -64,7 +69,8 @@ let layersList = {
                            '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
                            '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
+            subdomains:['mt0','mt1','mt2','mt3'],
+            zIndex: 1
         }),
         name: 'Dark'
     },
@@ -78,7 +84,8 @@ let layersList = {
            maxZoom: 10,
            subdomains:['mt0','mt1','mt2','mt3']
        }),
-       name: 'World Population'
+       name: 'World Population',
+       zIndex: 1
     },
     //sentinalmap16: {
     //    layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
@@ -102,35 +109,40 @@ let layersList = {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2020)',
             maxZoom: 20
         }),
-        name: 'Sentinel-2 (2020, EOX)'
+        name: 'Sentinel-2 (2020, EOX)',
+        zIndex: 1
     },
     s2maps19: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2019_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2019)',
             maxZoom: 20
         }),
-        name: 'Sentinel-2 (2019, EOX)'
+        name: 'Sentinel-2 (2019, EOX)',
+        zIndex: 1
     },
     s2maps18: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2018_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2018 &amp; 2017)',
             maxZoom: 20
         }),
-        name: 'Sentinel-2 (2018, EOX)'
+        name: 'Sentinel-2 (2018, EOX)',
+        zIndex: 1
     },
     s2maps17: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2017_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2017)',
             maxZoom: 20
         }),
-        name: 'Sentinel-2 (2017, EOX)'
+        name: 'Sentinel-2 (2017, EOX)',
+        zIndex: 1
     },
     s2maps16: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2016 &amp; 2017)',
             maxZoom: 20
         }),
-        name: 'Sentinel-2 (2016, EOX)'
+        name: 'Sentinel-2 (2016, EOX)',
+        zIndex: 1
     },
     empty: {
         name: 'Disabled'

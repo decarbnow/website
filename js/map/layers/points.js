@@ -25,32 +25,38 @@ let layersList = {
         name: "E-PRTR <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#6600ff'
+                color: '#6600ff',
+                fillColor: '#6600ff',
+                fillOpacity: "Math.min(0.85, Math.max(0.3, properties.TotalQuantityCO2/1000000000))",
+                stroke: false,
+                weight: 0.1,
+                interactive: true
             },
-            pointToLayer: function(feature, latlng) {
-                return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
-            },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
-                                '<tr><td>CO2-Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
-                                '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
-                                '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
-                                //'<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
-                                '</table>');
+            // pointToLayer: function(feature, latlng) {
+            //     return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
+            // },
+            onEachFeature: function (e) {
 
-                let isClicked = false
-                  layer.on('mouseover', function (e) {
-                              if(!isClicked & base.map.getZoom() > 9)
-                                  this.openPopup();
-                  });
-                  layer.on('mouseout', function (e) {
-                              if(!isClicked)
-                                  this.closePopup();
-                  });
-                  layer.on('click', function (e) {
-                              isClicked = true;
-                              this.openPopup();
-                  });
+                // layer.bindPopup('<table><tr><td>Name:</td><td>' + properties.FacilityName + '</td></tr>' +
+                //                 '<tr><td>CO2-Equivalents:</td><td>' + +((properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
+                //                 '<tr><td>Parent Company:</td><td>' + properties.ParentCompanyName + '</td></tr>'+
+                //                 '<tr><td>Reporting Year:</td><td>' + properties.ReportingYear + '</td></tr>'+
+                //                 //'<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
+                //                 '</table>');
+                //
+                // let isClicked = false
+                //   layer.on('mouseover', function (e) {
+                //               if(!isClicked & base.map.getZoom() > 9)
+                //                   this.openPopup();
+                //   });
+                //   layer.on('mouseout', function (e) {
+                //               if(!isClicked)
+                //                   this.closePopup();
+                //   });
+                //   layer.on('click', function (e) {
+                //               isClicked = true;
+                //               this.openPopup();
+                //   });
             }
         }
     },
@@ -59,39 +65,44 @@ let layersList = {
         name: "Foss. fuel power stations <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#FF0000'
+                color: '#FF0000',
+                fillColor: '#FF0000',
+                fillOpacity: "Math.min(0.85, Math.max(0.3, properties.capacity_mw/2000))",
+                stroke: false,
+                weight: 0.5,
+                interactive: true
             },
-            pointToLayer: function(feature, latlng) {
-                //let circle = new L.CircleMarker(latlng, {radius: 2, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
-                let circle = new L.circle(latlng, {radius: 180, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
-                //circle._orgRadius = circle.getRadius();
-          			//circle.setRadius(calcRadius(circle._orgRadius,base.map.getZoom()))
-                return circle;
-
-            },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
-                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
-                                '<tr><td>Capacity:</td><td>' + parseFloat(feature.properties.capacity_mw).toLocaleString() + ' MW</td></tr>'+
-                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
-                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
-                                '</table>');
-
-                let isClicked = false
-
-                layer.on('mouseover', function (e) {
-                            if(!isClicked & base.map.getZoom() > 9)
-                                this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                            if(!isClicked)
-                                this.closePopup();
-                });
-                layer.on('click', function (e) {
-                            isClicked = true;
-                            this.openPopup();
-                });
-            }
+            // pointToLayer: function(feature, latlng) {
+            //     //let circle = new L.CircleMarker(latlng, {radius: 2, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+            //     let circle = new L.circle(latlng, {radius: 180, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+            //     //circle._orgRadius = circle.getRadius();
+          	// 		//circle.setRadius(calcRadius(circle._orgRadius,base.map.getZoom()))
+            //     return circle;
+            //
+            // },
+            // onEachFeature: function (feature, layer) {
+            //     layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
+            //                     '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+            //                     '<tr><td>Capacity:</td><td>' + parseFloat(feature.properties.capacity_mw).toLocaleString() + ' MW</td></tr>'+
+            //                     '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+            //                     '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+            //                     '</table>');
+            //
+            //     let isClicked = false
+            //
+            //     layer.on('mouseover', function (e) {
+            //                 if(!isClicked & base.map.getZoom() > 9)
+            //                     this.openPopup();
+            //     });
+            //     layer.on('mouseout', function (e) {
+            //                 if(!isClicked)
+            //                     this.closePopup();
+            //     });
+            //     layer.on('click', function (e) {
+            //                 isClicked = true;
+            //                 this.openPopup();
+            //     });
+            // }
         }
     },
     'big-cities': {
@@ -99,11 +110,16 @@ let layersList = {
         name: "Big cities <i class='fa fa-info-circle'></i>",
         attr: {
             style: {
-                color: '#39ff14'
+                color: '#39ff14',
+                fillColor: '#39ff14',
+                fillOpacity: "Math.min(0.8, Math.max(0.25, properties.population/3000000))",
+                stroke: false,
+                weight: 0.1,
+                interactive: true
             },
-            pointToLayer: function(feature, latlng) {
-                return new L.circle(latlng, {radius: 5000, stroke: false, weight: 0.3, fillOpacity: Math.min(0.8, Math.max(0.25, feature.properties.population/3000000))});
-            },
+            // pointToLayer: function(feature, latlng) {
+            //     return new L.circle(latlng, {radius: 5000, stroke: false, weight: 0.3, fillOpacity: Math.min(0.8, Math.max(0.25, feature.properties.population/3000000))});
+            // },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +
                                 '<tr><td>Population:</td><td>' + parseFloat(feature.properties.population).toLocaleString() + '</td></tr>'+
@@ -137,7 +153,11 @@ let layersList = {
         },
         attr: {
             style: {
-                color: '#00FF00'
+                color: '#00FF00',
+                fillColor: '#00FF00',
+                fillOpacity: 0.1,
+                stroke: false,
+                weight: 0.1
             },
             pointToLayer: function(feature, latlng) {
                 return new L.CircleMarker(latlng, {radius: 10, stroke: false, fillOpacity: 0.5});
@@ -181,7 +201,11 @@ let layersList = {
       },
       attr: {
           style: {
-              color: '#00FF00'
+              color: '#00FF00',
+              fillColor: '#00FF00',
+              fillOpacity: 0.1,
+              stroke: false,
+              weight: 0.1
           },
           pointToLayer: function(feature, latlng) {
               return new L.circle(latlng, {radius: 8, stroke: false, fillOpacity: 0.5});

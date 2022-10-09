@@ -121,13 +121,14 @@ let manager = {
 
     show: function(id, updateState = true) {
         //console.log(`tweets manager.show(${id})`)
+
+        base.map.closePopup();
         if (id == manager.activateTweet)
             return;
 
         manager.activateMarker(id);
 
         let tweetInfo = manager.data.tweets[id];
-
         // if (tweetInfo.story && manager.activeStory == tweetInfo.story)
         //     manager.scrollAndActivateTweet(id, true);
         // else
@@ -137,14 +138,16 @@ let manager = {
         let state = {...tweetInfo.state};
         //state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
         base.setState(state);
-
-        manager.openPopup(id);
+        $(base.map).one('moveend', function () {
+            manager.openPopup(id);
+            listenForTwitFrameResizes()
+        })
 
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
-        listenForTwitFrameResizes()
-        //console.log(tweetInfo)
 
+        //console.log(tweetInfo)
+        
     },
 
     openPopup: function(id) {

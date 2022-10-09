@@ -16,5 +16,8 @@ module.exports = merge(baseConfig, {
         open: true,
         liveReload: true
     },
+    optimization: {
+            runtimeChunk: 'single'
+    },
     devtool: 'source-map'
 });

@@ -9,7 +9,19 @@ omiYears.forEach(n => {
         //file: `no2/World_${n}_rastered.geojson`,
         url: `/no2/World_${n}_rastered.geojson`,
         name: `NO₂ ${n}`,
-        hidden: false
+        hidden: false,
+        attr: {
+          style: {
+              fillColor: "#FF0000",
+              stroke: true,
+              weight: 0.1,
+              opacity: 0.7,
+              color: "#FF0000",
+              interactive: false,
+              fillOpacity: 0.05,
+              interactive: false
+          }
+        }
     }
 });
 
@@ -19,7 +31,19 @@ tropomiDates.forEach(n => {
         //file: `no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         url: `/no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         name: `NO₂ ${n[0]}-${String(n[1]).padStart(2, '0')}`,
-        hidden: true
+        hidden: true,
+        attr: {
+          style: {
+              fillColor: "#FF0000",
+              stroke: true,
+              weight: 0.1,
+              opacity: 0.7,
+              color: "#F1EFE8",
+              interactive: false,
+              fillOpacity: 0.05,
+              interactive: false
+          }
+        }
     }
 });
 

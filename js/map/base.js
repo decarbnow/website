@@ -126,8 +126,10 @@ let base = {
         //console.log(state.center)
         base.setState({...defaultState, ...state});
 
+        let tweet = state.tweet;
+
         $(base.map).one('moveend', function () {
-            let tweet = state.tweet;
+
             if (!state.tweet) {
                 let path = url.getPath()
                 //console.log(path)

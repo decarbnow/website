@@ -35,9 +35,9 @@ iframe{
                 cursor: pointer;
                 color: white;}
 
-.button_inactive {background-color: #D8D8D8;
+.button_inactive {background-color: transparent;
                   cursor: default;
-                  color: #919191;}
+                  color: #4B7C8B;}
 
 
 .key {
@@ -50,7 +50,7 @@ iframe{
   display: inline-block;
   font-size: 14px;
   margin: 12px 2px;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 
 .key_pn {
@@ -64,15 +64,15 @@ iframe{
   display: inline-block;
   font-size: 14px;
   margin: 12px 2px;
-  border-radius: 10px;
+  border-radius: 15px;
 }
 
-.key_active {background-color: #1D9BF0; //C8640A
+.key_active {background-color: #1D9BF0; //C8640A, 1D9BF0
                 cursor: pointer;
                 font-weight: bold;
                 color: white;}
 
-.key_inactive {background-color: #4B7C8B;
+.key_inactive {background-color: #8CABB5;//#4B7C8B
                 cursor: pointer;
                 color: white;}
 

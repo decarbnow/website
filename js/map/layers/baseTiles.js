@@ -80,6 +80,18 @@ let layersList = {
        }),
        name: 'World Population'
     },
+    nightlight: {
+       layer: L.tileLayer('https://map1.vis.earthdata.nasa.gov/wmts-webmerc/VIIRS_CityLights_2012/default/2012/GoogleMapsCompatible_Level8/{z}/{y}/{x}.jpg', {
+         attribution: 'Tiles &copy; <a href="https://earthdata.nasa.gov" target="_blank">ESDIS</a> with funding provided by NASA/HQ,'+
+                          '© <a href="https://carto.com/attribution">CARTO</a>, '+
+                          '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                          '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
+                          '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+           maxZoom: 8,
+           subdomains:['mt0','mt1','mt2','mt3']
+       }),
+       name: 'Night Lights'
+    },
     //sentinalmap16: {
     //    layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
     //        attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +

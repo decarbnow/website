@@ -8,7 +8,7 @@ import 'twitter-widgets';
 import api from './api/proxy.js';
 
 let popupOptions = {
-   minWidth: 350, autoPan: true, closeButton: true, autoPanPadding: [15, -30], keepInView: true
+   minWidth: 370, autoPan: true, closeButton: true, autoPanPadding: [15, -30], keepInView: true
    //minHeight: "auto"
 };
 
@@ -37,9 +37,9 @@ window.onmessage = (oe) => {
         document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
 };
 
-window.showIframeHeight = function() {
-    return console.log($('iframe').contents().height() + ' is the height');
-};
+// window.showIframeHeight = function() {
+//     return console.log($('iframe').contents().height() + ' is the height');
+// };
 
 let manager = {
     sidebar: null,
@@ -65,7 +65,7 @@ let manager = {
 
     init: function() {
         manager.sidebar = L.control.sidebar('show-tweet-sidebar', {
-            closeButton: true,
+            closeButton: false,
             position: 'left'
         });
 
@@ -131,30 +131,32 @@ let manager = {
         manager.activateMarker(id);
 
         let tweetInfo = manager.data.tweets[id];
-        // if (tweetInfo.story && manager.activeStory == tweetInfo.story)
-        //     manager.scrollAndActivateTweet(id, true);
-        // else
-        //     manager.openPopup(id);
-        //     //manager.openSidebar(id);
+
+
+        if (tweetInfo.story && manager.activeStory == tweetInfo.story)
+            manager.scrollAndActivateTweet(id, true);
+        else
+            //manager.openPopup(id);
+            manager.openSidebar(id);
 
         let state = {...tweetInfo.state};
-        //state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
+        state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
         base.setState(state);
         $(base.map).one('moveend', function () {
                     base.hideCrosshair();
-                    manager.openPopup(id);
+                    //manager.openPopup(id);
                     listenForTwitFrameResizes()
+                    //base.showLayer("tweets")
+                    //manager.openSidebar(id)
         })
-
+        manager.openSidebar(id)
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
-
         //console.log(tweetInfo)
 
     },
 
     openPopup: function(id) {
-      base.hideCrosshair()
       let tweetInfo = manager.data.tweets[id];
 
       if (tweetInfo.reply){
@@ -301,6 +303,174 @@ let manager = {
 
     },
 
+    openSidebar: function(id) {
+        let tweetInfo = manager.data.tweets[id];
+
+        if (tweetInfo.reply){
+            let ids = [tweetInfo.reply];
+
+            let entries = ids.map(tweetId => {
+                let classes = ['tweet', 'loading'];
+
+                if (id == tweetId)
+                    classes.push('selected');
+
+                return `
+                <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="height: 90%; border: none"></iframe>
+                `;
+
+
+            });
+
+            let text = entries.join('');
+
+        } else {
+          //console.log(tweetInfo);
+          let ids = [id];
+
+          let entries = ids.map(tweetId => {
+              let classes = ['tweet', 'loading'];
+
+              if (id == tweetId)
+                  classes.push('selected');
+              return `
+              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="height: 90%; border: none"></iframe>
+              `;
+          });
+
+          let text = "<div style=\"text-align:center\">"
+
+          if (tweetInfo.story){
+              let ids_story = manager.data.stories[tweetInfo.story];
+
+              let pos_previousID = ids_story.indexOf(ids[0])-1;
+              let pos_nextID = ids_story.indexOf(ids[0])+1;
+
+
+              let page_arr = new Array(ids_story.length).fill(0);
+
+              page_arr[0] = 1
+              page_arr[ids_story.length-1] = 1
+              page_arr[ids_story.indexOf(ids[0])] = 1
+
+              if(ids_story.indexOf(ids[0]) == 0 & ids_story.length >= 3){
+                  page_arr[1] = 1
+                  page_arr[2] = 1
+              }
+
+              if(ids_story.indexOf(ids[0]) == 0 & ids_story.length < 3){
+                  page_arr[1] = 1
+              }
+
+              if(ids_story.indexOf(ids[0]) == 1 & ids_story.length >= 3)
+                  page_arr[2] = 1
+
+              if(ids_story.indexOf(ids[0]) == 2)
+                  page_arr[1] = 1
+
+              if(ids_story.indexOf(ids[0]) == ids_story.length-1){
+                  page_arr[ids_story.length-2] = 1
+                  page_arr[ids_story.length-3] = 1
+              }
+
+              if(ids_story.indexOf(ids[0]) == ids_story.length-2)
+                  page_arr[ids_story.length-3] = 1
+
+              if(ids_story.indexOf(ids[0]) == ids_story.length-3)
+                  page_arr[ids_story.length-2] = 1
+
+              if(pos_previousID > -1){
+                  text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")' class=\"key_pn key_inactive\"> &#8249; </button>"
+              } else {
+                  text = text + "\n<button class=\"key_pn key_greyed\"> &#8249; </button>"
+              }
+
+              page_arr.forEach(function (x, i){
+                  if(x == 0 & page_arr[i-1] == 0){
+                        return;
+                  } else if (x == 0 & page_arr[i-1] == 1)
+                        text = text + "<button class=\"button button_inactive\">" + "..." + "</button>"
+                  else {
+                    if(ids_story.indexOf(ids[0]) == i){
+                        text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[i] + "\")' class=\"key key_active\">" + (i+1) + "</button>"
+                    } else {
+                        text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[i] + "\")' class=\"key key_inactive\">" + (i+1) + "</button>"
+                    }
+                  }
+              });
+
+              if(pos_nextID < ids_story.length){
+                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")' class=\"key_pn key_inactive\"> &#8250; </button>"
+              } else {
+                text = text + "<button class=\"key_pn key_greyed\"> &#8250; </button>"
+              }
+
+              // ids_story.forEach(function (x, i) {
+              //
+              //
+              //
+              //
+              //   if(i == 0){
+              //       if(ids_story.indexOf(ids[0]) == i){
+              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"
+              //       } else {
+              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_inactive\">" + (i+1) + "</button>"
+              //       }
+              //   } else if (i == ids_story.length-1){
+              //
+              //       text = text + "<button onclick='gotoLastStoryTweet(\"" + (x-1) + "\")' class=\"key key_inactive\">" + i + "</button>"
+              //
+              //       if(ids_story.indexOf(ids[0]) == i){
+              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"
+              //       } else {
+              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_inactive\">" + (i+1) + "</button>"
+              //       }
+              //
+              //
+              //   } else {
+              //     if(ids_story.length > 2){
+              //
+              //         //text = text + "..."
+              //
+              //         if(ids_story.indexOf(ids[0]) == i){
+              //             text = text + "-" + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"  + "-"
+              //         }
+              //
+              //         //text = text + "..."
+              //     }
+              //   }
+              //
+              //
+              //
+              // });
+
+
+
+
+            };
+
+          text = text + "</div>"
+
+          text = text + entries.join('');
+
+
+          base.showSidebar(manager, text)
+
+          manager.sidebarDiv.find('.tweet').each((i, e) => {
+              let te = $(e);
+              let tweetId = te.data('tweet').toString();
+              window.twttr.widgets.createTweet(tweetId, document.getElementById(`tweet-${tweetId}`).getElementsByClassName("widget")[0], {conversation: 'none'}).then(function () {
+                  te.removeClass('loading');
+                  if (manager.tweetsLoaded())
+                      manager.scrollAndActivateTweet(id, false);
+              });
+          });
+
+        }
+
+
+    },
+
     // openSidebar: function(id) {
     //     let tweetInfo = manager.data.tweets[id];
     //
@@ -319,6 +489,7 @@ let manager = {
     //             </div>
     //         `;
     //     });
+    //     //console.log(entries)
     //     let text = entries.join('');
     //     if (tweetInfo.story)
     //         text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
@@ -336,14 +507,15 @@ let manager = {
     //         });
     //     });
     // },
-    //
+
     closeSidebar: function() {
         //console.log(`tweets manager.closeSidebar`)
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
         base.showCrosshair();
-        //manager.sidebar.hide();
+        base.showLayer("tweets");
+        manager.sidebar.hide();
         url.pushState();
 
     },
@@ -378,8 +550,8 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
-                    return;
+                // if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
+                //     return;
 
                 if (tweetInfo.state.zoom >= 6){
                   let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})

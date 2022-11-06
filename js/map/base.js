@@ -302,12 +302,12 @@ let base = {
 
       L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
           position: 'topright',
-          collapsed: width < 1024
+          collapsed: width < 1800
       }).addTo(base.map);
 
       L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
           position: 'topright',
-          collapsed: width < 1024
+          collapsed: width < 1800
       }).addTo(base.map);
 
       // L.control.layerSelectionControl(layerSets.countries.layers, {

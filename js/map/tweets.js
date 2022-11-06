@@ -145,7 +145,7 @@ let manager = {
         $(base.map).one('moveend', function () {
                     base.hideCrosshair();
                     //manager.openPopup(id);
-                    listenForTwitFrameResizes()
+                    //listenForTwitFrameResizes()
                     //base.showLayer("tweets")
                     //manager.openSidebar(id)
         })
@@ -316,7 +316,7 @@ let manager = {
                     classes.push('selected');
 
                 return `
-                <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="height: 90%; border: none"></iframe>
+                <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="flex-grow: 1; border: none"></iframe>
                 `;
 
 
@@ -334,11 +334,11 @@ let manager = {
               if (id == tweetId)
                   classes.push('selected');
               return `
-              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="height: 90%; border: none"></iframe>
+              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="flex-grow: 1; border: none"></iframe>
               `;
           });
 
-          let text = "<div style=\"text-align:center\">"
+          let text = "<div style = \"display: flex; height: 100%; flex-direction: column;\"><div style=\"text-align:center\">"
 
           if (tweetInfo.story){
               let ids_story = manager.data.stories[tweetInfo.story];
@@ -453,7 +453,7 @@ let manager = {
 
           text = text + entries.join('');
 
-
+          text = text + "</div>"
           base.showSidebar(manager, text)
 
           manager.sidebarDiv.find('.tweet').each((i, e) => {

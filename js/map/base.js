@@ -208,7 +208,6 @@ let base = {
         if (content)
             module.sidebar.setContent(content);
 
-
         return module.sidebar;
     },
     //New bullshit
@@ -270,7 +269,7 @@ let base = {
     },
 
     hideCrosshair: function() {
-      base.map.removeLayer(base.crosshair)
+        base.map.removeLayer(base.crosshair)
     },
     // showLayer: function(id) {
     //     setTimeout(base.showLayerTimeout(id), 10)

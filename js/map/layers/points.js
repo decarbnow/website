@@ -1,7 +1,9 @@
 import { decode } from '@alexpavlov/geohash-js';
+import base from "../base.js";
 //import * as omnivore from "@mapbox/leaflet-omnivore";
 //import GeoJSON from geojson;
 var GeoJSON = require('geojson');
+
 
 function getColor(stype) {
          switch (stype) {
@@ -28,29 +30,32 @@ let layersList = {
                 color: '#6600ff'
             },
             pointToLayer: function(feature, latlng) {
-                return new L.circle(latlng, {radius: 180, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
+                let radius_size = 180
+                //console.log(radius_size)
+                return new L.circle(latlng, {radius: radius_size, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.FacilityName + '</td></tr>' +
-                                '<tr><td>CO2-Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</td></tr>'+
+                                '<tr><td>CO2-Equivalents:</td><td>' + +((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100-year GWP (AR4)</a></td></tr>'+
                                 '<tr><td>Parent Company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
                                 '<tr><td>Reporting Year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
+                                '<tr><td>Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
                                 //'<tr><td>Website:</td><td><a href =' + feature.properties.WebsiteCommunication +' target = popup>'  + feature.properties.WebsiteCommunication + '</a></td></tr>'+
                                 '</table>');
 
-                let isClicked = false
-                  layer.on('mouseover', function (e) {
-                              if(!isClicked & base.map.getZoom() > 9)
-                                  this.openPopup();
-                  });
-                  layer.on('mouseout', function (e) {
-                              if(!isClicked)
-                                  this.closePopup();
-                  });
-                  layer.on('click', function (e) {
-                              isClicked = true;
-                              this.openPopup();
-                  });
+                // let isClicked = false
+                //   layer.on('mouseover', function (e) {
+                //               if(!isClicked & base.map.getZoom() > 9)
+                //                   this.openPopup();
+                //   });
+                //   layer.on('mouseout', function (e) {
+                //               if(!isClicked)
+                //                   this.closePopup();
+                //   });
+                //   layer.on('click', function (e) {
+                //               isClicked = true;
+                //               this.openPopup();
+                //   });
             }
         }
     },
@@ -75,22 +80,23 @@ let layersList = {
                                 '<tr><td>Capacity:</td><td>' + parseFloat(feature.properties.capacity_mw).toLocaleString() + ' MW</td></tr>'+
                                 '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
                                 '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                '<tr><td>Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
                                 '</table>');
 
-                let isClicked = false
-
-                layer.on('mouseover', function (e) {
-                            if(!isClicked & base.map.getZoom() > 9)
-                                this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                            if(!isClicked)
-                                this.closePopup();
-                });
-                layer.on('click', function (e) {
-                            isClicked = true;
-                            this.openPopup();
-                });
+                // let isClicked = false
+                //
+                // layer.on('mouseover', function (e) {
+                //             if(!isClicked & base.map.getZoom() > 9)
+                //                 this.openPopup();
+                // });
+                // layer.on('mouseout', function (e) {
+                //             if(!isClicked)
+                //                 this.closePopup();
+                // });
+                // layer.on('click', function (e) {
+                //             isClicked = true;
+                //             this.openPopup();
+                // });
             }
         }
     },
@@ -108,22 +114,23 @@ let layersList = {
                 layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr>' +
                                 '<tr><td>Population:</td><td>' + parseFloat(feature.properties.population).toLocaleString() + '</td></tr>'+
                                 '<tr><td>Country:</td><td>' + feature.properties.country + '</td></tr>'+
+                                '<tr><td>Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
                                 '</table>');
 
-                let isClicked = false
-
-                layer.on('mouseover', function (e) {
-                            if(!isClicked)
-                                this.openPopup();
-                });
-                layer.on('mouseout', function (e) {
-                            if(!isClicked)
-                                this.closePopup();
-                });
-                layer.on('click', function (e) {
-                            isClicked = true;
-                            this.openPopup();
-                });
+                // let isClicked = false
+                //
+                // layer.on('mouseover', function (e) {
+                //             if(!isClicked)
+                //                 this.openPopup();
+                // });
+                // layer.on('mouseout', function (e) {
+                //             if(!isClicked)
+                //                 this.closePopup();
+                // });
+                // layer.on('click', function (e) {
+                //             isClicked = true;
+                //             this.openPopup();
+                // });
             }
         }
     }, 'fridaysforfuture': {

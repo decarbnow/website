@@ -8,6 +8,13 @@
     background: #FFFFFF;
 }
 
+.leaflet-popup-content a {
+    color:blue;
+    text-decoration:none;
+    font-weight: normal;
+    //border-bottom: 1px solid #fff;
+}
+
 //.leaflet-popup-content {
 //     height:500px !important;
 //}
@@ -67,7 +74,7 @@ iframe{
   border-radius: 15px;
 }
 
-.key_active {background-color: #1D9BF0; //C8640A, 1D9BF0
+.key_active {background-color: #006FD6; //C8640A, 1D9BF0
                 cursor: pointer;
                 font-weight: bold;
                 color: white;}

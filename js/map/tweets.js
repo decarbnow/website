@@ -389,7 +389,7 @@ let manager = {
                   if(x == 0 & page_arr[i-1] == 0){
                         return;
                   } else if (x == 0 & page_arr[i-1] == 1)
-                        text = text + "<button class=\"button button_inactive\">" + "..." + "</button>"
+                        text = text + "<button class=\"button button_inactive\">" + "&#183;&#183;&#183;" + "</button>"
                   else {
                     if(ids_story.indexOf(ids[0]) == i){
                         text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[i] + "\")' class=\"key key_active\">" + (i+1) + "</button>"

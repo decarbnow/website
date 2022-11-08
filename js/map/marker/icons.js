@@ -9,7 +9,6 @@ let iconsInfo = {
         desc: "Register and pinpoint polluters."
     },
     climateaction: {
-        //fonticon: "fa fa-bullhorn",
         fonticon: "nf nf-fa-twitter",
         cssname: "action",
         title: "Climate Action",
@@ -32,7 +31,6 @@ Object.keys(iconsInfo).forEach((k) => {
         className: 'custom-div-icon',
         html: `<div class='marker-pin ${i.cssname}'></div><i class='${i.fonticon} ${i.cssname}'>`,
         iconSize: [20, 34],
-        //iconAnchor: [12, 34]
         iconAnchor: [10, 10]
     });
 });

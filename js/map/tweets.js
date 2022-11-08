@@ -7,21 +7,14 @@ import 'jquery';
 import 'twitter-widgets';
 import api from './api/proxy.js';
 
-let popupOptions = {
-   minWidth: 370, autoPan: true, closeButton: true, autoPanPadding: [15, -30], keepInView: true
-   //minHeight: "auto"
-};
-
 window.gotoLastStoryTweet=function(id){
-  //base.map.closePopup();
-  return manager.show(id);
+    return manager.show(id);
 };
 
 function listenForTwitFrameResizes() {
-
-/* find all iframes with ids starting with "tweet_" */
+    /* find all iframes with ids starting with "tweet_" */
     var tweetIframes=document.querySelectorAll("[id^='tweet_']");
-    //console.log(tweetIframes)
+
     tweetIframes.forEach(element => {
         element.onload=function() {
         this.contentWindow.postMessage({ element: this.id, query: "height" }, "https://twitframe.com");
@@ -41,10 +34,6 @@ window.onmessage = (oe) => {
 
 };
 
-// window.showIframeHeight = function() {
-//     return console.log($('iframe').contents().height() + ' is the height');
-// };
-
 let manager = {
     sidebar: null,
     activeTweet: null,
@@ -52,7 +41,6 @@ let manager = {
     autoScrolling: false,
     sidebarDiv: null,
     data: {
-        //date: null,
         tweets: [],
         stories: [],
         pathToTweetId: {},
@@ -64,7 +52,6 @@ let manager = {
         maxClusterRadius: 10,
         animatedAddingMarkers: false,
         showCoverageOnHover: false
-        // removeOutsideVisibleBounds: true
     }),
 
     init: function() {
@@ -77,13 +64,10 @@ let manager = {
         manager.sidebarDiv = $('#show-tweet-sidebar')
 
         base.map.addLayer(manager.clusters)
-        // base.layerSets.tweets.layers.tweets.addLayer(manager.clusters);
 
         api.init();
         manager.loadMarkers();
         manager.addEventHandlers();
-
-
     },
 
     scrollAndActivateTweet: function(id, tweetActivated = false) {
@@ -124,8 +108,6 @@ let manager = {
     },
 
     show: function(id, updateState = true) {
-        //console.log(`tweets manager.show(${id})`)
-
         base.map.closePopup();
         base.hideCrosshair();
 
@@ -140,7 +122,6 @@ let manager = {
         if (tweetInfo.story && manager.activeStory == tweetInfo.story)
             manager.scrollAndActivateTweet(id, true);
         else
-            //manager.openPopup(id);
             manager.openSidebar(id);
 
         let state = {...tweetInfo.state};
@@ -151,155 +132,6 @@ let manager = {
         manager.openSidebar(id)
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
-        //console.log(tweetInfo)
-
-    },
-
-    openPopup: function(id) {
-      let tweetInfo = manager.data.tweets[id];
-
-      if (tweetInfo.reply){
-          let ids = [tweetInfo.reply];
-
-          let entries = ids.map(tweetId => {
-              let classes = ['tweet', 'loading'];
-
-              if (id == tweetId)
-                  classes.push('selected');
-
-              return `
-              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
-              `;
-
-
-          });
-
-          let text = entries.join('');
-
-          let showTweet = L.popup(popupOptions).setContent(
-              '<p>Tell the World!</p>'
-          );
-
-          showTweet
-                .setLatLng(tweetInfo.state.center)
-                .setContent(text)
-                .openOn(base.map);
-
-      } else {
-        //console.log(tweetInfo);
-        let ids = [id];
-        //if (tweetInfo.story)
-        //    ids = manager.data.stories[tweetInfo.story];
-        //console.log(ids);
-
-
-        let entries = ids.map(tweetId => {
-            let classes = ['tweet', 'loading'];
-
-            if (id == tweetId)
-                classes.push('selected');
-            // return `
-            //     <table><tr height=400><td>
-            //     <iframe src="https://nttr.stream/i/status/${tweetId}/embed?theme=twitter" id="your-iframe-id" frameborder="0" style="overflow: hidden; height: 400px; width: 350px; position: relative; flex-grow: 1" ></iframe>
-            //     </td></tr></table>
-            // `;
-            return `
-            <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
-            `;
-            // return `
-            // <div  id="tweet" class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center></div>
-            // `;
-
-            // return `
-            // <blockquote class="twitter-tweet" data-dnt="true" data-conversation="none" tw-align-center>
-            //   <a href="https://twitter.com/x/status/${tweetId}"></a>
-            // </blockquote>
-            // `;
-
-        });
-
-        let text = entries.join('');
-        //if (tweetInfo.story)
-            //text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
-            //text = `<iframe src="https://nttr.stream/i/status/${tweetInfo.story}/embed" frameborder="0" style="overflow: hidden; height: 100%; width: 100%; position: absolute;"></iframe>`;
-
-        //base.bindPopup(text)
-        if (tweetInfo.story){
-
-            let ids_story = manager.data.stories[tweetInfo.story];
-
-            let pos_previousID = ids_story.indexOf(ids[0])-1;
-            let pos_nextID = ids_story.indexOf(ids[0])+1;
-
-            if(pos_previousID > -1)
-                text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")'>Previous</button>"
-
-            if(pos_nextID < ids_story.length)
-                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")'>Next</button>"
-
-        };
-
-        let showTweet = L.popup(popupOptions).setContent(
-            '<p>Tell the World!</p>'
-        );
-
-        showTweet
-              .setLatLng(tweetInfo.state.center)
-              .setContent(text)
-              .openOn(base.map);
-
-              /* listen for the return message once the tweet has been loaded */
-
-
-          //setTimeout(updateIframe(), 5000);
-
-          //console.log($('iframe').contents().height() + ' is the height')
-          //setTimeout(window.showIframeHeight, 5000);
-          // $('iframe').on('load', function() {
-          //     setTimeout(iResize, 500);
-          //     // Safari and Opera need a kick-start.
-          //     var iSource = document.getElementById('your-iframe-id').src;
-          //     document.getElementById('your-iframe-id').src = '';
-          //     document.getElementById('your-iframe-id').src = iSource;
-          // });
-          // function iResize() {
-          //     console.log($('iframe').contents().height() + ' is the height')
-          //     document.getElementById('your-iframe-id').style.height =
-          //     document.getElementById('your-iframe-id').contentWindow.document.body.offsetHeight + 'px';
-          // }
-
-
-        // let TwitterWidgetsLoader = require('twitter-widgets');
-        //
-        // TwitterWidgetsLoader.load(function(err, twttr) {
-        // 	if (err) {
-        // 		//do some graceful degradation / fallback
-        // 		return;
-        // 	}
-        //
-        // 	twttr.widgets.createTweet('20', document.getElementById('tweet'));
-        // });
-        //
-        // TwitterWidgetsLoader.load(function(err, twttr) {
-        // 	if (err) {
-        // 		//do some graceful degradation / fallback
-        // 		return;
-        // 	}
-        //
-        // 	twttr.widgets.createFollowButton('Prinzhorn', document.getElementById('follow'));
-        // });
-        //
-        // //The callback is optional.
-        // TwitterWidgetsLoader.load();
-        // // at some point later `window.twttr` will be defined.
-        // //L.popup.bindPopup(tweetInfo.state.center, text)
-      }
-
-
-
-
-
-
     },
 
     openSidebar: function(id) {
@@ -313,14 +145,10 @@ let manager = {
 
                 if (id == tweetId)
                     classes.push('selected');
-
-
             });
 
             let text = entries.join('');
-
         } else {
-          //console.log(tweetInfo);
           let ids = [id];
           let entries = ids.map(tweetId => {
               let classes = ['tweet', 'loading'];
@@ -329,7 +157,6 @@ let manager = {
               return `
               <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
               `;
-              //<iframe src="https://nitter.net/i/status/${tweetId}/embed?theme=twitter" id="tweet_${tweetId}" frameborder="0" style="overflow: hidden; height: 400px; width: 350px; position: relative; flex-grow: 1" ></iframe>
           });
 
           let text = "<div class=\"sidebar-container\"><div style=\"text-align:center\">"
@@ -374,8 +201,6 @@ let manager = {
               if(ids_story.indexOf(ids[0]) == ids_story.length-3)
                   page_arr[ids_story.length-2] = 1
 
-
-
               page_arr.forEach(function (x, i){
                   if(x == 0 & page_arr[i-1] == 0){
                         return;
@@ -404,47 +229,6 @@ let manager = {
                 text = text + "<button class=\"key_pn key_greyed\"> next </button>"
               }
 
-              // ids_story.forEach(function (x, i) {
-              //
-              //
-              //
-              //
-              //   if(i == 0){
-              //       if(ids_story.indexOf(ids[0]) == i){
-              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"
-              //       } else {
-              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_inactive\">" + (i+1) + "</button>"
-              //       }
-              //   } else if (i == ids_story.length-1){
-              //
-              //       text = text + "<button onclick='gotoLastStoryTweet(\"" + (x-1) + "\")' class=\"key key_inactive\">" + i + "</button>"
-              //
-              //       if(ids_story.indexOf(ids[0]) == i){
-              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"
-              //       } else {
-              //           text = text + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_inactive\">" + (i+1) + "</button>"
-              //       }
-              //
-              //
-              //   } else {
-              //     if(ids_story.length > 2){
-              //
-              //         //text = text + "..."
-              //
-              //         if(ids_story.indexOf(ids[0]) == i){
-              //             text = text + "-" + "<button onclick='gotoLastStoryTweet(\"" + x + "\")' class=\"key key_active\">" + (i+1) + "</button>"  + "-"
-              //         }
-              //
-              //         //text = text + "..."
-              //     }
-              //   }
-              //
-              //
-              //
-              // });
-
-
-
               text = text + "</div>"
             };
 
@@ -464,51 +248,10 @@ let manager = {
                       manager.scrollAndActivateTweet(id, false);
               });
           });
-
         }
-
-
     },
 
-    // openSidebar: function(id) {
-    //     let tweetInfo = manager.data.tweets[id];
-    //
-    //     let ids = [id];
-    //     if (tweetInfo.story)
-    //         ids = manager.data.stories[tweetInfo.story];
-    //
-    //     let entries = ids.map(tweetId => {
-    //         let classes = ['tweet', 'loading'];
-    //         if (id == tweetId)
-    //             classes.push('selected');
-    //         return `
-    //             <div id="tweet-${tweetId}" class="${classes.join(' ')}" data-tweet="${tweetId}">
-    //                 <div class="widget"></div>
-    //                 <div class="overlay"></div>
-    //             </div>
-    //         `;
-    //     });
-    //     //console.log(entries)
-    //     let text = entries.join('');
-    //     if (tweetInfo.story)
-    //         text = `<div id="story-${tweetInfo.story}" class="story" data-story="${tweetInfo.story}">${text}</div>`;
-    //         //text = `<iframe src="https://nttr.stream/i/status/${tweetInfo.story}/embed" frameborder="0" style="overflow: hidden; height: 100%; width: 100%; position: absolute;"></iframe>`;
-    //
-    //     base.showSidebar(manager, text)
-    //
-    //     manager.sidebarDiv.find('.tweet').each((i, e) => {
-    //         let te = $(e);
-    //         let tweetId = te.data('tweet').toString();
-    //         window.twttr.widgets.createTweet(tweetId, document.getElementById(`tweet-${tweetId}`).getElementsByClassName("widget")[0], {conversation: 'none'}).then(function () {
-    //             te.removeClass('loading');
-    //             if (manager.tweetsLoaded())
-    //                 manager.scrollAndActivateTweet(id, false);
-    //         });
-    //     });
-    // },
-
     closeSidebar: function() {
-        //console.log(`tweets manager.closeSidebar`)
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
@@ -525,11 +268,7 @@ let manager = {
 
     loadMarkers: function() {
         api.getTweets().then(function(data) {
-            // console.log(data)
             manager.data.tweets = data;
-            // manager.data.tweets = {...manager.data.tweets, ...data.tweets};
-            // manager.data.date = data.date;
-            // console.log(manager.data.tweets)
             let tweetOpacity = 0.3
 
             Object.keys(manager.data.tweets).forEach((id) => {
@@ -549,15 +288,12 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                // if (tweetInfo.hashtags.includes('private') || tweetInfo.hashtags.includes('hide'))
-                //     return;
-
                 if (tweetInfo.state.zoom >= 6){
                   let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
 
                   if(tweetOpacity < 1)
                     tweetOpacity = tweetOpacity + 0.006
-                  //marker.addTo(manager.clusters)
+
                   marker.addTo(base.layerSets.tweets.layers.tweets)
                   marker.on('click', function () {
                       manager.show(id)
@@ -590,8 +326,6 @@ let manager = {
             if(selectedTop > 0 + selectedHeight + 0)
                 positionAllows.push("up");
 
-            // console.log("direction:" + direction)
-            // console.log("postion allows:" + positionAllows)
             if (positionAllows.includes(direction)) {
                 if (direction == 'down')
                     tn = t.next('.tweet');
@@ -615,12 +349,11 @@ let manager = {
 
         // mouse wheel
         manager.sidebarDiv.bind('wheel', function(e) {
-            // console.log("wheel scrolling")
             if(manager.tweetsLoaded()  && !manager.autoScrolling){
                 //https://www.h3xed.com/programming/javascript-mouse-scroll-wheel-events-in-firefox-and-chrome
                 //let delta = e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -e.detail;
                 let delta = e.originalEvent.deltaY;
-                // console.log("orgwheeld:" + delta)
+
                 scrollAction(delta > 0 ? 'down' : 'up')
             }
             e.stopPropagation();

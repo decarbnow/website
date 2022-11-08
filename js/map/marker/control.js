@@ -13,14 +13,12 @@ L.Control.Markers = L.Control.extend({
         markerControls.style.justifyContent = 'space-evenly';
         markerControls.style.alignItems = 'center';
         markerControls.style.paddingBottom = "0px";
-        //markerControls.classList.add("leaflet-bar");
 
         Object.values(iconsInfo).forEach((marker) => {
             let markerContainer = L.DomUtil.create('div');
             markerContainer.innerHTML = '<div class="bubble ' + marker.cssname +'"><i class="' + marker.fonticon + '"></i></div> ' + marker.title;
             markerContainer.title = marker.question + " " + marker.desc;
             markerControls.append(markerContainer);
-            //console.log(markerContainer);
         });
 
         return markerControls;

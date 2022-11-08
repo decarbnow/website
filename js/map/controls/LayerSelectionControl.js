@@ -5,33 +5,13 @@ import Choices from 'choices.js'
 L.Control.LayerSelectionControl = L.Control.Layers.extend({
     initialize: function (layers, options) {
         L.Control.Layers.prototype.initialize.call(this, null, null, options);
-        // Util.setOptions(this, options);
-        //
-        // this._layerControlInputs = [];
         this._layers = layers;
-        // this._lastZIndex = 0;
-        // this._handling = false;
-        //
-        // for (var i in baseLayers) {
-        //     this._addLayer(baseLayers[i], i);
-        // }
-        //
-        // for (i in overlays) {
-        //     this._addLayer(overlays[i], i, true);
-        // }
     },
-
-    // initialize: function (options) {
-    //     L.Control.prototype.initialize.call(this, options);
-    // },
 
     onAdd: function (map) {
         this._map = map;
 
 		this._initLayout();
-		//this._update();
-
-
         Object.values(this._layers).forEach((layer) => {
             layer.on('add remove', this._onLayerChange, this);
         });
@@ -49,7 +29,6 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
             this._choices.setChoiceByValue(selected);
         }
         if (e.type == 'remove') {
-            // selected = selected.filter(item => item !== e.target.id)
             this._choices.removeActiveItemsByValue(e.target.id)
         }
     },
@@ -123,7 +102,6 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
         choicesElement.addEventListener(
             'addItem',
             function(event) {
-                //console.log(event.detail.value);
                 self._layers[event.detail.value].addTo(self._map)
             },
             false,
@@ -132,7 +110,6 @@ L.Control.LayerSelectionControl = L.Control.Layers.extend({
         choicesElement.addEventListener(
             'removeItem',
             function(event) {
-                //console.log(event.detail.value);
                 self._layers[event.detail.value].removeFrom(self._map)
             },
             false,

@@ -1,15 +1,11 @@
 const webpack = require('webpack');
-
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const FixStyleOnlyEntriesPlugin = require('webpack-remove-empty-scripts');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
-
 const config = require('./config.json')
-
-//const path = require('path');
 
 module.exports = {
     entry: {

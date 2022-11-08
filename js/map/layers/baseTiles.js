@@ -92,23 +92,6 @@ let layersList = {
        }),
        name: 'Night Lights'
     },
-    //sentinalmap16: {
-    //    layer: L.tileLayer(`https://tile.sentinelmap.eu/2016/summer/rgb/{z}/{x}/{y}.jpg?key=${__KEYS__['sentinalmap']}`, {
-    //        attribution: 'Modified <a href="https://scihub.copernicus.eu/">Copernicus</a>' +
-    //    	   ' Sentinel data 2016 by ' +
-    //    	   '<a href="https://www.sentinelmap.eu">SentinelMap</a>',
-    //        minZoom: 5,
-    //        maxZoom: 14
-    //    }),
-    //    name: 'Sentinal (2016, SentinelMap)'
-    //},
-    //s2maps21: {
-    //    layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2021_3857/default/g/{z}/{y}/{x}.jpg', {
-    //        attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2021)',
-    //        maxZoom: 20
-    //    }),
-    //    name: 'Sentinel-2 (2021, EOX)'
-    //},
     s2maps20: {
         layer: L.tileLayer('https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2020_3857/default/g/{z}/{y}/{x}.jpg', {
             attribution: '<a href="https://s2maps.eu">Sentinel-2 cloudless - https://s2maps.eu</a> by <a href="https://eox.at">EOX IT Services GmbH</a> (Contains modified Copernicus Sentinel data 2020)',

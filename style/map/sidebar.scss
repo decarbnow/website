@@ -14,7 +14,6 @@
     width: 400px;
     -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
     .leaflet-control {
-        // background-color: rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0);
         box-shadow: none;
         padding: 0 8px;
@@ -23,12 +22,6 @@
         -webkit-border-radius: 0 !important;
         -moz-border-radius: 0 !important;
         border-radius: 0 !important;
-        //width: calc(17vw + 17vh);
-        //  scrollbar-color: transparent transparent;
-        // ::-webkit-scrollbar {
-        //      display: none;
-        //  }
-        //overflow: hidden; /* Hide scrollbars */
     }
 
     .close {
@@ -37,12 +30,10 @@
         line-height: 0.9em;
         width: 25px;
         height: 25px;
-        //right: 330px;
         left: 308px;
         top: 1px;
         font-size: 20px;
         background: transparent;
-        //display: none;
     }
 
     h3 {
@@ -57,8 +48,6 @@
             display: grid;
             grid-gap: 200px;
             grid-template-columns: 100%;
-
-            // margin: 0 0 500px 0;
         }
         .tweet {
             position: relative;
@@ -92,25 +81,7 @@
         position: relative;
         .select {
             position: relative;
-            //border: 20px black;
             font-size: 1em;
-            // &::after {
-            //     content: '\25BC';
-            //     position: absolute;
-            //     top: 0;
-            //     right: 0;
-            //     padding: 0.2em 1em;
-            //     cursor: pointer;
-            //     pointer-events: none;
-            //     -webkit-transition: .25s all ease;
-            //     -o-transition: .25s all ease;
-            //     transition: .25s all ease;
-            //     color: #888;
-            // }
-            // /* Transition */
-            // &:hover::after {
-            //     color: #000;
-            // }
 
             select {
                 width: 100%;

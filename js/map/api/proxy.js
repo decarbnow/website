@@ -6,7 +6,6 @@ let backends = __BACKEND__;
 let api = {
     settings: null,
     init: function(backend = backends.default) {
-        // console.log(backend)
         api.settings = backends.list[backend];
 
         switch(api.settings.format) {

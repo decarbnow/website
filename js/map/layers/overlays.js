@@ -3,10 +3,9 @@ import config from '../config.js'
 let layersList = {};
 
 let omiYears = [2007, 2011, 2015, 2019, 2020, 2021];
-//let omiYears = [2015, 2020, 2021];
+
 omiYears.forEach(n => {
     layersList[`no2_${n}`] = {
-        //file: `no2/World_${n}_rastered.geojson`,
         url: `/no2/World_${n}_rastered.geojson`,
         name: `NO₂ ${n}`,
         hidden: false
@@ -16,27 +15,11 @@ omiYears.forEach(n => {
 let tropomiDates = [[2019, 12], [2020, 1], [2020, 2], [2020, 3], [2020, 4], [2020, 5], [2020, 6], [2020, 7]];
 tropomiDates.forEach(n => {
     layersList[`no2_${n[0]}_${String(n[1]).padStart(2, '0')}`] = {
-        //file: `no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         url: `/no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         name: `NO₂ ${n[0]}-${String(n[1]).padStart(2, '0')}`,
         hidden: true
     }
 });
-
-// layersList['temp'] = {
-//     layer: L.tileLayer('http://127.0.0.1:8088/layers/temperature/{z}/{x}/{y}.png', {
-//         attribution: '© CDS',
-//         minZoom: 0,
-//         maxZoom: 15,
-//         maxNativeZoom: 7,
-//         opacity: 0.7,
-//         tms: false,
-//         ext: 'png'
-//     }),
-//     name: 'Temperature'
-// }
-
-
 
 // TODO: MAKE LEGEND CLASS
 // LEGEND
@@ -74,26 +57,9 @@ colors.forEach(function (color, i) {
         text.push(`≥${tempToStr(t1)}℃`)
     if (isFinite(t2))
         text.push(`<${tempToStr(t2)}℃`)
-    // if (isFinite(t))
-    //     text += ` < ${t}`
     legend += `<i style="background: ${color}"></i><span>${text.join(', ')}</span><br>`;
 });
 legend += "</div>";
-
-
-// layersList['tempDiff'] = {
-//     layer: L.tileLayer(`${config.data.url}layers/temperature/80-89to15-19/{z}/{x}/{y}.png`, {
-//         attribution: '© CDS',
-//         minZoom: 0,
-//         maxZoom: 10,
-//         maxNativeZoom: 2,
-//         opacity: 0.6,
-//         tms: false,
-//         ext: 'png'
-//     }),
-//     legend: legend,
-//     name: 'Temperature Diff. <i class="fa fa-info-circle" title="Average 1980-1989 compared with 2015-2019"></i>'
-// }
 
 layersList['empty'] = {
     name: 'Disabled',

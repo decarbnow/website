@@ -11,12 +11,6 @@ let layersList = {
             }
         }
     },
-    // 'tweetsProd': {
-    //     name: "Tweets (Prod)",
-    // },
-    // 'tweetsDev': {
-    //     name: "Tweets (Dev)",
-    // },
 };
 
 export default {

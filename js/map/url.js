@@ -41,7 +41,6 @@ let url = {
         let parts = Object.keys(vars).map(k => {
             return [k, vars[k]].join(url.specialKeys.includes(k) ? '' : url.keyValueDivider);
         })
-        //console.log(base.layerSets)
         return url.prefix + parts.join(url.divider)
     },
 
@@ -93,12 +92,11 @@ let url = {
             Title: `Lat: ${state.center.lat}, Lng: ${state.center.lng}`,
             Url: url._stateToUrl(state)
         };
-        //console.log(obj.Url)
+
         history.pushState(obj, obj.Title, obj.Url);
     },
 
     getState: function() {
-        // console.log(window.location.pathname.substring(url.prefix.length))
         return url._urlToState(url.getPath());
     },
 

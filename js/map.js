@@ -7,5 +7,3 @@ import base from "./map/base.js";
 window.base = base
 
 base.init()
-
-//import "./geoip.js";

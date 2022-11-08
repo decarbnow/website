@@ -1,10 +1,6 @@
 import base from '../base.js'
 import { LayerGroup } from 'leaflet';
 import 'leaflet-spin';
-//import 'topojson-client';
-//import 'topojson';
-//import * as omnivore from "@mapbox/leaflet-omnivore";
-//import 'topojson-simplify';
 import config from '../config.js'
 
 L.LazyLayerGroup = L.LayerGroup.extend({
@@ -86,7 +82,6 @@ class LazyLayerSet {
                 })
 
                 layer.on('remove', function() {
-                    // console.log(legend)
                     legend.remove(base.map);
                 })
             }

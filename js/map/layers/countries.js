@@ -12,7 +12,7 @@ let countriesSorted = Object.keys(countries).sort(
 );
 
 let layersList = {};
-//Object.entries(countriesSorted).forEach(([iso2, name]) => {
+
 countriesSorted.forEach((iso2) => {
     layersList[`countries!${iso2}`] = {
         name: countries[iso2],

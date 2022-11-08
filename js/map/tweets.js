@@ -18,6 +18,7 @@ window.gotoLastStoryTweet=function(id){
 };
 
 function listenForTwitFrameResizes() {
+
 /* find all iframes with ids starting with "tweet_" */
     var tweetIframes=document.querySelectorAll("[id^='tweet_']");
     //console.log(tweetIframes)
@@ -31,10 +32,13 @@ function listenForTwitFrameResizes() {
 
 /* listen for the return message once the tweet has been loaded */
 window.onmessage = (oe) => {
-    if (oe.origin != "https://twitframe.com")
+    if (oe.origin != "https://twitframe.com"){
         return;
-    if (oe.data.height && oe.data.element.match(/^tweet_/))
-        document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
+    }
+    if (oe.data.height && oe.data.element.match(/^tweet_/)){
+      document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
+    }
+
 };
 
 // window.showIframeHeight = function() {
@@ -66,7 +70,7 @@ let manager = {
     init: function() {
         manager.sidebar = L.control.sidebar('show-tweet-sidebar', {
             closeButton: false,
-            position: 'left'
+            position: 'right'
         });
 
         base.map.addControl(manager.sidebar)
@@ -142,13 +146,8 @@ let manager = {
         let state = {...tweetInfo.state};
         state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
         base.setState(state);
-        $(base.map).one('moveend', function () {
-                    base.hideCrosshair();
-                    //manager.openPopup(id);
-                    //listenForTwitFrameResizes()
-                    //base.showLayer("tweets")
-                    //manager.openSidebar(id)
-        })
+        base.hideCrosshair();
+
         manager.openSidebar(id)
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
@@ -315,10 +314,6 @@ let manager = {
                 if (id == tweetId)
                     classes.push('selected');
 
-                return `
-                <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="flex-grow: 1; border: none"></iframe>
-                `;
-
 
             });
 
@@ -327,20 +322,20 @@ let manager = {
         } else {
           //console.log(tweetInfo);
           let ids = [id];
-
           let entries = ids.map(tweetId => {
               let classes = ['tweet', 'loading'];
-
               if (id == tweetId)
                   classes.push('selected');
               return `
-              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}" style="flex-grow: 1; border: none"></iframe>
+              <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
               `;
+              //<iframe src="https://nitter.net/i/status/${tweetId}/embed?theme=twitter" id="tweet_${tweetId}" frameborder="0" style="overflow: hidden; height: 400px; width: 350px; position: relative; flex-grow: 1" ></iframe>
           });
 
-          let text = "<div style = \"display: flex; height: 100%; flex-direction: column;\"><div style=\"text-align:center\">"
+          let text = "<div class=\"sidebar-container\"><div style=\"text-align:center\">"
 
           if (tweetInfo.story){
+              text = text + "<div class=\"key_container\">"
               let ids_story = manager.data.stories[tweetInfo.story];
 
               let pos_previousID = ids_story.indexOf(ids[0])-1;
@@ -379,11 +374,7 @@ let manager = {
               if(ids_story.indexOf(ids[0]) == ids_story.length-3)
                   page_arr[ids_story.length-2] = 1
 
-              if(pos_previousID > -1){
-                  text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")' class=\"key_pn key_inactive\"> &#8249; </button>"
-              } else {
-                  text = text + "\n<button class=\"key_pn key_greyed\"> &#8249; </button>"
-              }
+
 
               page_arr.forEach(function (x, i){
                   if(x == 0 & page_arr[i-1] == 0){
@@ -399,10 +390,18 @@ let manager = {
                   }
               });
 
-              if(pos_nextID < ids_story.length){
-                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")' class=\"key_pn key_inactive\"> &#8250; </button>"
+              text = text + "&nbsp; &nbsp; "
+
+              if(pos_previousID > -1){
+                  text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")' class=\"key_pn key_inactive\"> prev </button>"//&#8249;
               } else {
-                text = text + "<button class=\"key_pn key_greyed\"> &#8250; </button>"
+                  text = text + "\n<button class=\"key_pn key_greyed\"> prev </button>"
+              }
+
+              if(pos_nextID < ids_story.length){
+                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")' class=\"key_pn key_inactive\"> next </button>"//&#8250;
+              } else {
+                text = text + "<button class=\"key_pn key_greyed\"> next </button>"
               }
 
               // ids_story.forEach(function (x, i) {
@@ -446,7 +445,7 @@ let manager = {
 
 
 
-
+              text = text + "</div>"
             };
 
           text = text + "</div>"
@@ -455,7 +454,7 @@ let manager = {
 
           text = text + "</div>"
           base.showSidebar(manager, text)
-
+          listenForTwitFrameResizes()
           manager.sidebarDiv.find('.tweet').each((i, e) => {
               let te = $(e);
               let tweetId = te.data('tweet').toString();

@@ -1,18 +1,28 @@
 .leaflet-sidebar.left.visible ~ .leaflet-left {
-    left: 330px; } /*make bigger here (move original map control)*/
+    left: 400px; } /*make bigger here (move original map control)*/
 
-.leaflet-sidebar.right.visible ~ .leaflet-right {
-    right: 330px; } /*make bigger here (move original map control)*/
+.leaflet-sidebar.right.visible ~ .leaflet-top.leaflet-right {
+    right: 390px;
+  } /*make bigger here (move original map control)*/
+
+  .leaflet-sidebar.right.visible ~ .leaflet-bottom.leaflet-right {
+      right: 0;
+    } /*make bigger here (move original map control)*/
 
 .leaflet-sidebar {
     padding: 0;
+    width: 400px;
     -webkit-overflow-scrolling: auto; /* Stops scrolling immediately */
     .leaflet-control {
         // background-color: rgba(255, 255, 255, 0.2);
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: rgba(255, 255, 255, 0);
         box-shadow: none;
         padding: 0 8px;
-        width: 330px;
+        width: 400px;
+        box-shadow: none !important;
+        -webkit-border-radius: 0 !important;
+        -moz-border-radius: 0 !important;
+        border-radius: 0 !important;
         //width: calc(17vw + 17vh);
         //  scrollbar-color: transparent transparent;
         // ::-webkit-scrollbar {
@@ -20,7 +30,6 @@
         //  }
         //overflow: hidden; /* Hide scrollbars */
     }
-
 
     .close {
         z-index: 15000;
@@ -42,6 +51,8 @@
     }
 
     #show-tweet-sidebar {
+      border: 0px;
+      pointer-events:none;
         .story {
             display: grid;
             grid-gap: 200px;
@@ -81,7 +92,7 @@
         position: relative;
         .select {
             position: relative;
-            border: 20px black;
+            //border: 20px black;
             font-size: 1em;
             // &::after {
             //     content: '\25BC';

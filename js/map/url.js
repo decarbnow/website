@@ -41,7 +41,7 @@ let url = {
         let parts = Object.keys(vars).map(k => {
             return [k, vars[k]].join(url.specialKeys.includes(k) ? '' : url.keyValueDivider);
         })
-
+        //console.log(base.layerSets)
         return url.prefix + parts.join(url.divider)
     },
 
@@ -82,7 +82,6 @@ let url = {
 
         if (rs.t)
             s.tweet = rs.t;
-
         return s;
     },
 

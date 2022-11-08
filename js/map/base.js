@@ -40,8 +40,15 @@ let crosshairIcon = L.icon({
     iconAnchor:   [40, 40], // point of the icon which will correspond to marker's location
 });
 
+L.Circle.include({
+  contains: function (latLng) {
+    return this.getLatLng().distanceTo(latLng) < this.getRadius();
+  }
+});
 
 let tweetBoxActive = false;
+
+let slowFlyTo = false;
 
 let contextmenuOptions = {
     contextmenu: true,
@@ -152,7 +159,6 @@ let base = {
             base.addControls();
 
         })
-
         base.showCrosshair();
     },
 
@@ -162,7 +168,7 @@ let base = {
         $(base.map).one('moveend', function () {
             base.showLayers(state.layers);
             base.pushState = true;
-            url.pushState()
+            url.pushState();
         })
     },
 
@@ -187,12 +193,18 @@ let base = {
         // }
 
         base.showLayers(layers);
-        base.map.flyTo(state.center, state.zoom, {noMoveStart: true});
+
+        if(slowFlyTo){
+            base.map.flyTo(state.center, state.zoom, {noMoveStart: true});
+        } else {
+            base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 1});
+            slowFlyTo = true
+        }
     },
 
     getSidebarCorrectedCenter: function(center, zoom) {
         let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
-        return base.map.unproject(base.map.project(center, zoom).subtract([sidebarOffset / 2, 0]), zoom);
+        return base.map.unproject(base.map.project(center, zoom).add([sidebarOffset / 2, 0]), zoom); //substract when sidebar on the left
     },
 
     showSidebar: function(module, content = null) {
@@ -228,7 +240,6 @@ let base = {
 
     showLayers: function(ids) {
         let visibleLayers = base.getVisibleLayers()
-
         // Show
         ids.forEach((id) => {
             if(!visibleLayers.includes(id))
@@ -266,6 +277,7 @@ let base = {
         base.map.on('move', function(e) {
             base.crosshair.setLatLng(base.map.getCenter());
         });
+        slowFlyTo = false;
     },
 
     hideCrosshair: function() {
@@ -287,25 +299,88 @@ let base = {
 
     getVisibleLayers: function() {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
+
+    },
+
+    updateCircleSize: function() {
+          var radius_zoom = [0.04,0.16,0.4,1,1.7,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,37.2,37.2,37.2];
+          function calcRadius(val, zoom) {
+              if(val != radius_zoom[zoom])
+                    return radius_zoom[zoom]
+              else
+                    return val;
+              //
+
+              //return (Math.pow(val,0.6)*(zoom)/4);
+          }
+
+          base.map.eachLayer(function (marker) {
+
+              // let result = base.map.getBounds().contains(latlng) ? 'inside': 'outside';
+              //
+              // if(result == 'inside'){
+              //     return circle;
+              // } else {
+              //     return 0;
+              // }
+              //console.log(marker)
+              // if(marker._latlng !== undefined){
+              //     var result = base.map.getBounds().contains(marker._latlng) ? 'inside': 'outside';
+              // } else {
+              //     return 0;
+              // }
+              if (marker._radius != undefined){
+                  //marker._mRadius = 100000000
+                  //console.log("lol")
+                  //marker.setRadius(calcRadius(marker._radius, base.map.getZoom()))
+                  marker.setRadius(radius_zoom[base.map.getZoom()])
+                  //console.log(radius_zoom[base.map.getZoom()])
+                  //console.log(marker)
+                  //marker.getElement().style.display = 'block';
+
+
+
+                  //marker._map._loaded = false
+                  //console.log(marker)
+                  //marker.setRadius(calcRadius(marker._orgRadius,base.map.getZoom()));
+              }
+              // if(result == 'inside'){
+              //   if (marker._radius != undefined){
+              //       //marker._mRadius = 100000000
+              //       //console.log("lol")
+              //       //marker.setRadius(calcRadius(marker._radius, base.map.getZoom()))
+              //       marker.setRadius(radius_zoom[base.map.getZoom()])
+              //       console.log(radius_zoom[base.map.getZoom()])
+              //       //console.log(marker)
+              //       //marker.getElement().style.display = 'block';
+              //
+              //
+              //
+              //       //marker._map._loaded = false
+              //       //console.log(marker)
+              //       //marker.setRadius(calcRadius(marker._orgRadius,base.map.getZoom()));
+              //   }
+              // }
+          });
     },
 
     addControlsTimeout: function() {
       let width = $(window).width()
       // L.control.markers({ position: 'topleft' }).addTo(base.map);
-      L.control.zoom({ position: 'topleft' }).addTo(base.map);
+      L.control.zoom({ position: 'topright' }).addTo(base.map);
 
       L.Control.geocoder({
-          position: 'topleft'
+          position: 'topright'
           // defaultMarkGeocode: false
       }).addTo(base.map);
 
       L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
-          position: 'topright',
+          position: 'topleft',
           collapsed: width < 1800
       }).addTo(base.map);
 
       L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
-          position: 'topright',
+          position: 'topleft',
           collapsed: width < 1800
       }).addTo(base.map);
 
@@ -337,6 +412,10 @@ let base = {
             }
         });
 
+        base.map.on("zoomend", function () {
+            base.updateCircleSize()
+        });
+
         // base.map.on("contextmenu", function (e) {
         //     //base.map.flyTo(e.latlng);
         //     //twitter.openSidebar(e.latlng)
@@ -354,6 +433,12 @@ let base = {
                 url.pushState();
             return true;
         });
+
+        base.map.on('overlayadd', function (e) {
+            base.updateCircleSize()
+            return true;
+        });
+
     }
 
 

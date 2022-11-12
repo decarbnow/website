@@ -26,7 +26,7 @@
 
 /*Legend specific*/
 .legend {
-    -webkit-touch-callout: none; 
+    -webkit-touch-callout: none;
     padding: 6px 8px;
     background: white;
     background: rgba(255, 255, 255, 0.5);
@@ -52,7 +52,7 @@
         span {
             position: relative;
             bottom: 1px;
-            font-family: "Lucida Console", Monaco, monospace;
+            font-family: "Verdana", "Arial", sans-serif;//font-family: "Lucida Console", Monaco, monospace;
         }
 
         i {

@@ -48,7 +48,7 @@
     color: black;
     font-weight: normal;
     font-size: 16px;
-    font-family: "Arial";
+    font-family: "Verdana", "Arial", sans-serif;
     border-top-left-radius: 8px;
     border-top-right-radius: 8px;
     cursor: grab;
@@ -112,7 +112,7 @@
     border-collapse: collapse;
     margin: 25px 0;
     font-size: 0.9em;
-    font-family: sans-serif;
+    font-family: "Verdana", "Arial", sans-serif;
     box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
 }
 
@@ -156,17 +156,17 @@
 label {
   font-size: 16px;
   padding-bottom: 2px;
-  font-family: "Arial";
+  font-family: "Verdana", "Arial", sans-serif;
 }
 
 textarea {
    font-size: 16px;
-   font-family: "Arial";
+   font-family: "Verdana", "Arial", sans-serif;
 }
 
 select {
    font-size: 16px;
-   font-family: "Arial";
+   font-family: "Verdana", "Arial", sans-serif;
 }
 
 iframe{
@@ -192,7 +192,7 @@ iframe{
   margin: 0px 0px;
   border-radius: 100%;
   pointer-events: all;
-  font-family: "Arial";
+  font-family: "Verdana", "Arial", sans-serif;
 }
 
 .button_active {background-color: #4B7C8B;
@@ -227,7 +227,7 @@ iframe{
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
-  font-family: "Arial";
+  font-family: "Verdana", "Arial", sans-serif;
   margin: 0px 0x;
   border-radius: 100%;
   border-style: solid;
@@ -246,7 +246,7 @@ iframe{
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
-  font-family: "Arial";
+  font-family: "Verdana", "Arial", sans-serif;
   margin: 0px 0px;
   border-radius: 18px;
   border-style: solid;

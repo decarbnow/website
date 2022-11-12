@@ -5,10 +5,12 @@ import 'leaflet-control-geocoder';
 import './controls/LayerSelectionControl';
 import './geoip.js';
 import './marker/control.js';
-import { layerSets, layers } from './layers/sets.js'
+import { layerSets, layers } from './layers/sets.js';
 import tweets from './tweets.js';
 import url from './url.js';
-import twitter from './twitter.js'
+import twitter from './twitter.js';
+import 'leaflet-control-window';
+//import 'leaflet.select-layers';
 
 let defaultState = {
     zoom: 3,
@@ -19,6 +21,8 @@ let defaultState = {
     layers: [
         'dark',
         'power-plants',
+        'manufacturing',
+        'fossil-fuel-operations',
         'no2_2021',
         'tweets',
     ],
@@ -45,12 +49,12 @@ L.Circle.include({
 
 let tweetBoxActive = false;
 
-let radius_zoom = [0.04,0.16,0.4,1,1.7,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,37.2,37.2,37.2];
+let radius_zoom = [1,1,1,1,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,40,40,40,40,40];
 
 let slowFlyTo = false;
 
 let contextmenuOptions = {
-    contextmenu: true,
+    contextmenu: false,
     contextmenuWidth: 200,
     contextmenuItems: [{
         text: 'Tweet here ...',
@@ -98,7 +102,6 @@ let base = {
             ...contextmenuOptions
         });
 
-        //base.addLayers()
         base.addEventHandlers();
 
         base.layerSets = layerSets;
@@ -107,6 +110,7 @@ let base = {
 
 
         tweets.init();
+        twitter.init();
         base.setInitialState();
 
     },
@@ -143,8 +147,10 @@ let base = {
                 if (path in tweets.data.pathToTweetId)
                     tweet = tweets.data.pathToTweetId[path];
             }
+
             if (tweet)
                 tweets.show(tweet);
+
             base.addControls();
 
         })
@@ -199,6 +205,28 @@ let base = {
 
         return module.sidebar;
     },
+
+    showControlwindow: function(module, content = null, title = null) {
+        let sbs = [tweets]
+        sbs.forEach((m) => {
+            if (m != module) {
+                m.controlwindow.hide();
+            }
+        });
+
+        if (content){
+            module.controlwindow.content(content)
+        }
+
+        if (title){
+            module.controlwindow.title(title)
+        }
+
+        module.controlwindow.show('topRight')
+
+        return module.controlwindow;
+    },
+
 
     showPopup: function(module, content = null) {
         let sbs = [tweets]
@@ -273,26 +301,39 @@ let base = {
 
     updateCircleSize: function() {
         function calcRadius(val, zoom) {
-            if(val != radius_zoom[zoom])
-                  return radius_zoom[zoom]
+            if(val != radius_zoom()[zoom])
+                  return radius_zoom()[zoom]
             else
-                  return val;
+                  return
         }
 
         base.map.eachLayer(function (marker) {
             if (marker._radius != undefined){
-                marker.setRadius(radius_zoom[base.map.getZoom()])
+                //console.debug(marker)
+                let size = null
+                if(marker.feature.properties.rank_world != undefined){
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank_world, 1/4)))
+                } else if(marker.feature.properties.population != undefined) {
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(Math.pow(marker.feature.properties.population, 1/4)/20))
+                } else {
+                    size = radius_zoom[base.map.getZoom()]
+                }
+
+
+                marker.setRadius(size)
             }
         });
     },
 
     addControlsTimeout: function() {
         let width = $(window).width()
-        L.control.zoom({ position: 'topright' }).addTo(base.map);
+
+        L.control.zoom({
+            position: 'bottomleft'
+        }).addTo(base.map);
 
         L.Control.geocoder({
-            position: 'topright'
-
+            position: 'bottomleft'
         }).addTo(base.map);
 
         L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
@@ -317,6 +358,15 @@ let base = {
             }
         });
 
+        base.map.on("contextmenu", function(e) {
+            base.tweetBoxActive = true;
+            base.updateCircleSize()
+            tweets.closeSidebar();
+            base.hideCrosshair();
+            base.map.flyTo(e.latlng);
+            twitter.showTweetBox(e);
+        });
+
         base.map.on("zoomend", function () {
             base.updateCircleSize()
         });
@@ -326,6 +376,7 @@ let base = {
             tweets.closeSidebar();
             base.showCrosshair();
             twitter.marker.remove();
+            twitter.controlwindow.hide();
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

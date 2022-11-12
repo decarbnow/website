@@ -1,4 +1,5 @@
 .selection-control {
+    -webkit-touch-callout: none;
     .choices__list--multiple .choices__item {
         background-color: #0000FF66;
         border: #0000FF66;
@@ -25,6 +26,7 @@
 
 /*Legend specific*/
 .legend {
+    -webkit-touch-callout: none; 
     padding: 6px 8px;
     background: white;
     background: rgba(255, 255, 255, 0.5);

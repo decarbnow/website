@@ -8,6 +8,7 @@
     top: 50%;
     margin: -13px 0 0 -13px;
     z-index: -1;
+    -webkit-touch-callout: none;
     &::after {
         content: '';
         width: 18px;
@@ -26,6 +27,10 @@
         background: rgba(226, 57, 66, 1) !important;
     }
 }
+
+.leaflet-container {-webkit-touch-callout: none;
+                    -webkit-user-select: none;}
+
 
 /* o align icon*/
 .custom-div-icon i {

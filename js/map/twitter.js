@@ -1,17 +1,18 @@
 import { icons } from "./marker/icons.js";
 import { encode } from '@alexpavlov/geohash-js';
 import 'twitter-widgets';
-import base from './base.js'
+import base from './base.js';
 import url from './url.js';
+import 'leaflet-control-window';
 
 const DEBOUNCE_TIMEOUT = 500;
 var twittermarker;
 
 var TwitterWidgetsLoader = require('twitter-widgets');
 
-let showGeoLoc = L.popup().setContent(
-    '<p>Tell the World!</p>'
-);
+// let showGeoLoc = L.popup().setContent(
+//     '<p>Tell the World!</p>'
+// );
 
 function changeCheckboxState() {
   /* find all iframes with ids starting with "tweet_" */
@@ -52,8 +53,10 @@ window.SwitchLayer = function(event) {
 
 let twitter = {
     sidebar: null,
-    marker: L.marker(null, {icon: icons['climateaction']}),
+    controlwindow: null,
+    marker: L.marker('selected', {icon: icons['climateaction']}),
     init: function() {
+        twitter.controlwindow = L.control.window(base.map, {title:'Create Tweet with #decarbnow link', content:'', visible: false})
     },
     showTweetBox: function(e) {
         // update marker
@@ -65,24 +68,25 @@ let twitter = {
             console.log('this is ' + event.value.toString())
         }
 
-        let text = '<label>Set appearance:</label>' +
+        let text = '<div class=\"sidebar-container twitterwindowmenu"><div style=\"text-align:left; width:220px;"><label>Set appearance:</label>' +
         '<form  method=get>'+
-        '<select id="selectLayer" onchange="window.SwitchLayer(this)"></select>'
-
+        '<select id="selectLayer" onchange="window.SwitchLayer(this)"></select><br><br>'
         for (let i = 1; i < url.getState().layers.length; i++) {
             text = text + '<div id="layercontrol"><label><input id="layers-' + url.getState().layers[i] + '" type="checkbox" data-layer="' + url.getState().layers[i] + '" checked>' + base.layers[url.getState().layers[i]].options.name + '</label></div>'
         };
         text = text + '<label><br>What\'s happening here?</label>'+
-        '<textarea id="tweetText" ></textarea>' +
+        '<textarea id="tweetText" style="resize:vertical; width:220px; height:150px;"></textarea>' +
         '</form>'+
-        '<div id="tweetBtn" style="min-height: 25px;">'+
-        '<center><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></center>' +
-        '</div>';
+        '<div id="tweetBtn" style="height: 25px;">'+
+        '<left><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></left>' +
+        '</div></div></div>';
 
-        showGeoLoc
-            .setLatLng(e.latlng)
-            .setContent(text)
-            .openOn(base.map);
+        // showGeoLoc
+        //     .setLatLng(e.latlng)
+        //     .setContent(text)
+        //     .openOn(base.map);
+        twitter.controlwindow.content(text)
+        twitter.controlwindow.show('topRight')
 
         let getStateForSelection = url.getState();
         let baseTilesArray = base.layerSets.baseTiles
@@ -148,9 +152,12 @@ let twitter = {
 
         //here comes the beauty
         function onTweetSettingsChange(e) {
-            let tweettype = $('#new-tweet-sidebar select.icontype').val();
+            //let tweettype = $('#new-tweet-sidebar select.icontype').val();
 
             twitter.marker.setIcon(icons['climateaction'])
+            twitter.marker._icon.classList.add("selected");
+            //L.DomUtil.addClass(twitter.marker._icon, 'selected');
+
             let tweet = $('#tweetText').val()
 
             let state = url.getPath();
@@ -209,9 +216,9 @@ let twitter = {
 
         base.map.on('baselayerchange overlayadd overlayremove zoomend', function(e) {
           if(base.tweetBoxActive){
-            debounce(onTweetSettingsChange)();
-            changeCheckboxState();
-            changeDropDownState();
+              debounce(onTweetSettingsChange)();
+              changeCheckboxState();
+              changeDropDownState();
           }
 
         });

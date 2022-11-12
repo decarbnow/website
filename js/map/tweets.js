@@ -6,6 +6,7 @@ import url from './url.js';
 import 'jquery';
 import 'twitter-widgets';
 import api from './api/proxy.js';
+import twitter from './twitter.js';
 
 window.gotoLastStoryTweet=function(id){
     return manager.show(id);
@@ -28,14 +29,19 @@ window.onmessage = (oe) => {
     if (oe.origin != "https://twitframe.com"){
         return;
     }
+    let cssHeight = 36 + 38 + 30
     if (oe.data.height && oe.data.element.match(/^tweet_/)){
-      document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
+      if(parseInt(oe.data.height) > (window.innerHeight-cssHeight))
+          document.getElementById(oe.data.element).style.height = window.innerHeight - cssHeight + "px";
+      else
+          document.getElementById(oe.data.element).style.height = parseInt(oe.data.height) + "px";
     }
 
 };
 
 let manager = {
     sidebar: null,
+    controlwindow: null,
     activeTweet: null,
     activeStory: null,
     autoScrolling: false,
@@ -60,7 +66,10 @@ let manager = {
             position: 'right'
         });
 
-        base.map.addControl(manager.sidebar)
+        manager.controlwindow = L.control.window(base.map, {title:'', content:'', visible: false})
+
+        base.map.addControl(manager.sidebar);
+
         manager.sidebarDiv = $('#show-tweet-sidebar')
 
         base.map.addLayer(manager.clusters)
@@ -109,8 +118,9 @@ let manager = {
 
     show: function(id, updateState = true) {
         base.map.closePopup();
+        twitter.marker.remove();
+        twitter.controlwindow.hide();
         base.hideCrosshair();
-
         if (id == manager.activateTweet)
             return;
 
@@ -119,16 +129,16 @@ let manager = {
         let tweetInfo = manager.data.tweets[id];
 
 
-        if (tweetInfo.story && manager.activeStory == tweetInfo.story)
+        if (tweetInfo.story && manager.activeStory == tweetInfo.story){
             manager.scrollAndActivateTweet(id, true);
-        else
+        } else {
             manager.openSidebar(id);
+        }
 
         let state = {...tweetInfo.state};
-        state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
+        //state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
         base.setState(state);
         base.hideCrosshair();
-
         manager.openSidebar(id)
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
@@ -158,7 +168,7 @@ let manager = {
               <iframe border=0 frameborder=0 src="https://twitframe.com/show?url=https://twitter.com/x/status/${tweetId}&conversation=none" id="tweet_${tweetId}"></iframe>
               `;
           });
-
+          let title = null
           let text = "<div class=\"sidebar-container\"><div style=\"text-align:center\">"
 
           if (tweetInfo.story){
@@ -174,6 +184,8 @@ let manager = {
               page_arr[0] = 1
               page_arr[ids_story.length-1] = 1
               page_arr[ids_story.indexOf(ids[0])] = 1
+
+              title = "Story - " + id + " - " + (ids_story.indexOf(ids[0])+1) + " of " + ids_story.length
 
               if(ids_story.indexOf(ids[0]) == 0 & ids_story.length >= 3){
                   page_arr[1] = 1
@@ -230,6 +242,8 @@ let manager = {
               }
 
               text = text + "</div>"
+            } else {
+              title = "Tweet-ID: " + id
             };
 
           text = text + "</div>"
@@ -237,8 +251,10 @@ let manager = {
           text = text + entries.join('');
 
           text = text + "</div>"
-          base.showSidebar(manager, text)
+
+          base.showControlwindow(manager, text, title)
           listenForTwitFrameResizes()
+
           manager.sidebarDiv.find('.tweet').each((i, e) => {
               let te = $(e);
               let tweetId = te.data('tweet').toString();
@@ -257,9 +273,9 @@ let manager = {
         manager.activeStory = null;
         base.showCrosshair();
         base.showLayer("tweets");
-        manager.sidebar.hide();
+        //manager.sidebar.hide();
+        manager.controlwindow.hide();
         url.pushState();
-
     },
 
     tweetsLoaded: function() {

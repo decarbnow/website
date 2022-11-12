@@ -5,9 +5,18 @@
     right: 390px;
   } /*make bigger here (move original map control)*/
 
-  .leaflet-sidebar.right.visible ~ .leaflet-bottom.leaflet-right {
-      right: 0;
-    } /*make bigger here (move original map control)*/
+.leaflet-sidebar.right.visible ~ .leaflet-bottom.leaflet-right {
+    right: 0;
+  } /*make bigger here (move original map control)*/
+
+.leaflet-bottom.leaflet-left {
+    padding-bottom: 30px;
+    z-index: inherit;
+}
+
+.leaflet-control-attribution a{
+    color: blue;
+}
 
 .leaflet-sidebar {
     padding: 0;

@@ -4,7 +4,7 @@ let layersList = {
             attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+
                              '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                              '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                             '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                             '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
@@ -16,7 +16,7 @@ let layersList = {
                              'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community, '+
                              '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                              '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                             '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                             '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
         }),
         name: 'Esri Satellite'
@@ -26,7 +26,7 @@ let layersList = {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, '+
                              '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                              '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                             '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                             '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
             ext: 'png'
         }),
@@ -38,7 +38,7 @@ let layersList = {
                              '© <a href="https://carto.com/attribution">CARTO</a>, '+
                              '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                              '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                             '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                             '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
@@ -50,7 +50,7 @@ let layersList = {
                            '© <a href="https://carto.com/attribution">CARTO</a>, '+
                            '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                            '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                           '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                           '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
@@ -62,7 +62,7 @@ let layersList = {
                            '© <a href="https://carto.com/attribution">CARTO</a>, '+
                            '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                            '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                           '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                           '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
             maxZoom: 20,
             subdomains:['mt0','mt1','mt2','mt3']
         }),
@@ -74,7 +74,7 @@ let layersList = {
                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                          '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                          '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
            maxZoom: 10,
            subdomains:['mt0','mt1','mt2','mt3']
        }),
@@ -86,7 +86,7 @@ let layersList = {
                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>, '+
-                          '<a href="https://github.com/wri/global-power-plant-database">WRI</a>',
+                          '<a href="https://climatetrace.org">Climate TRACE [Nov. 22]</a>',
            maxZoom: 8,
            subdomains:['mt0','mt1','mt2','mt3']
        }),

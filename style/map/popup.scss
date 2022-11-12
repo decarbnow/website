@@ -1,3 +1,97 @@
+.leaflet-control-window-wrapper{
+    display: none;
+    opacity: 0;
+    -webkit-overflow-scrolling: touch;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border-radius: 18px;
+}
+
+.nonmodal{
+    z-index: 6000;
+}
+
+.modal{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 7000;
+    pointer-events: none;
+    //background-color: rgba(0, 0, 0, 0.7);
+}
+
+.visible {
+    display: block;
+    opacity: 1;
+    -webkit-touch-callout: none;
+}
+
+.leaflet-control-window{
+    position: absolute;
+    background-color: white;
+    z-index: 2000;
+    margin: 8px;
+    border-radius: 8px;
+    border: 0;
+    /** BOX SHADOW **/
+    -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.75);
+}
+
+.leaflet-control-window .titlebar{
+    height: 28px;
+    background: #9A9B9C;
+    color: black;
+    font-weight: normal;
+    font-size: 16px;
+    font-family: "Arial";
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    cursor: grab;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    padding: 2px 45px 10px 10px;
+}
+
+.leaflet-control-window .content{
+    padding: 8px;
+    //border-radius: 18px;
+    margin-top: 0;
+    z-index:29;
+    overflow: auto;
+}
+
+
+.leaflet-control-window .close {
+    position: absolute;
+    top: 3px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    border-radius: 20%;
+    font: 16px/14px Tahoma, Verdana, sans-serif;
+    cursor: pointer;
+    z-index:30;
+
+    background-color: #E5E5E5;
+    transition-duration: 0.2s;
+    transition-timing-function: linear;
+    font-weight: bolder;
+
+    color: #747576;
+    font-size: 14pt;
+    text-align: center;
+    line-height: 0.9em;
+}
+
+.leaflet-control-window .close:hover {
+    background-color: rgba(0, 0, 0, 0.65);
+}
+
 .leaflet-popup-content table tr td:first-child{
     padding: 0 5px 0 0;
 }
@@ -9,8 +103,8 @@
 }
 
 .leaflet-popup-content a {
-    color:blue;
-    text-decoration:none;
+    color: blue;
+    text-decoration: none;
     font-weight: normal;
 }
 
@@ -43,7 +137,36 @@
 .sidebar-container {
    display: flex;
    flex-direction: column;
-   pointer-events: none;
+   background-color: white;
+   //pointer-events: none;
+}
+
+.twitterwindowmenu {
+    color: black;
+    background-color: rgb(250, 251, 251);
+    border: 1px !important;
+    border-style: solid !important;
+    border-color: rgb(207, 217, 222) !important;
+    border-radius: 12px;
+    padding: 15px !important;
+    overflow: hidden;
+    pointer-events: auto !important;
+}
+
+label {
+  font-size: 16px;
+  padding-bottom: 2px;
+  font-family: "Arial";
+}
+
+textarea {
+   font-size: 16px;
+   font-family: "Arial";
+}
+
+select {
+   font-size: 16px;
+   font-family: "Arial";
 }
 
 iframe{
@@ -51,7 +174,10 @@ iframe{
     pointer-events: all;
     background-color: transparent;
     flex-grow: 1;
-    border: none
+    border: none;
+    min-height: 200px;
+    max-height: 100%;
+    overflow: auto;
 }
 
 .button {
@@ -64,8 +190,9 @@ iframe{
   display: inline-block;
   font-size: 14px;
   margin: 0px 0px;
-  border-radius: 18px;
+  border-radius: 100%;
   pointer-events: all;
+  font-family: "Arial";
 }
 
 .button_active {background-color: #4B7C8B;
@@ -81,12 +208,12 @@ iframe{
   column-gap: 3px;
   margin: 5px auto;
   width: 96%;
-  height: 50px;
+  height: 40px;
   align-items: center; /* Align Items Vertically */
   justify-content: center; /* Align Items Horizontally (with equal space in between each of them */
   background: rgba(255, 255, 255, 0.5);
   text-align: center;
-  border-radius: 10px;
+  border-radius: 100%;
   pointer-events: all;
 }
 
@@ -100,8 +227,9 @@ iframe{
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
+  font-family: "Arial";
   margin: 0px 0x;
-  border-radius: 18px;
+  border-radius: 100%;
   border-style: solid;
   border-width: 2px;
   border-color: #c6c6c6;
@@ -118,6 +246,7 @@ iframe{
   text-decoration: none;
   display: inline-block;
   font-size: 14px;
+  font-family: "Arial";
   margin: 0px 0px;
   border-radius: 18px;
   border-style: solid;

@@ -78,7 +78,7 @@ let base = {
 
 
         base.setInitialState();
-        base.showCrosshair();
+
     },
 
     getState: function() {
@@ -104,6 +104,7 @@ let base = {
         }
         base.setState({...defaultState, ...state});
         $(base.map).one('moveend', function () {
+            base.showCrosshair();
             let tweet = state.tweet;
 
             if (!state.tweet) {
@@ -125,6 +126,8 @@ let base = {
             });
 
         })
+
+
     },
 
     setState: function(state){

@@ -31,6 +31,14 @@
 .leaflet-container {-webkit-touch-callout: none;
                     -webkit-user-select: none;}
 
+.crosshair.invisible {
+    opacity: 0;
+}
+
+.crosshair.visible {
+    opacity: 1;
+}
+
 
 /* o align icon*/
 .custom-div-icon i {
@@ -65,7 +73,12 @@
 .selected .marker-pin {
     &::after {
         background: rgb(200, 100, 10);
+        opacity: 1;
     }
+}
+
+.noTweets{
+    opacity: 0.4 !important;
 }
 
 .bubble {

@@ -10,10 +10,6 @@ var twittermarker;
 
 var TwitterWidgetsLoader = require('twitter-widgets');
 
-// let showGeoLoc = L.popup().setContent(
-//     '<p>Tell the World!</p>'
-// );
-
 function changeCheckboxState() {
   /* find all iframes with ids starting with "tweet_" */
   var allIdsFromCheckbox = document.querySelectorAll("[id^='layers-']")
@@ -56,7 +52,8 @@ let twitter = {
     controlwindow: null,
     marker: L.marker('selected', {icon: icons['climateaction']}),
     init: function() {
-        twitter.controlwindow = L.control.window(base.map, {title:'Create Tweet with #decarbnow link', content:'', visible: false})
+        twitter.controlwindow = L.control.window(base.map, {title:'', content:'', visible: false})
+        twitter.addEventHandlers();
     },
     showTweetBox: function(e) {
         // update marker
@@ -81,11 +78,8 @@ let twitter = {
         '<left><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></left>' +
         '</div></div></div>';
 
-        // showGeoLoc
-        //     .setLatLng(e.latlng)
-        //     .setContent(text)
-        //     .openOn(base.map);
         twitter.controlwindow.content(text)
+        twitter.controlwindow.title("Create Tweet at (" + e.latlng.lat.toFixed(1) + ", " + e.latlng.lng.toFixed(1) + ")")
         twitter.controlwindow.show('topRight')
 
         let getStateForSelection = url.getState();
@@ -152,11 +146,14 @@ let twitter = {
 
         //here comes the beauty
         function onTweetSettingsChange(e) {
-            //let tweettype = $('#new-tweet-sidebar select.icontype').val();
-
             twitter.marker.setIcon(icons['climateaction'])
-            twitter.marker._icon.classList.add("selected");
-            //L.DomUtil.addClass(twitter.marker._icon, 'selected');
+            if(twitter.marker._icon != null){
+                twitter.marker._icon.classList.add("selected");
+            }
+
+            if(!url.getState().layers.includes("tweets") & twitter.marker._icon != null){
+                twitter.marker._icon.classList.add("noTweets");
+            }
 
             let tweet = $('#tweetText').val()
 
@@ -219,16 +216,29 @@ let twitter = {
               debounce(onTweetSettingsChange)();
               changeCheckboxState();
               changeDropDownState();
+              if(!url.getState().layers.includes("tweets") & twitter.marker._icon != null){
+                  twitter.marker._icon.classList.add("noTweets");
+              }
           }
 
         });
 
         tweets.closeSidebar();
-        base.hideCrosshair();
 
         if(window.twttr.widgets){
             window.twttr.widgets.load();
         }
+    },
+
+    addEventHandlers: function() {
+        twitter.controlwindow.on("hide", function(e) {
+            tweets.closeSidebar();
+            twitter.marker.remove();
+        });
+
+        twitter.controlwindow.on("show", function(e) {
+            tweets.controlwindow.hide();
+        });
     }
 }
 

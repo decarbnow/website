@@ -40,12 +40,10 @@ window.onmessage = (oe) => {
 };
 
 let manager = {
-    sidebar: null,
     controlwindow: null,
     activeTweet: null,
     activeStory: null,
     autoScrolling: false,
-    sidebarDiv: null,
     data: {
         tweets: [],
         stories: [],
@@ -61,49 +59,14 @@ let manager = {
     }),
 
     init: function() {
-        manager.sidebar = L.control.sidebar('show-tweet-sidebar', {
-            closeButton: false,
-            position: 'right'
-        });
-
         manager.controlwindow = L.control.window(base.map, {title:'', content:'', visible: false})
-
-        base.map.addControl(manager.sidebar);
-
-        manager.sidebarDiv = $('#show-tweet-sidebar')
 
         base.map.addLayer(manager.clusters)
 
         api.init();
-        manager.loadMarkers();
+
         manager.addEventHandlers();
     },
-
-    scrollAndActivateTweet: function(id, tweetActivated = false) {
-        let tweetDiv = $(`#tweet-${id}`);
-
-        manager.autoScrolling = true;
-        if(!tweetActivated)
-            manager.sidebarDiv.animate({
-                scrollTop: manager.sidebarDiv.scrollTop() + tweetDiv.position().top - 80
-            }, 600, function() {
-                setTimeout(function() {
-                    manager.autoScrolling = false;
-                }, 1);
-            })
-        else
-            manager.sidebarDiv.animate({
-                scrollTop: manager.sidebarDiv.scrollTop()
-            }, 0, function() {
-                setTimeout(function() {
-                    manager.autoScrolling = false;
-                }, 1);
-            })
-
-        tweetDiv.parent().find('.tweet.selected').removeClass('selected');
-        tweetDiv.addClass('selected');
-    },
-
 
     activateMarker: function(id) {
         let marker = manager.data.tweetIdToMarker[id.toString()];
@@ -120,7 +83,7 @@ let manager = {
         base.map.closePopup();
         twitter.marker.remove();
         twitter.controlwindow.hide();
-        base.hideCrosshair();
+
         if (id == manager.activateTweet)
             return;
 
@@ -128,17 +91,9 @@ let manager = {
 
         let tweetInfo = manager.data.tweets[id];
 
-
-        if (tweetInfo.story && manager.activeStory == tweetInfo.story){
-            manager.scrollAndActivateTweet(id, true);
-        } else {
-            manager.openSidebar(id);
-        }
-
         let state = {...tweetInfo.state};
-        //state.center = base.getSidebarCorrectedCenter(state.center, state.zoom);
+
         base.setState(state);
-        base.hideCrosshair();
         manager.openSidebar(id)
         manager.activeTweet = id;
         manager.activeStory = tweetInfo.story;
@@ -254,16 +209,6 @@ let manager = {
 
           base.showControlwindow(manager, text, title)
           listenForTwitFrameResizes()
-
-          manager.sidebarDiv.find('.tweet').each((i, e) => {
-              let te = $(e);
-              let tweetId = te.data('tweet').toString();
-              window.twttr.widgets.createTweet(tweetId, document.getElementById(`tweet-${tweetId}`).getElementsByClassName("widget")[0], {conversation: 'none'}).then(function () {
-                  te.removeClass('loading');
-                  if (manager.tweetsLoaded())
-                      manager.scrollAndActivateTweet(id, false);
-              });
-          });
         }
     },
 
@@ -271,15 +216,9 @@ let manager = {
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
-        base.showCrosshair();
         base.showLayer("tweets");
-        //manager.sidebar.hide();
-        manager.controlwindow.hide();
-        url.pushState();
-    },
 
-    tweetsLoaded: function() {
-        return (manager.sidebarDiv.find('.tweet.loading').length == 0);
+        url.pushState();
     },
 
     loadMarkers: function() {
@@ -327,69 +266,9 @@ let manager = {
     },
 
     addEventHandlers: function() {
-        function scrollAction(direction) {
-            let t = manager.sidebarDiv.find('.tweet.selected');
-            let tn = null;
-            let positionDirection = null;
-
-            let selectedTop = t.position().top,
-                selectedHeight = t.height(),
-                scrollWindowHeight = manager.sidebarDiv.height();
-
-            let positionAllows = [];
-            if(selectedTop + selectedHeight < scrollWindowHeight - 500/* - SOMETHING */)
-                positionAllows.push("down");
-            if(selectedTop > 0 + selectedHeight + 0)
-                positionAllows.push("up");
-
-            if (positionAllows.includes(direction)) {
-                if (direction == 'down')
-                    tn = t.next('.tweet');
-                else if (direction == 'up')
-                    tn = t.prev('.tweet');
-
-                if (tn.length > 0)
-                    manager.show(tn.data('tweet'));
-            }
-        }
-
-        //scroll bar
-        var lastScrollTop = 0;
-        manager.sidebarDiv.bind('scroll', function(e) {
-            let scrollTop = $(this).scrollTop();
-            if(manager.tweetsLoaded()  && !manager.autoScrolling)
-                scrollAction(scrollTop > lastScrollTop ? 'down' : 'up')
-            lastScrollTop = scrollTop;
-            e.stopPropagation();
-        })
-
-        // mouse wheel
-        manager.sidebarDiv.bind('wheel', function(e) {
-            if(manager.tweetsLoaded()  && !manager.autoScrolling){
-                //https://www.h3xed.com/programming/javascript-mouse-scroll-wheel-events-in-firefox-and-chrome
-                //let delta = e.originalEvent.wheelDelta ? e.originalEvent.wheelDelta : -e.detail;
-                let delta = e.originalEvent.deltaY;
-
-                scrollAction(delta > 0 ? 'down' : 'up')
-            }
-            e.stopPropagation();
-        })
-
-        // touch display
-        let touchStart = null;
-        manager.sidebarDiv.bind('touchstart', function(e) {
-            touchStart = e.originalEvent.touches[0].clientY;
-        });
-        manager.sidebarDiv.bind('touchmove', function(e) {
-            if($('#show-tweet-sidebar .tweet.unloaded').length == 0  && !manager.autoScrolling)
-                scrollAction(touchStart > e.originalEvent.changedTouches[0].clientY ? 'down' : 'up')
-            if (manager.autoScrolling)
-                e.preventDefault();
-        });
-
-        // click activate
-        manager.sidebarDiv.on('click', '.tweet .overlay', function(e) {
-            manager.show($(this).parents('.tweet').data('tweet'));
+        manager.controlwindow.on("hide", function(e) {
+          manager.deactivateMarkers();
+          manager.closeSidebar();
         });
     }
 }

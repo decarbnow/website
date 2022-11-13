@@ -1,6 +1,4 @@
 import { map } from 'leaflet';
-import 'leaflet-sidebar';
-import 'leaflet-contextmenu';
 import 'leaflet-control-geocoder';
 import './controls/LayerSelectionControl';
 import './geoip.js';
@@ -10,7 +8,6 @@ import tweets from './tweets.js';
 import url from './url.js';
 import twitter from './twitter.js';
 import 'leaflet-control-window';
-//import 'leaflet.select-layers';
 
 let defaultState = {
     zoom: 3,
@@ -37,61 +34,25 @@ let defaultOptions = {
 
 let crosshairIcon = L.icon({
     iconUrl: '../../static/crosshair.png',
-    iconSize:     [80, 80], // size of the icon
-    iconAnchor:   [40, 40], // point of the icon which will correspond to marker's location
+    iconSize:     [50, 50], // size of the icon
+    iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
 });
 
 L.Circle.include({
-  contains: function (latLng) {
-    return this.getLatLng().distanceTo(latLng) < this.getRadius();
-  }
+    contains: function (latLng) {
+        return this.getLatLng().distanceTo(latLng) < this.getRadius();
+    }
 });
 
 let tweetBoxActive = false;
 
 let radius_zoom = [1,1,1,1,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,40,40,40,40,40];
 
-let slowFlyTo = false;
-
-let contextmenuOptions = {
-    contextmenu: false,
-    contextmenuWidth: 200,
-    contextmenuItems: [{
-        text: 'Tweet here ...',
-        callback: function(e) {
-            tweets.sidebar.hide();
-            base.map.flyTo(e.latlng);
-            twitter.showTweetBox(e);
-            base.tweetBoxActive = true
-        }
-    }, {
-        text: 'Center here and copy area link',
-        callback: function(e) {
-            base.map.flyTo(e.latlng);
-            $(base.map).one('moveend', function () {
-                var dummy = document.createElement('input'),
-                    text = window.location.href;
-
-                document.body.appendChild(dummy);
-                dummy.value = text;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-            })
-        }
-    }, {
-        text: 'Center here ...',
-        callback: function(e) {
-            base.map.flyTo(e.latlng);
-        }
-    }]
-}
-
 let base = {
     map: null,
-    sidebars: {},
+    slowFlyTo: false,
     layerSets: {},
-    crosshair: L.marker(null, {icon: crosshairIcon, interactive:false}),
+    crosshair: L.marker('crosshair', {icon: crosshairIcon, interactive:false}),
     layers: {},
     pushState: false,
 
@@ -99,20 +60,25 @@ let base = {
         // init leaflet map
         base.map = map('map', {
             ...defaultOptions,
-            ...contextmenuOptions
         });
 
+        tweets.init();
+        tweets.loadMarkers();
+        twitter.init();
+
         base.addEventHandlers();
+
+        //Disable interaction
+        base.map._handlers.forEach(function(handler) {
+            handler.disable();
+        });
 
         base.layerSets = layerSets;
         base.layers = layers;
 
 
-
-        tweets.init();
-        twitter.init();
         base.setInitialState();
-
+        base.showCrosshair();
     },
 
     getState: function() {
@@ -130,16 +96,15 @@ let base = {
 
     setInitialState: function() {
         base.map.setView(defaultState.center, defaultState.zoom);
+
         let state = url.getState();
+
         if (!state.center){
             state.center = { lat: 37, lng: 24 }
         }
-
         base.setState({...defaultState, ...state});
-
-        let tweet = state.tweet;
-
         $(base.map).one('moveend', function () {
+            let tweet = state.tweet;
 
             if (!state.tweet) {
                 let path = url.getPath()
@@ -153,8 +118,13 @@ let base = {
 
             base.addControls();
 
+            //Enable interaction
+            base.map._handlers.forEach(function(handler) {
+                handler.enable();
+
+            });
+
         })
-        base.showCrosshair();
     },
 
     setState: function(state){
@@ -178,11 +148,11 @@ let base = {
 
         base.showLayers(layers);
 
-        if(slowFlyTo){
+        if(base.slowFlyTo){
             base.map.flyTo(state.center, state.zoom, {noMoveStart: true});
         } else {
             base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 1});
-            slowFlyTo = true
+            base.slowFlyTo = true
         }
     },
 
@@ -207,6 +177,7 @@ let base = {
     },
 
     showControlwindow: function(module, content = null, title = null) {
+        //base.hideCrosshair()
         let sbs = [tweets]
         sbs.forEach((m) => {
             if (m != module) {
@@ -272,21 +243,25 @@ let base = {
     },
 
     showCrosshair: function() {
-        base.hideCrosshair()
+        // if(base.crosshair !== 'undefined')
+        //     base.hideCrosshair()
 
-        base.crosshair = L.marker(null, {icon: crosshairIcon, interactive:false}),
+        //base.crosshair = L.marker('crosshairmarker', {icon: crosshairIcon, interactive:false}),
+        //base.crosshair._icon.classList.add("crosshair");
+
         base.crosshair.setLatLng(base.map.getCenter());
         base.crosshair.addTo(base.map)
 
+        base.crosshair._icon.classList.add("crosshair.visible");
+    },
 
-        base.map.on('move', function(e) {
-            base.crosshair.setLatLng(base.map.getCenter());
-        });
-        slowFlyTo = false;
+    unhideCrosshair: function() {
+        base.crosshair.setIcon({icon: crosshairIcon, interactive:false})
     },
 
     hideCrosshair: function() {
-        base.map.removeLayer(base.crosshair)
+        base.crosshair.remove();
+        //base.crosshair._icon.classList.add("crosshair.invisible");
     },
 
     hideLayer: function(id) {
@@ -325,7 +300,7 @@ let base = {
         });
     },
 
-    addControlsTimeout: function() {
+    addControls: function() {
         let width = $(window).width()
 
         L.control.zoom({
@@ -347,10 +322,6 @@ let base = {
         }).addTo(base.map);
     },
 
-    addControls: function() {
-        setTimeout(base.addControlsTimeout(), 10)
-    },
-
     addEventHandlers: function() {
         base.map.on("moveend", function () {
             if (base.pushState) {
@@ -358,11 +329,15 @@ let base = {
             }
         });
 
+        base.map.on("move", function () {
+            if(base.crosshair !== null)
+                base.crosshair.setLatLng(base.map.getCenter());
+        });
+
         base.map.on("contextmenu", function(e) {
             base.tweetBoxActive = true;
-            base.updateCircleSize()
             tweets.closeSidebar();
-            base.hideCrosshair();
+            //base.hideCrosshair();
             base.map.flyTo(e.latlng);
             twitter.showTweetBox(e);
         });
@@ -374,9 +349,12 @@ let base = {
         base.map.on("click", function (e) {
             base.tweetBoxActive = false;
             tweets.closeSidebar();
-            base.showCrosshair();
+            base.slowFlyTo = false;
+            //base.showCrosshair();
             twitter.marker.remove();
+            tweets.controlwindow.hide();
             twitter.controlwindow.hide();
+            //base.unhideCrosshair()
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {
@@ -384,12 +362,6 @@ let base = {
                 url.pushState();
             return true;
         });
-
-        base.map.on('overlayadd', function (e) {
-            base.updateCircleSize()
-            return true;
-        });
-
     }
 
 

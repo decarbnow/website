@@ -42,7 +42,7 @@ let defaultState = {
         'manufacturing',
         'fossil-fuel-operations',
         'no2_2021',
-        'tweets',
+        'tweets'
     ],
 }
 
@@ -73,7 +73,7 @@ let radius_zoom = [1,1,1,1,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,40,40,
 
 let base = {
     map: null,
-    slowFlyTo: false,
+    slowFlyTo: true,
     layerSets: {},
     crosshair: L.marker('crosshair', {icon: crosshairIcon, interactive:false}),
     layers: {},
@@ -93,11 +93,6 @@ let base = {
         twitter.init();
 
         base.addEventHandlers();
-
-        //Disable interaction
-        base.map._handlers.forEach(function(handler) {
-            handler.disable();
-        });
 
         base.layerSets = layerSets;
         base.layers = layers;
@@ -124,8 +119,6 @@ let base = {
     },
 
     setInitialState: function() {
-
-
         base.map.setView(defaultState.center, defaultState.zoom);
 
         let state = url.getState();
@@ -133,19 +126,11 @@ let base = {
         if (!state.center){
             state.center = { lat: 37, lng: 24 }
         }
-
         base.setState({...defaultState, ...state});
 
-
-        // if(state.polygons){
-        //     tweets.data.polygons = state.polygons
-        //     base.showPolygons(state.polygons)
-        // }
-
-
+        let tweet = state.tweet;
 
         $(tweets).on("loaded", function() {
-            let tweet = state.tweet;
             if (!state.tweet) {
                 let path = url.getPath()
 
@@ -155,13 +140,9 @@ let base = {
 
             if (tweet)
                 tweets.show(tweet);
-
-            base.map._handlers.forEach(function(handler) {
-                handler.enable();
-            });
-
-            base.showCrosshair();
         });
+
+        base.showCrosshair();
 
         base.addControls();
     },
@@ -169,9 +150,6 @@ let base = {
     setState: function(state){
         base.pushState = false;
         base.flyTo(state);
-
-
-
         $(base.map).one('moveend', function () {
             base.showLayers(state.layers);
             base.pushState = true;
@@ -183,6 +161,7 @@ let base = {
             }
             url.pushState();
         })
+
     },
 
     flyTo: function(state) {
@@ -540,7 +519,7 @@ let base = {
         base.map.on("click", function (e) {
             base.tweetBoxActive = false;
             tweets.closeSidebar();
-            base.slowFlyTo = false;
+            //base.slowFlyTo = false;
             twitter.marker.remove();
             twitter.controlwindow.hide();
         });

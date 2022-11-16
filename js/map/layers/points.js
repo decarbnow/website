@@ -231,6 +231,10 @@ let layersList = {
               });
           }
       }
+    }, 'polygons':{
+        name: "Polygons",
+        hidden: false,
+        extern: true
     }
 };
 

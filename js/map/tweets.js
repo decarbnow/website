@@ -47,6 +47,7 @@ let manager = {
     data: {
         tweets: [],
         stories: [],
+        polygons: null,
         pathToTweetId: {},
         tweetIdToMarker: {}
     },
@@ -60,8 +61,6 @@ let manager = {
 
     init: function() {
         manager.controlwindow = L.control.window(base.map, {title:'', content:'', visible: false})
-
-        base.map.addLayer(manager.clusters)
 
         api.init();
 
@@ -216,9 +215,16 @@ let manager = {
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
-        base.showLayer("tweets");
-
         url.pushState();
+    },
+
+    addGeoJson: function() {
+      let state = base.getState()
+      if(tweets.data.polygons){
+        state.polygons = tweets.data.polygons
+        base.setState(state);
+      }
+
     },
 
     loadMarkers: function() {
@@ -243,7 +249,7 @@ let manager = {
                     manager.data.stories[tweetInfo.story].push(id);
                 }
 
-                if (tweetInfo.state.zoom >= 6){
+                if (tweetInfo.state.zoom >= 2){
                   let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
 
                   if(tweetOpacity < 1)
@@ -267,8 +273,9 @@ let manager = {
 
     addEventHandlers: function() {
         manager.controlwindow.on("hide", function(e) {
-          manager.deactivateMarkers();
-          manager.closeSidebar();
+            manager.deactivateMarkers();
+            manager.closeSidebar();
+            base.showLayer("tweets");
         });
     }
 }

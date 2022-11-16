@@ -207,8 +207,7 @@ iframe{
   display: flex;
   column-gap: 3px;
   margin: 5px auto;
-  width: 96%;
-  height: 40px;
+  width: 100%;
   align-items: center; /* Align Items Vertically */
   justify-content: center; /* Align Items Horizontally (with equal space in between each of them */
   background: rgba(255, 255, 255, 0.5);
@@ -219,7 +218,6 @@ iframe{
 
 .key {
   text-align: center;
-  border: none;
   padding: 0px 0px;
   text-align: center;
   width: 36px;
@@ -238,7 +236,6 @@ iframe{
 }
 
 .key_pn {
-  border: none;
   padding: 0px 0px;
   text-align: center;
   width: 52px;

@@ -79,7 +79,7 @@ let twitter = {
         '</div></div></div>';
 
         twitter.controlwindow.content(text)
-        twitter.controlwindow.title("Create Tweet at (" + e.latlng.lat.toFixed(1) + ", " + e.latlng.lng.toFixed(1) + ")")
+        twitter.controlwindow.title("Create Tweet @ (" + e.latlng.lat.toFixed(1) + ", " + e.latlng.lng.toFixed(1) + ")")
         twitter.controlwindow.show('topRight')
 
         let getStateForSelection = url.getState();
@@ -112,10 +112,10 @@ let twitter = {
                       let arr = url.getState().layers
                       arr = arr.filter(function (item) {
                           return item.indexOf("no2_") === 0;
-                        });
+                      });
 
-                       if(arr.length == 1)
-                           base.hideLayer(arr)
+                     if(arr.length == 1)
+                         base.hideLayer(arr)
                   }
 
                   base.showLayer(layer);

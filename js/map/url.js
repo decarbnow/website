@@ -18,7 +18,8 @@ let url = {
 
         let vars = {
             z: s.zoom,
-            ls: layers.join(url.listDivider)
+            ls: layers.join(url.listDivider),
+
         }
 
         if (s.tweet) {
@@ -38,9 +39,14 @@ let url = {
             }, ...vars}
         }
 
+        if(s.polygons){
+            vars.polygons = s.polygons
+        }
+
         let parts = Object.keys(vars).map(k => {
             return [k, vars[k]].join(url.specialKeys.includes(k) ? '' : url.keyValueDivider);
         })
+
         return url.prefix + parts.join(url.divider)
     },
 
@@ -81,10 +87,15 @@ let url = {
 
         if (rs.t)
             s.tweet = rs.t;
+
+        if (rs.polygons)
+            s.polygons = rs.polygons;
+
         return s;
     },
 
     pushState: function(state = null) {
+
         if (!state)
             state = base.getState();
 

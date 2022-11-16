@@ -1,4 +1,4 @@
-import { map } from 'leaflet';
+import { map, icon, Marker } from 'leaflet';
 import 'leaflet-control-geocoder';
 import './controls/LayerSelectionControl';
 import './geoip.js';
@@ -8,6 +8,27 @@ import tweets from './tweets.js';
 import url from './url.js';
 import twitter from './twitter.js';
 import 'leaflet-control-window';
+import 'leaflet-draw';
+import 'jquery';
+import 'leaflet-easybutton';
+
+let GeoJSON = require('geojson');
+
+const iconRetinaUrl = '../../../static/leaflet/dist/images/marker-icon-2x.png';
+const iconUrl = '../../../static/leaflet/dist/images/marker-icon.png';
+const shadowUrl = '../../../static/leaflet/dist/images/marker-shadow.png';
+const iconDefault = icon({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  tooltipAnchor: [16, -28],
+  shadowSize: [41, 41]
+});
+
+Marker.prototype.options.icon = iconDefault;
 
 let defaultState = {
     zoom: 3,
@@ -29,14 +50,16 @@ let defaultOptions = {
     zoomControl: false,
     tap: true,
     maxZoom: 19,
-    touchZoom: 'center'
+    touchZoom: 'center',
+    //drawControl: true
 }
 
 let crosshairIcon = L.icon({
-    iconUrl: '../../static/crosshair.png',
+    iconUrl: '../../../static/crosshair.png',
     iconSize:     [50, 50], // size of the icon
     iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
 });
+
 
 L.Circle.include({
     contains: function (latLng) {
@@ -54,7 +77,10 @@ let base = {
     layerSets: {},
     crosshair: L.marker('crosshair', {icon: crosshairIcon, interactive:false}),
     layers: {},
+    externalJSON: false,
     pushState: false,
+    validJsonUrl: false,
+    editableLayers: new L.FeatureGroup(),
 
     init: function() {
         // init leaflet map
@@ -76,8 +102,10 @@ let base = {
         base.layerSets = layerSets;
         base.layers = layers;
 
-
         base.setInitialState();
+
+        //base.map.addLayer(base.editableLayers);
+        //base.editableLayers.addTo(base.map)
 
     },
 
@@ -87,6 +115,7 @@ let base = {
             zoom: base.map.getZoom(),
             layers: base.getVisibleLayers(),
             tweet: tweets.activeTweet,
+            polygons: tweets.data.polygons
         }
     },
 
@@ -95,6 +124,8 @@ let base = {
     },
 
     setInitialState: function() {
+
+
         base.map.setView(defaultState.center, defaultState.zoom);
 
         let state = url.getState();
@@ -102,11 +133,19 @@ let base = {
         if (!state.center){
             state.center = { lat: 37, lng: 24 }
         }
-        base.setState({...defaultState, ...state});
-        $(base.map).one('moveend', function () {
-            base.showCrosshair();
-            let tweet = state.tweet;
 
+        base.setState({...defaultState, ...state});
+
+
+        // if(state.polygons){
+        //     tweets.data.polygons = state.polygons
+        //     base.showPolygons(state.polygons)
+        // }
+
+
+
+        $(tweets).on("loaded", function() {
+            let tweet = state.tweet;
             if (!state.tweet) {
                 let path = url.getPath()
 
@@ -117,25 +156,31 @@ let base = {
             if (tweet)
                 tweets.show(tweet);
 
-            base.addControls();
-
-            //Enable interaction
             base.map._handlers.forEach(function(handler) {
                 handler.enable();
-
             });
 
-        })
+            base.showCrosshair();
+        });
 
-
+        base.addControls();
     },
 
     setState: function(state){
         base.pushState = false;
         base.flyTo(state);
+
+
+
         $(base.map).one('moveend', function () {
             base.showLayers(state.layers);
             base.pushState = true;
+
+            if(state.polygons){
+                tweets.data.polygons = state.polygons
+                base.showPolygons(state)
+                base.showLayer("polygons")
+            }
             url.pushState();
         })
     },
@@ -159,7 +204,7 @@ let base = {
         }
     },
 
-    getSidebarCorrectedCenter: function(center, zoom) {
+    getWindowCorrectedCenter: function(center, zoom) {
         let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         return base.map.unproject(base.map.project(center, zoom).add([sidebarOffset / 2, 0]), zoom); //substract when sidebar on the left
     },
@@ -245,17 +290,72 @@ let base = {
             base.map.addLayer(base.layers[id])
     },
 
+    showPolygons: function(state) {
+
+          //let state = url.getState()
+
+          let jsonStyle = {
+              "color": "#ff7800",
+              "weight": 5,
+              "opacity": 0.8,
+              "interactive": false,
+              "fillColor": "#ff7800",
+              "stroke": true,
+              "fillOpacity": 0.1
+          };
+
+          let data = decodeURIComponent(state.polygons);
+
+          function isValidHttpUrl(string) {
+              let url;
+              try {
+                url = new URL(string);
+              } catch (_) {
+                return false;
+              }
+              return url.protocol === "http:" || url.protocol === "https:";
+          }
+
+
+          if(isValidHttpUrl(data)){
+              base.layers["polygons"].clearLayers();
+              $.getJSON(data, function(json){
+                    // add GeoJSON layer to the map once the file is loaded
+                    L.geoJson(json ,{
+                      onEachFeature: function ( feature, layer ){
+                          base.layers["polygons"].addLayer( layer )
+                      },
+                  style: jsonStyle
+                  })
+
+                  //base.map.fitBounds(datalayer.getBounds());
+              });
+              base.externalJSON = true
+          } else {
+              L.geoJSON(JSON.parse(data), {
+                  onEachFeature: function ( feature, layer ){
+                      base.layers["polygons"].addLayer( layer )
+                  },
+              style: jsonStyle
+              });
+          }
+
+
+    },
+
+    hidePolygons: function() {
+
+          base.hideLayer("polygons")
+
+
+    },
+
     showCrosshair: function() {
-        // if(base.crosshair !== 'undefined')
-        //     base.hideCrosshair()
-
-        //base.crosshair = L.marker('crosshairmarker', {icon: crosshairIcon, interactive:false}),
-        //base.crosshair._icon.classList.add("crosshair");
-
         base.crosshair.setLatLng(base.map.getCenter());
-        base.crosshair.addTo(base.map)
 
+        base.crosshair.addTo(base.map)
         base.crosshair._icon.classList.add("crosshair.visible");
+
     },
 
     unhideCrosshair: function() {
@@ -304,7 +404,31 @@ let base = {
     },
 
     addControls: function() {
-        let width = $(window).width()
+        let drawOptions = {
+            position: 'bottomleft',
+            draw: {
+                polyline: false,
+                polygon: {
+                    allowIntersection: false, // Restricts shapes to simple polygons
+                    drawError: {
+                        color: '#e1e100', // Color the shape will turn when intersects
+                        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+                    },
+                    shapeOptions: {
+                        color: '#bada55'
+                    }
+                },
+                circle: false, // Turns off this drawing tool
+                rectangle: false,
+                marker: false,
+                circlemarker: false
+                },
+                edit: {
+                    featureGroup: base.editableLayers, //REQUIRED!!
+                    remove: false,
+                    edit: false
+                }
+        };
 
         L.control.zoom({
             position: 'bottomleft'
@@ -313,6 +437,27 @@ let base = {
         L.Control.geocoder({
             position: 'bottomleft'
         }).addTo(base.map);
+
+        var removePolygonsButton = L.easyButton({
+            states: [{
+                    stateName: 'fa-clear-trash',        // name the state
+                    icon:      'fa-trash',               // and define its properties
+                    title:     'Remove polygons',      // like its title
+                    onClick: function(btn, map) {       // and its callback
+                        base.layers["polygons"].clearLayers();
+                        tweets.data.polygons = null
+                        url.pushState();
+                        //btn.state('fa-cleared-trash');    // change state on click!
+                    }
+            }]
+        });
+
+        removePolygonsButton.setPosition('bottomleft').addTo( base.map );
+
+        let drawControl = new L.Control.Draw(drawOptions);
+        base.map.addControl(drawControl);
+
+        let width = $(window).width()
 
         L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
             position: 'topleft',
@@ -323,9 +468,53 @@ let base = {
             position: 'topleft',
             collapsed: width < 1800
         }).addTo(base.map);
+
     },
 
     addEventHandlers: function() {
+        base.map.on(L.Draw.Event.CREATED, function (e) {
+            base.showLayer("polygons")
+            var type = e.layerType,
+                layer = e.layer;
+
+            if (type === 'marker') {
+                layer.bindPopup('A popup!');
+            }
+
+            //Remove loaded JSON first
+            if(base.externalJSON){
+                base.layers["polygons"].clearLayers();
+                tweets.data.polygons = null
+                url.pushState();
+                base.externalJSON = false
+            }
+
+            base.layers["polygons"].addLayer(layer)
+
+            // Extract GeoJson from featureGroup
+            let data = layer.toGeoJSON();
+
+            // Stringify the GeoJson
+            if(tweets.data.polygons == null){
+                data = encodeURIComponent(JSON.stringify(data));
+            } else {
+                let data_old = data
+                data = {
+                    "type" : "FeatureCollection",
+                    "features": [JSON.parse(decodeURIComponent(tweets.data.polygons)), data]
+                }
+                data = encodeURIComponent(JSON.stringify(data))
+
+            }
+            if(data.length > 4000){
+                alert("Polygon string too long. You cannot add more stuff.");
+            } else {
+                tweets.data.polygons = data
+                tweets.addGeoJson()
+            }
+
+        });
+
         base.map.on("moveend", function () {
             if (base.pushState) {
                 url.pushState()
@@ -340,7 +529,6 @@ let base = {
         base.map.on("contextmenu", function(e) {
             base.tweetBoxActive = true;
             tweets.closeSidebar();
-            //base.hideCrosshair();
             base.map.flyTo(e.latlng);
             twitter.showTweetBox(e);
         });
@@ -353,11 +541,8 @@ let base = {
             base.tweetBoxActive = false;
             tweets.closeSidebar();
             base.slowFlyTo = false;
-            //base.showCrosshair();
             twitter.marker.remove();
-            tweets.controlwindow.hide();
             twitter.controlwindow.hide();
-            //base.unhideCrosshair()
         });
 
         base.map.on('baselayerchange overlayadd overlayremove', function (e) {

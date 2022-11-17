@@ -43,7 +43,8 @@
 }
 
 .leaflet-control-window .titlebar{
-    height: 28px;
+    height: 25px;
+    min-height: 27px;
     background: #9A9B9C;
     color: black;
     font-weight: normal;
@@ -63,6 +64,12 @@
     margin-top: 0;
     z-index:29;
     overflow: auto;
+}
+
+.leaflet-control-window .promptButtons{
+    padding: 0;
+    height: 0;
+    line-height: 0;
 }
 
 
@@ -180,7 +187,7 @@ iframe{
     overflow: auto;
 }
 
-.button {
+.leaflet-control-window .button {
   border: none;
   padding: 0px 0px;
   text-align: center;
@@ -195,15 +202,15 @@ iframe{
   font-family: "Verdana", "Arial", sans-serif;
 }
 
-.button_active {background-color: #4B7C8B;
+.leaflet-control-window .button_active {background-color: #4B7C8B;
                 cursor: pointer;
                 color: white;}
 
-.button_inactive {background-color: transparent;
+.leaflet-control-window .button_inactive {background-color: transparent;
                   cursor: default;
                   color: #4B7C8B;}
 
-.key_container {
+.leaflet-control-window .key_container {
   display: flex;
   column-gap: 3px;
   margin: 5px auto;
@@ -216,7 +223,7 @@ iframe{
   pointer-events: all;
 }
 
-.key {
+.leaflet-control-window .key {
   text-align: center;
   padding: 0px 0px;
   text-align: center;
@@ -226,7 +233,8 @@ iframe{
   display: inline-block;
   font-size: 14px;
   font-family: "Verdana", "Arial", sans-serif;
-  margin: 0px 0x;
+  margin: 0;
+  opacity: 0.9;
   border-radius: 100%;
   border-style: solid;
   border-width: 2px;
@@ -235,7 +243,7 @@ iframe{
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
-.key_pn {
+.leaflet-control-window .key_pn {
   padding: 0px 0px;
   text-align: center;
   width: 52px;
@@ -244,7 +252,8 @@ iframe{
   display: inline-block;
   font-size: 14px;
   font-family: "Verdana", "Arial", sans-serif;
-  margin: 0px 0px;
+  margin: 0;
+  opacity: 0.9;
   border-radius: 18px;
   border-style: solid;
   border-width: 2px;
@@ -253,16 +262,17 @@ iframe{
     0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
-.key_active {background-color: #DD7152;
+.leaflet-control-window .key_active {background-color: #DD7152;
              cursor: pointer;
              font-weight: bold;
              color: white;}
 
-.key_inactive {background-color: #09a3cf;
+.leaflet-control-window .key_inactive {background-color: #09a3cf;
                 cursor: pointer;
                 color: white;}
 
 
-.key_greyed {background-color: #D8D8D8;
+.leaflet-control-window .key_greyed {background-color: #D8D8D8;
              cursor: not-allowed;
+             opacity: 1;
              color: #919191;}

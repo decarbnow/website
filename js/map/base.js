@@ -38,7 +38,7 @@ let defaultState = {
     },
     layers: [
         'dark',
-        'power-plants',
+        'energy',
         'manufacturing',
         'fossil-fuel-operations',
         'no2_2021',
@@ -54,11 +54,6 @@ let defaultOptions = {
     //drawControl: true
 }
 
-let crosshairIcon = L.icon({
-    iconUrl: '../../../static/crosshair.png',
-    iconSize:     [50, 50], // size of the icon
-    iconAnchor:   [25, 25], // point of the icon which will correspond to marker's location
-});
 
 
 L.Circle.include({
@@ -75,7 +70,6 @@ let base = {
     map: null,
     slowFlyTo: true,
     layerSets: {},
-    crosshair: L.marker('crosshair', {icon: crosshairIcon, interactive:false}),
     layers: {},
     externalJSON: false,
     pushState: false,
@@ -142,8 +136,6 @@ let base = {
                 tweets.show(tweet);
         });
 
-        base.showCrosshair();
-
         base.addControls();
     },
 
@@ -160,6 +152,8 @@ let base = {
                 base.showLayer("polygons")
             }
             url.pushState();
+
+            base.updateCircleSize();
         })
 
     },
@@ -204,7 +198,6 @@ let base = {
     },
 
     showControlwindow: function(module, content = null, title = null) {
-        //base.hideCrosshair()
         let sbs = [tweets]
         sbs.forEach((m) => {
             if (m != module) {
@@ -270,18 +263,9 @@ let base = {
     },
 
     showPolygons: function(state) {
-
-          //let state = url.getState()
-
-          let jsonStyle = {
-              "color": "#ff7800",
-              "weight": 5,
-              "opacity": 0.8,
-              "interactive": false,
-              "fillColor": "#ff7800",
-              "stroke": true,
-              "fillOpacity": 0.1
-          };
+          base.layers["polygons"].clearLayers();
+          let colorIterator = 0
+          let color_arr = ["#FFF600", "#ff7800", "#FF0008", "#0088FF"]
 
           let data = decodeURIComponent(state.polygons);
 
@@ -294,7 +278,15 @@ let base = {
               }
               return url.protocol === "http:" || url.protocol === "https:";
           }
-
+          let jsonStyle = {
+              "color": "#FF0008",
+              "weight": 5,
+              "opacity": 0.8,
+              "interactive": false,
+              //"fillColor": "#ff7800",
+              "stroke": false,
+              "fillOpacity": 0.1,
+          }
 
           if(isValidHttpUrl(data)){
               base.layers["polygons"].clearLayers();
@@ -304,7 +296,7 @@ let base = {
                       onEachFeature: function ( feature, layer ){
                           base.layers["polygons"].addLayer( layer )
                       },
-                  style: jsonStyle
+                      style: jsonStyle
                   })
 
                   //base.map.fitBounds(datalayer.getBounds());
@@ -313,9 +305,23 @@ let base = {
           } else {
               L.geoJSON(JSON.parse(data), {
                   onEachFeature: function ( feature, layer ){
+                      if(colorIterator > 3)
+                          colorIterator = 0
+
+                      layer.setStyle({
+                          weight: 5,
+                          color: color_arr[colorIterator],
+                          opacity: 0.8,
+                          interactive: false,
+                          //fillColor: "#ff7800",
+                          stroke: true,
+                          fillOpacity: 0.1,
+                          dashArray: ''
+                      });
+
                       base.layers["polygons"].addLayer( layer )
-                  },
-              style: jsonStyle
+                      colorIterator = colorIterator + 1
+                  }
               });
           }
 
@@ -327,23 +333,6 @@ let base = {
           base.hideLayer("polygons")
 
 
-    },
-
-    showCrosshair: function() {
-        base.crosshair.setLatLng(base.map.getCenter());
-
-        base.crosshair.addTo(base.map)
-        base.crosshair._icon.classList.add("crosshair.visible");
-
-    },
-
-    unhideCrosshair: function() {
-        base.crosshair.setIcon({icon: crosshairIcon, interactive:false})
-    },
-
-    hideCrosshair: function() {
-        base.crosshair.remove();
-        //base.crosshair._icon.classList.add("crosshair.invisible");
     },
 
     hideLayer: function(id) {
@@ -372,6 +361,9 @@ let base = {
                     size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank_world, 1/4)))
                 } else if(marker.feature.properties.population != undefined) {
                     size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(Math.pow(marker.feature.properties.population, 1/4)/20))
+                } else if(marker.feature.properties.rank != undefined) {
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank, 1/4)))
+                    //size = 20000/radius_zoom[base.map.getZoom()]
                 } else {
                     size = radius_zoom[base.map.getZoom()]
                 }
@@ -417,15 +409,49 @@ let base = {
             position: 'bottomleft'
         }).addTo(base.map);
 
-        var removePolygonsButton = L.easyButton({
+        let shareUrlButton = L.easyButton({
+            states: [{
+                    stateName: 'toggle-tweets',        // name the state
+                    icon:      'nf nf-fa-share',               // and define its properties
+                    title:     'Share Link',      // like its title
+                    onClick: function(btn, map) {       // and its callback
+                        let link = 'https://map.decarbnow.space' + url.getPath()
+                        navigator.clipboard.writeText(link)
+                            .then(() => {
+                                alert('Map link copied to clipboard. Tweet this link to add the tweet to the map.');
+                            })
+                                .catch(err => {
+                                alert('Error in copying URL: ', err);
+                            });
+                        //url.pushState();
+                        //btn.state('fa-cleared-trash');    // change state on click!
+                    }
+            }]
+        });
+
+        shareUrlButton.setPosition('bottomleft').addTo( base.map );
+
+        let removePolygonsButton = L.easyButton({
             states: [{
                     stateName: 'fa-clear-trash',        // name the state
                     icon:      'fa-trash',               // and define its properties
                     title:     'Remove polygons',      // like its title
                     onClick: function(btn, map) {       // and its callback
-                        base.layers["polygons"].clearLayers();
-                        tweets.data.polygons = null
-                        url.pushState();
+                        if(tweets.data.polygons){
+                            if (confirm('Are you sure you want to remove all your self-created polygons?')) {
+                                base.layers["polygons"].clearLayers();
+                                tweets.data.polygons = null
+                                url.pushState();
+                            } else {
+                                // Do nothing!
+                                return;
+                            }
+                        } else {
+                            return;
+                        }
+
+
+
                         //btn.state('fa-cleared-trash');    // change state on click!
                     }
             }]
@@ -442,6 +468,7 @@ let base = {
             position: 'topleft',
             collapsed: width < 1800
         }).addTo(base.map);
+
 
         L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
             position: 'topleft',
@@ -485,7 +512,7 @@ let base = {
                 data = encodeURIComponent(JSON.stringify(data))
 
             }
-            if(data.length > 4000){
+            if(data.length > 3800){
                 alert("Polygon string too long. You cannot add more stuff.");
             } else {
                 tweets.data.polygons = data
@@ -501,8 +528,7 @@ let base = {
         });
 
         base.map.on("move", function () {
-            if(base.crosshair !== null)
-                base.crosshair.setLatLng(base.map.getCenter());
+
         });
 
         base.map.on("contextmenu", function(e) {
@@ -510,6 +536,8 @@ let base = {
             tweets.closeSidebar();
             base.map.flyTo(e.latlng);
             twitter.showTweetBox(e);
+            let class_ch = document.querySelector('.crosshair')
+            class_ch.classList.add('hidden')
         });
 
         base.map.on("zoomend", function () {

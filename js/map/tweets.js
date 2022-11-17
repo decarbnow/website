@@ -53,10 +53,21 @@ let manager = {
     },
 
     clusters: L.markerClusterGroup({
-        disableClusteringAtZoom: 11,
-        maxClusterRadius: 10,
+        disableClusteringAtZoom: 16,
+        maxClusterRadius: 0.1,
         animatedAddingMarkers: false,
-        showCoverageOnHover: false
+        showCoverageOnHover: false,
+        //icon: icons['climateaction']
+        // iconCreateFunction: function(cluster) {
+        //     var count = cluster.getChildCount();
+        //     return L.divIcon({
+        //         fonticon: "nf nf-fa-twitter",
+        //         cssname: "climate-action",
+        //         icon: icons['climateaction']
+        //         // html: '<span class="custom">' + (count + 100) + '</span>',
+        //         // className: 'custom'
+        //     })
+        // }
     }),
 
     init: function() {
@@ -99,6 +110,8 @@ let manager = {
     },
 
     openSidebar: function(id) {
+        let class_ch = document.querySelector('.crosshair')
+        class_ch.classList.add('hidden')
         let tweetInfo = manager.data.tweets[id];
 
         if (tweetInfo.reply){
@@ -216,6 +229,9 @@ let manager = {
         manager.activeTweet = null;
         manager.activeStory = null;
         url.pushState();
+        let class_ch = document.querySelector('.crosshair')
+        class_ch.classList.add('hidden')
+        class_ch.classList.remove('hidden')
     },
 
     addGeoJson: function() {
@@ -252,9 +268,11 @@ let manager = {
                 if (tweetInfo.state.zoom >= 2){
                   let marker = L.marker(tweetInfo.state.center, {icon: icons['climateaction'], opacity: tweetOpacity})
 
+                  //manager.clusters.addLayer(marker);
+
                   if(tweetOpacity < 1)
                     tweetOpacity = tweetOpacity + 0.006
-
+                  //base.map.addLayer(manager.clusters);
                   marker.addTo(base.layerSets.tweets.layers.tweets)
                   marker.on('click', function () {
                       manager.show(id)

@@ -22,37 +22,18 @@ function calcRadius(val, zoom) {
     return (Math.pow(val,0.6)*(zoom)/4);
 }
 
-let layersList = {
-    'e-prtr': {
-        url: "/e-prtr/points.geojson",
-        name: "E-PRTR <i class='fa fa-info-circle'></i>",
-        attr: {
-            style: {
-                color: '#6600ff'
-            },
-            pointToLayer: function(feature, latlng) {
-                if(feature.properties.TotalQuantityCO2/1000000000 > 0.1){
-                  let radius_size = base.radius_zoom()[base.map.getZoom()]
-                  return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
-                } else {
-                  return;
-                }
+let citation = {
+    climatetrace: "Climate TRACE - Tracking Real-time Atmospheric Carbon Emissions (2022), Climate TRACE Emissions Inventory, https://climatetrace.org [November 2022]",
+    wri: "Dataset coordinated by World Resource Institute and Google Earth Outreach. The project is the result of a large collaboration involving many partners and aims to build an open database of all power plants in the world.",
+    eprtr: "The E-PRTR is a service managed by the European Commission and the European Environment Agency (EEA). The online register contains annual information on emissions of 91 substances released into the air, water and land by 30,000 industrial facilities throughout Europe. E-PRTR data covering reporting for 2007 to 201X by EU Member States, Iceland, Liechtenstein, Norway, Serbia, Switzerland and the United Kingdom.",
+    bigcities: "Simplemaps commercial database of the world`s cities and towns built using authoritative sources such as the NGIA, US Geological Survey, US Census Bureau, and NASA. Neighborhoods within listed cities are not included. Determination of border conflicts and territorial disputes are adopted from US government agencies.",
+}
 
-            },
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup('<table class="styled-table"><thead><tr><td style="width:108px">Name:</td><td>' + feature.properties.FacilityName + '</td></tr></thead>' +
-                                '<tbody><tr><td style="width:108px">CO2-Equivalents:</td><td>' + ((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100y GWP</a></td></tr>'+
-                                '<tr><td style="width:108px">Parent company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
-                                '<tr><td style="width:108px">Reporting year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
-                                '<tr><td style="width:108px">Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
-                                '</tbody></table>');
-            }
-        }
-    },
+let layersList = {
     'manufacturing': {
         url: "sectors/manufacturing/points.geojson",
         hidden: false,
-        name: "Manufacturing <i class='fa fa-info-circle'></i>",
+        name: "Manufacturing <span class='hovertext' data-hover='" + citation.climatetrace + "'><i class='fa fa-info-circle'></i></span></i>",
         attr: {
             style: {
                 color: '#ad76ff'
@@ -77,10 +58,10 @@ let layersList = {
             }
         }
     },
-    'power-plants': {
+    'energy': {
         url: "sectors/energy/points.geojson",
         hidden: false,
-        name: "Energy <i class='fa fa-info-circle'></i>",
+        name: "Energy <span class='hovertext' data-hover='" + citation.climatetrace + "'><i class='fa fa-info-circle'></i></span>",
         attr: {
             style: {
                 color: '#FF0000'
@@ -108,7 +89,7 @@ let layersList = {
     'fossil-fuel-operations': {
         url: "sectors/fossil_fuel_operations/points.geojson",
         hidden: false,
-        name: "Fossil fuel OP <i class='fa fa-info-circle'></i>",
+        name: "Fossil fuel OP <span class='hovertext' data-hover='" + citation.climatetrace + "'><i class='fa fa-info-circle'></i></span>",
         attr: {
             style: {
                 color: '#FCB500'
@@ -133,9 +114,78 @@ let layersList = {
             }
         }
     },
+    'power-plants': {
+        url: "/power-plants/points.geojson",
+        name: "WRI power plants <span class='hovertext' data-hover='" + citation.wri + "'><i class='fa fa-info-circle'></i></span></i>",
+        attr: {
+            style: {
+                color: '#FF0000'
+            },
+            pointToLayer: function(feature, latlng) {
+                //let circle = new L.CircleMarker(latlng, {radius: 2, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(4/Math.pow(feature.properties.rank, 1/4)))//20000/base.radius_zoom()[base.map.getZoom()]
+                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                //circle._orgRadius = circle.getRadius();
+          			//circle.setRadius(calcRadius(circle._orgRadius,base.map.getZoom()))
+                return circle;
+
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<table><tr><td>Name:</td><td>' + feature.properties.name + '</td></tr>' +
+                                '<tr><td>Fuel:</td><td>' + feature.properties.primary_fuel + '</td></tr>'+
+                                '<tr><td>Fuel rank:</td><td>' + feature.properties.rank + '</td></tr>'+
+                                '<tr><td>Capacity:</td><td>' + parseFloat(feature.properties.capacity_mw).toLocaleString() + ' MW</td></tr>'+
+                                '<tr><td>Owner:</td><td>' + feature.properties.owner + '</td></tr>'+
+                                '<tr><td>Source:</td><td><a href =' + feature.properties.url +' target = popup>'  + feature.properties.source + '</a></td></tr>'+
+                                '<tr><td>Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
+                                '</table>');
+
+                // let isClicked = false
+                //
+                // layer.on('mouseover', function (e) {
+                //             if(!isClicked & base.map.getZoom() > 9)
+                //                 this.openPopup();
+                // });
+                // layer.on('mouseout', function (e) {
+                //             if(!isClicked)
+                //                 this.closePopup();
+                // });
+                // layer.on('click', function (e) {
+                //             isClicked = true;
+                //             this.openPopup();
+                // });
+            }
+        }
+    },
+    'e-prtr': {
+        url: "/e-prtr/points.geojson",
+        name: "E-PRTR <span class='hovertext' data-hover='" + citation.eprtr + "'><i class='fa fa-info-circle'></i></span></i>",
+        attr: {
+            style: {
+                color: '#6600ff'
+            },
+            pointToLayer: function(feature, latlng) {
+                if(feature.properties.TotalQuantityCO2/1000000000 > 0.1){
+                  let radius_size = base.radius_zoom()[base.map.getZoom()]
+                  return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
+                } else {
+                  return;
+                }
+
+            },
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup('<table class="styled-table"><thead><tr><td style="width:108px">Name:</td><td>' + feature.properties.FacilityName + '</td></tr></thead>' +
+                                '<tbody><tr><td style="width:108px">CO2-Equivalents:</td><td>' + ((feature.properties.TotalQuantityCO2/1000000000).toFixed(2)).toLocaleString() + ' Mio. T <a href = "https://climatechangeconnection.org/emissions/co2-equivalents/" target = popup>100y GWP</a></td></tr>'+
+                                '<tr><td style="width:108px">Parent company:</td><td>' + feature.properties.ParentCompanyName + '</td></tr>'+
+                                '<tr><td style="width:108px">Reporting year:</td><td>' + feature.properties.ReportingYear + '</td></tr>'+
+                                '<tr><td style="width:108px">Get there:</td><td><a href = "https://www.google.com/maps/place/' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + '/@' + feature.geometry.coordinates[1] + "," + feature.geometry.coordinates[0] + ',1500m/data=!3m1!1e3" target = popup>Google Maps Link</a></td></tr>'+
+                                '</tbody></table>');
+            }
+        }
+    },
     'big-cities': {
         url: "/cities/points.geojson",
-        name: "Big cities <i class='fa fa-info-circle'></i>",
+        name: "Big cities <span class='hovertext' data-hover='" + citation.bigcities + "'><i class='fa fa-info-circle'></i></span></i>",
         attr: {
             style: {
                 color: '#39ff14'

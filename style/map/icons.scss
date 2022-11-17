@@ -35,12 +35,28 @@
     opacity: 0;
 }
 
-.crosshair.visible {
+.crosshair-visible {
     opacity: 1;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
-      0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }
 
+.crosshair {
+    left: calc(50% - 13px);
+    top: calc(50% - 31px);
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    z-index: 1000;
+    text-align: center;
+    font-weight: 200;
+    font-size: 40px;
+    color: #3AFF00;//3AFF00;
+    text-shadow: 2px 2px 3px #000;
+    pointer-events: none;
+}
+
+.hidden{
+    display: none;
+}
 
 /* o align icon*/
 .custom-div-icon i {

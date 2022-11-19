@@ -41,15 +41,16 @@
 
 .crosshair {
     left: calc(50% - 13px);
-    top: calc(50% - 31px);
+    top: calc(50% - 20px);
     position: absolute;
     width: 20px;
     height: 20px;
     z-index: 1000;
     text-align: center;
     font-weight: 200;
-    font-size: 40px;
+    font-size: 30px;
     color: #3AFF00;//3AFF00;
+    font-family: sans-serif;
     text-shadow: 2px 2px 3px #000;
     pointer-events: none;
 }

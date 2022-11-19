@@ -17,7 +17,7 @@ tropomiDates.forEach(n => {
     layersList[`no2_${n[0]}_${String(n[1]).padStart(2, '0')}`] = {
         url: `/no2/World_${n[0]}_${String(n[1]).padStart(2, '0')}.geojson`,
         name: `NO₂ ${n[0]}-${String(n[1]).padStart(2, '0')}`,
-        hidden: true
+        hidden: false
     }
 });
 

@@ -80,6 +80,32 @@ let manager = {
 
     activateMarker: function(id) {
         let marker = manager.data.tweetIdToMarker[id.toString()];
+
+        //console.log(marker._leaflet_id)
+
+        // function logVisibleClusters() {
+        //     var parent;
+        //     var visibleClusterMarkers = [];
+        //     var bounds = base.map.getBounds();
+        //     manager.clusters.eachLayer(function (marker) {
+        //       parent = tweets.clusters.getVisibleParent(marker);
+        //       if (parent && (typeof visibleClusterMarkers[parent._leaflet_id] == 'undefined')) {
+        //         visibleClusterMarkers[parent._leaflet_id] = parent;
+        //       }
+        //     });
+        //     visibleClusterMarkers.forEach(function(clusterMarker) {
+        //       if(clusterMarker._leaflet_id != "undefined"){
+        //         if (marker._leaflet_id == clusterMarker._leaflet_id) {
+        //           console.log('visible: ', clusterMarker);
+        //         }
+        //       }
+        //
+        //     });
+        //   }
+
+        //logVisibleClusters()
+
+
         manager.deactivateMarkers();
         if (marker && marker._icon)
             L.DomUtil.addClass(marker._icon, 'selected');
@@ -197,15 +223,15 @@ let manager = {
               text = text + "&nbsp; &nbsp; "
 
               if(pos_previousID > -1){
-                  text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")' class=\"key_pn key_inactive\"> prev </button>"//&#8249;
+                  text = text + "\n<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_previousID] + "\")' class=\"key_pn left key_inactive\"> < </button>"//&#8249;
               } else {
-                  text = text + "\n<button class=\"key_pn key_greyed\"> prev </button>"
+                  text = text + "\n<button class=\"key_pn left key_greyed\"> < </button>"
               }
 
               if(pos_nextID < ids_story.length){
-                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")' class=\"key_pn key_inactive\"> next </button>"//&#8250;
+                text = text + "<button onclick='gotoLastStoryTweet(\"" + ids_story[pos_nextID] + "\")' class=\"key_pn right key_inactive\"> > </button>"//&#8250;
               } else {
-                text = text + "<button class=\"key_pn key_greyed\"> next </button>"
+                text = text + "<button class=\"key_pn right key_greyed\"> > </button>"
               }
 
               text = text + "</div>"

@@ -7,6 +7,7 @@ import { layerSets, layers } from './layers/sets.js';
 import tweets from './tweets.js';
 import url from './url.js';
 import twitter from './twitter.js';
+import controls from './controls.js';
 import 'leaflet-control-window';
 import 'leaflet-draw';
 import 'jquery';
@@ -14,6 +15,7 @@ import 'leaflet-easybutton';
 
 let GeoJSON = require('geojson');
 
+// Find better solution soon
 const iconRetinaUrl = '../../../static/leaflet/dist/images/marker-icon-2x.png';
 const iconUrl = '../../../static/leaflet/dist/images/marker-icon.png';
 const shadowUrl = '../../../static/leaflet/dist/images/marker-shadow.png';
@@ -92,10 +94,6 @@ let base = {
         base.layers = layers;
 
         base.setInitialState();
-
-        //base.map.addLayer(base.editableLayers);
-        //base.editableLayers.addTo(base.map)
-
     },
 
     getState: function() {
@@ -137,6 +135,7 @@ let base = {
         });
 
         base.addControls();
+        controls.addControls();
     },
 
     setState: function(state){
@@ -278,25 +277,27 @@ let base = {
               }
               return url.protocol === "http:" || url.protocol === "https:";
           }
-          let jsonStyle = {
-              "color": "#FF0008",
-              "weight": 5,
-              "opacity": 0.8,
-              "interactive": false,
-              //"fillColor": "#ff7800",
-              "stroke": false,
-              "fillOpacity": 0.1,
-          }
 
           if(isValidHttpUrl(data)){
               base.layers["polygons"].clearLayers();
               $.getJSON(data, function(json){
                     // add GeoJSON layer to the map once the file is loaded
-                    L.geoJson(json ,{
-                      onEachFeature: function ( feature, layer ){
+                    let datalayer = L.geoJson(json ,{
+                        onEachFeature: function ( feature, layer ){
+                          layer.setStyle({
+                              weight: 1.5,
+                              color: color_arr[3],
+                              opacity: 0.8,
+                              interactive: false,
+                              //fillColor: "#ff7800",
+                              stroke: true,
+                              fillOpacity: 0.1,
+                              dashArray: ''
+                          });
+
                           base.layers["polygons"].addLayer( layer )
-                      },
-                      style: jsonStyle
+
+                        }
                   })
 
                   //base.map.fitBounds(datalayer.getBounds());
@@ -309,7 +310,7 @@ let base = {
                           colorIterator = 0
 
                       layer.setStyle({
-                          weight: 5,
+                          weight: 3,
                           color: color_arr[colorIterator],
                           opacity: 0.8,
                           interactive: false,
@@ -363,7 +364,6 @@ let base = {
                     size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(Math.pow(marker.feature.properties.population, 1/4)/20))
                 } else if(marker.feature.properties.rank != undefined) {
                     size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank, 1/4)))
-                    //size = 20000/radius_zoom[base.map.getZoom()]
                 } else {
                     size = radius_zoom[base.map.getZoom()]
                 }
@@ -395,7 +395,7 @@ let base = {
                 circlemarker: false
                 },
                 edit: {
-                    featureGroup: base.editableLayers, //REQUIRED!!
+                    featureGroup: base.editableLayers,//base.layers["polygons"],//base.editableLayers, //REQUIRED!!
                     remove: false,
                     edit: false
                 }
@@ -461,20 +461,6 @@ let base = {
 
         let drawControl = new L.Control.Draw(drawOptions);
         base.map.addControl(drawControl);
-
-        let width = $(window).width()
-
-        L.control.layers(layerSets.baseTiles.getNameObject(), layerSets.tweets.getNameObject(), {
-            position: 'topleft',
-            collapsed: width < 1800
-        }).addTo(base.map);
-
-
-        L.control.layers(layerSets.overlays.getNameObject(), layerSets.points.getNameObject(), {
-            position: 'topleft',
-            collapsed: width < 1800
-        }).addTo(base.map);
-
     },
 
     addEventHandlers: function() {

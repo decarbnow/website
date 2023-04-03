@@ -11,19 +11,23 @@ let controls = {
     let baseTree = [{
         label: 'Base Layers',
         children: [
-            { label: 'Google Satellite', layer: layerSets.baseTiles.layers.satellite },
-            { label: 'Esri Satellite', layer: layerSets.baseTiles.layers.esri },
-            { label: 'OpenStreetMap', layer: layerSets.baseTiles.layers.streets },
-            { label: 'Light', layer: layerSets.baseTiles.layers.light },
-            { label: 'Terrain', layer: layerSets.baseTiles.layers.terrain },
-            { label: 'Dark', layer: layerSets.baseTiles.layers.dark },
-            { label: 'World Population', layer: layerSets.baseTiles.layers.worldpop },
-            { label: 'Night lights', layer: layerSets.baseTiles.layers.nightlight },
-            { label: 'Sentinel 2 (2020, EOX)', layer: layerSets.baseTiles.layers.s2maps20 },
-            { label: 'Sentinel 2 (2019, EOX)', layer: layerSets.baseTiles.layers.s2maps19 },
-            { label: 'Sentinel 2 (2018, EOX)', layer: layerSets.baseTiles.layers.s2maps18 },
-            { label: 'Sentinel 2 (2017, EOX)', layer: layerSets.baseTiles.layers.s2maps17 },
-            { label: 'Sentinel 2 (2016, EOX)', layer: layerSets.baseTiles.layers.s2maps16 },
+            { label: 'Google Satellite', layer: layerSets.baseTiles.layers.satellite, radioGroup: 'baselayers' },
+            { label: 'Esri Satellite', layer: layerSets.baseTiles.layers.esri, radioGroup: 'baselayers' },
+            { label: 'OpenStreetMap', layer: layerSets.baseTiles.layers.streets, radioGroup: 'baselayers' },
+            { label: 'Light', layer: layerSets.baseTiles.layers.light, radioGroup: 'baselayers' },
+            { label: 'Terrain', layer: layerSets.baseTiles.layers.terrain, radioGroup: 'baselayers' },
+            { label: 'Dark', layer: layerSets.baseTiles.layers.dark, radioGroup: 'baselayers' },
+            { label: 'World Population', layer: layerSets.baseTiles.layers.worldpop, radioGroup: 'baselayers' },
+            { label: 'Night Lights', layer: layerSets.baseTiles.layers.nightlight, radioGroup: 'baselayers' },
+            { label: 'Yearly Sentinel 2 (EOX)',
+              collapsed: true,
+              children: [
+                { label: 'Sentinel 2 (2020, EOX)', layer: layerSets.baseTiles.layers.s2maps20, radioGroup: 'baselayers' },
+                { label: 'Sentinel 2 (2019, EOX)', layer: layerSets.baseTiles.layers.s2maps19, radioGroup: 'baselayers' },
+                { label: 'Sentinel 2 (2018, EOX)', layer: layerSets.baseTiles.layers.s2maps18, radioGroup: 'baselayers' },
+                { label: 'Sentinel 2 (2017, EOX)', layer: layerSets.baseTiles.layers.s2maps17, radioGroup: 'baselayers' },
+                { label: 'Sentinel 2 (2016, EOX)', layer: layerSets.baseTiles.layers.s2maps16, radioGroup: 'baselayers' },
+          ]}
             //{ label: 'Disabled', layer: layerSets.baseTiles.layers.empty },
             /* ... */
         ]
@@ -35,7 +39,7 @@ let controls = {
               layer: layerSets.tweets.layers.tweets,
           },
           {
-              label: 'Polygons',
+              label: 'Drawlayer',
               layer: layerSets.points.layers.polygons,
           },
           {
@@ -50,12 +54,13 @@ let controls = {
                 label: 'Yearly',
                 collapsed: true,
                 children: [
-                  { label: 'NO₂ 2007', layer: layerSets.overlays.layers.no2_2007, radioGroup: 'NO2'},
-                  { label: 'NO₂ 2011', layer: layerSets.overlays.layers.no2_2011, radioGroup: 'NO2' },
-                  { label: 'NO₂ 2015', layer: layerSets.overlays.layers.no2_2015, radioGroup: 'NO2' },
-                  { label: 'NO₂ 2018', layer: layerSets.overlays.layers.no2_2019, radioGroup: 'NO2' },
+                  //{ label: 'NO₂ 2007', layer: layerSets.overlays.layers.no2_2007, radioGroup: 'NO2'},
+                  //{ label: 'NO₂ 2011', layer: layerSets.overlays.layers.no2_2011, radioGroup: 'NO2' },
+                  //{ label: 'NO₂ 2015', layer: layerSets.overlays.layers.no2_2015, radioGroup: 'NO2' },
+                  { label: 'NO₂ 2018', layer: layerSets.overlays.layers.no2_2018, radioGroup: 'NO2' },
+                  { label: 'NO₂ 2019', layer: layerSets.overlays.layers.no2_2019, radioGroup: 'NO2' },
                   { label: 'NO₂ 2020', layer: layerSets.overlays.layers.no2_2020, radioGroup: 'NO2' },
-                  { label: 'NO₂ 2021', layer: layerSets.overlays.layers.no2_2021, radioGroup: 'NO2' },
+                  { label: 'NO₂ 2021', layer: layerSets.overlays.layers.no2_2021, radioGroup: 'NO2' }
                   /* ... */
                 ]
             },
@@ -73,21 +78,32 @@ let controls = {
                   { label: 'NO₂ 2020/07', layer: layerSets.overlays.layers.no2_2020_07, radioGroup: 'NO2'},
                   /* ... */
                 ]
+            },
+            {
+                label: 'Test',
+                collapsed: true,
+                children: [
+                  { label: 'NO₂ 2021 Test', layer: layerSets.overlays.layers.no2_2021_test, radioGroup: 'NO2' },
+                  /* ... */
+                ]
             }
+
           ]
         }, {
             label: 'Points of Interest',
             children: [
-              { label: 'Sector Data',
+              { label: 'Climate TRACE',
+                collapsed: false,
                 children: [
                   { label: layerSets.points.layers.energy.options.name, layer: layerSets.points.layers.energy},
                   { label: layerSets.points.layers.manufacturing.options.name, layer: layerSets.points.layers.manufacturing},
                   { label: layerSets.points.layers["fossil-fuel-operations"].options.name, layer: layerSets.points.layers["fossil-fuel-operations"]}
                 ]},
               { label: 'Other Datasets',
-                collapsed: true,
+                collapsed: false,
                 children: [
-                  { label: layerSets.points.layers["e-prtr"].options.name, layer: layerSets.points.layers["e-prtr"]},
+                  //{ label: layerSets.points.layers["e-prtr"].options.name, layer: layerSets.points.layers["e-prtr"]},
+                  { label: layerSets.points.layers["eu-ets"].options.name, layer: layerSets.points.layers["eu-ets"]},
                   { label: layerSets.points.layers["power-plants"].options.name, layer: layerSets.points.layers["power-plants"]},
                   { label: layerSets.points.layers["big-cities"].options.name, layer: layerSets.points.layers["big-cities"]}
                 ]},

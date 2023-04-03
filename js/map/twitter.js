@@ -72,7 +72,7 @@ let twitter = {
             text = text + '<div id="layercontrol"><label><input id="layers-' + url.getState().layers[i] + '" type="checkbox" data-layer="' + url.getState().layers[i] + '" checked>' + base.layers[url.getState().layers[i]].options.name + '</label></div>'
         };
         text = text + '<label><br>What\'s happening here?</label>'+
-        '<textarea id="tweetText" style="resize:vertical; width:220px; height:150px;"></textarea>' +
+        '<textarea id="tweetText" style="resize:vertical; width:270px; height:150px;"></textarea>' +
         '</form>'+
         '<div id="tweetBtn" style="height: 25px;">'+
         '<left><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></left>' +

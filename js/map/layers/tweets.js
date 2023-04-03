@@ -1,6 +1,7 @@
 let layersList = {
     'tweets': {
         name: "Tweets",
+        draggable:"false"
     },
 };
 

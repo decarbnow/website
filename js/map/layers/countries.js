@@ -22,9 +22,11 @@ countriesSorted.forEach((iso2) => {
 
 export default {
     style: {
-        fillColor: "#0000FF",
-        stroke: false,
+        color: "#d3d3d3",
+        stroke: true,
         interactive: false,
+        fillOpacity: 0.1,
+        fillColor: "#4e4eff"
     },
     list: layersList
 };

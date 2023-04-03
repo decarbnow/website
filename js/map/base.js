@@ -11,6 +11,8 @@ import 'leaflet-control-window';
 import 'leaflet-draw';
 import 'jquery';
 import 'leaflet-easybutton';
+import './scripts/leaflet.magnifyingglass.js';
+import 'leaflet-minimap';
 
 let GeoJSON = require('geojson');
 
@@ -29,6 +31,7 @@ const iconDefault = icon({
   shadowSize: [41, 41]
 });
 
+
 Marker.prototype.options.icon = iconDefault;
 
 let defaultState = {
@@ -38,11 +41,12 @@ let defaultState = {
         lng: 0,
     },
     layers: [
-        'dark',
+        'light',
         'energy',
         'manufacturing',
         'fossil-fuel-operations',
-        'no2_2021',
+        //'power-plants',
+        'no2_2021_test',
         'tweets'
     ],
 }
@@ -55,7 +59,7 @@ let defaultOptions = {
     //drawControl: true
 }
 
-
+let popupoptions = {maxWidth : 700}
 
 L.Circle.include({
     contains: function (latLng) {
@@ -74,7 +78,10 @@ let base = {
     layers: {},
     externalJSON: false,
     pushState: false,
+    stateArray: [],
     validJsonUrl: false,
+    magnifyingGlass: null,
+    country_n: 4,
     editableLayers: new L.FeatureGroup(),
 
     init: function() {
@@ -135,12 +142,40 @@ let base = {
 
         base.addControls();
         controls.addControls();
+
+        // let miniMap = new L.Control.MiniMap(layerSets.baseTiles.layers.satellite_minimap, {
+        //     position: "topleft",
+        //     zoomLevelOffset: 0,
+        //     toggleDisplay: true,
+        //     minimized: true,
+        //     width: 400,
+        //     height: 490,
+        // }).addTo(base.map);
+        // var map = L.map('map', {
+        //     center: [0, 0],
+        //     zoom: 5,
+        //     layers: [ "satellite" ]
+        // });
+        // if(!base.magnifyingGlass){
+        //   base.magnifyingGlass = L.magnifyingGlass({
+        //       layers: [ layerSets.baseTiles.layers.dark, layerSets.points.layers['power-plants'], layerSets.overlays.layers['no2_2021'] ],
+        //       radius: 200,
+        //       zoomOffset: 0,
+        //       fixedPosition: false,
+        //       latLng: state.center
+        //   }).addTo(base.map);
+        // }
+
+        // L.Control.MagnifyingGlass(magnifyingGlass, {
+        //     forceSeparateButton: true
+        // }).addTo(base.map);
     },
 
     setState: function(state){
         base.pushState = false;
         base.flyTo(state);
         $(base.map).one('moveend', function () {
+            console.log(state.layers)
             base.showLayers(state.layers);
             base.pushState = true;
 
@@ -258,6 +293,7 @@ let base = {
     showLayer: function(id) {
         if (!base.map.hasLayer(base.layers[id]))
             base.map.addLayer(base.layers[id])
+
     },
 
     showPolygons: function(state) {
@@ -354,15 +390,16 @@ let base = {
         }
 
         base.map.eachLayer(function (marker) {
+            //console.log(marker)
             if (marker._radius != undefined){
                 //console.debug(marker)
                 let size = null
                 if(marker.feature.properties.rank_world != undefined){
-                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank_world, 1/4)))
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(3/Math.pow(marker.feature.properties.rank_world, 1/4)))
                 } else if(marker.feature.properties.population != undefined) {
                     size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(Math.pow(marker.feature.properties.population, 1/4)/20))
                 } else if(marker.feature.properties.rank != undefined) {
-                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(4/Math.pow(marker.feature.properties.rank, 1/4)))
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(3/Math.pow(marker.feature.properties.rank, 1/4)))
                 } else {
                     size = radius_zoom[base.map.getZoom()]
                 }
@@ -391,7 +428,8 @@ let base = {
                 circle: false, // Turns off this drawing tool
                 rectangle: false,
                 marker: false,
-                circlemarker: false
+                circlemarker: false,
+                polyline: true
                 },
                 edit: {
                     featureGroup: base.editableLayers,//base.layers["polygons"],//base.editableLayers, //REQUIRED!!
@@ -399,6 +437,10 @@ let base = {
                     edit: false
                 }
         };
+
+        L.control.scale({
+            position: 'bottomright'
+        }).addTo(base.map)
 
         L.control.zoom({
             position: 'bottomleft'
@@ -450,10 +492,10 @@ let base = {
             states: [{
                     stateName: 'fa-clear-trash',        // name the state
                     icon:      'fa-trash',               // and define its properties
-                    title:     'Remove polygons',      // like its title
+                    title:     'Clear drawlayer',      // like its title
                     onClick: function(btn, map) {       // and its callback
                         if(tweets.data.polygons){
-                            if (confirm('Are you sure you want to remove all your self-created polygons?')) {
+                            if (confirm('Are you sure you want to remove all your self-created drawings?')) {
                                 base.layers["polygons"].clearLayers();
                                 tweets.data.polygons = null
                                 url.pushState();
@@ -523,13 +565,38 @@ let base = {
         });
 
         base.map.on("moveend", function () {
+            // base.stateArray.forEach((item, i) => {
+            //     base.showLayer(item)
+            // });
             if (base.pushState) {
                 url.pushState()
             }
         });
 
+        base.map.on("movestart", function () {
+          // if(base.layerSets.tweets){
+          //   base.stateArray = [].concat(base.layerSets.tweets.getVisibleLayers());
+          //
+          //   base.stateArray.forEach((item, i) => {
+          //       base.hideLayer(item)
+          //   });
+          // }
+
+
+        });
+
+
         base.map.on("move", function () {
 
+            //console.log(base.magnifyingGlass);
+            // base.magnifyingGlass = L.magnifyingGlass({
+            //     //layers: [ layerSets.baseTiles.layers.dark, layerSets.points.layers['power-plants'], layerSets.overlays.layers['no2_2021'] ],
+            //     //radius: 100,
+            //     //zoomOffset: 0,
+            //     fixedPosition: true,
+            //     latLng: base.map.getCenter()
+            // });
+            //base.magnifyingGlass.setLatLng = base.map.getCenter()
         });
 
         base.map.on("contextmenu", function(e) {

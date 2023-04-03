@@ -9,6 +9,17 @@ let layersList = {
         }),
         name: 'Google Satellite'
     },
+    satellite_minimap: {
+        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+
+                             '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
+                             '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>',
+            maxZoom: 20,
+            subdomains:['mt0','mt1','mt2','mt3']
+        }),
+        name: 'Google Satellite for MiniMap',
+        hidden: true
+    },
     esri: {
         layer: L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             attribution: '© <a href="http://www.esri.com/">Esri</a>, '+
@@ -68,7 +79,8 @@ let layersList = {
                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>',
-           maxZoom: 10,
+           maxZoom: 14,
+           maxNativeZoom: 10,
            subdomains:['mt0','mt1','mt2','mt3']
        }),
        name: 'World Population'
@@ -79,7 +91,8 @@ let layersList = {
                           '© <a href="https://carto.com/attribution">CARTO</a>, '+
                           '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                           '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>',
-           maxZoom: 8,
+           maxZoom: 14,
+           maxNativeZoom: 8,
            subdomains:['mt0','mt1','mt2','mt3']
        }),
        name: 'Night Lights'

@@ -1,6 +1,5 @@
 import { map, icon, Marker } from 'leaflet';
 import 'leaflet-control-geocoder';
-import './controls/LayerSelectionControl';
 import './geoip.js';
 import './marker/control.js';
 import { layerSets, layers } from './layers/sets.js';
@@ -116,7 +115,7 @@ let base = {
         let state = url.getState();
 
         if (!state.center){
-            state.center = { lat: 37, lng: 24 }
+            state.center = defaultState.center
         }
         base.setState({...defaultState, ...state});
 
@@ -431,6 +430,22 @@ let base = {
 
         shareUrlButton.setPosition('bottomleft').addTo( base.map );
 
+        let homeButton = L.easyButton({
+            states: [{
+                    stateName: 'go-home',        // name the state
+                    icon:      'nf nf-fa-home',               // and define its properties
+                    title:     'Overview',      // like its title
+                    onClick: function(btn, map) {       // and its callback
+                        //base.map.flyTo(base.getState().center, 5.0);
+                        base.map.setView(defaultState.center, defaultState.zoom);
+                        base.setState({...defaultState});
+                        tweets.closeSidebar()
+                    }
+            }]
+        });
+
+        homeButton.setPosition('bottomleft').addTo( base.map );
+
         let removePolygonsButton = L.easyButton({
             states: [{
                     stateName: 'fa-clear-trash',        // name the state
@@ -531,6 +546,7 @@ let base = {
         });
 
         base.map.on("click", function (e) {
+            //tweets.loadStoryLines()
             base.tweetBoxActive = false;
             tweets.closeSidebar();
             //base.slowFlyTo = false;

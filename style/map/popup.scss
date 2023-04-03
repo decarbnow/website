@@ -1,9 +1,9 @@
-
-
 .styled-table thead tr {
-    background-color: #878787;
-    color: #ffffff;
+    //background-color: #878787;
+    //color: #ffffff;
     text-align: left;
+    font-weight: bold;
+    border-bottom: 2px solid #878787;
 }
 
 .styled-table tbody tr {
@@ -11,9 +11,36 @@
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-    background-color: #f9f9f9;
+    //background-color: #f9f9f9;
 }
 
 .styled-table tbody tr:last-of-type {
     border-bottom: 2px solid #878787;
+}
+
+.leaflet-popup-content table tr td:first-child{
+    padding: 0 5px 0 0;
+}
+.leaflet-popup-content-wrapper {
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    opacity: 0.85;
+}
+.leaflet-popup-tip {
+    display: none;
+    background: #FFFFFF;
+}
+
+.leaflet-popup-content a {
+    color: blue;
+    text-decoration: none;
+    font-weight: normal;
+}
+
+.styled-table {
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 1em;
+    font-family: "Verdana", "Arial", sans-serif;
+    box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
 }

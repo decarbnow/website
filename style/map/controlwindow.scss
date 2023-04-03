@@ -31,11 +31,13 @@
 
 .leaflet-control-window {
     position: absolute;
-    background-color: white;
+    background-color: transparent;
     z-index: 2000;
     margin: 8px;
     border-radius: 8px;
     border: 0;
+    width: 320px;
+    //opacity: 0.5;
     /** BOX SHADOW **/
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: 2px 2px 10px 0px rgba(0,0,0,0.75);
@@ -44,6 +46,7 @@
 
 .leaflet-control-window .titlebar{
     height: 25px;
+    opacity: 1 !important;
     min-height: 27px;
     background: #9A9B9C;
     color: black;
@@ -60,10 +63,12 @@
 
 .leaflet-control-window .content{
     padding: 8px;
-    //border-radius: 18px;
+    //opacity: 0.9;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 0 0 8px 8px;
     margin-top: 0;
     z-index:29;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .leaflet-control-window .promptButtons{
@@ -95,41 +100,37 @@
     line-height: 0.9em;
 }
 
+.leaflet-control-window .minimize {
+    position: absolute;
+    top: 3px;
+    right: 30px;
+    width: 20px;
+    height: 20px;
+    border-radius: 20%;
+    font: 16px/14px Tahoma, Verdana, sans-serif;
+    cursor: pointer;
+    z-index:30;
+
+    background-color: #E5E5E5;
+    transition-duration: 0.2s;
+    transition-timing-function: linear;
+    font-weight: bolder;
+
+    color: #747576;
+    font-size: 14pt;
+    text-align: center;
+    line-height: 0.9em;
+}
+
 .leaflet-control-window .close:hover {
     background-color: rgba(0, 0, 0, 0.65);
 }
 
-.leaflet-popup-content table tr td:first-child{
-    padding: 0 5px 0 0;
-}
-.leaflet-popup-content-wrapper {
-    background-color: #FFFFFF;
-}
-.leaflet-popup-tip {
-    background: #FFFFFF;
-}
-
-.leaflet-popup-content a {
-    color: blue;
-    text-decoration: none;
-    font-weight: normal;
-}
-
-.styled-table {
-    border-collapse: collapse;
-    margin: 25px 0;
-    font-size: 0.9em;
-    font-family: "Verdana", "Arial", sans-serif;
-    box-shadow: 0 0 0px rgba(0, 0, 0, 0.15);
+.leaflet-control-window .minimize:active {
+    background-color: rgba(0, 0, 0, 0.65);
 }
 
 
-.sidebar-container {
-   display: flex;
-   flex-direction: column;
-   background-color: white;
-   //pointer-events: none;
-}
 
 .twitterwindowmenu {
     color: black;
@@ -168,10 +169,17 @@ iframe{
     min-height: 200px;
     max-height: 100%;
     overflow: auto;
+    display: block;
+}
+
+.sidebar-container {
+   display: flex;
+   flex-direction: column;
+   //background-color: white;
+   //pointer-events: none;
 }
 
 .leaflet-control-window .button {
-
   border: none;
   padding: 0;
   text-align: center;
@@ -197,12 +205,13 @@ iframe{
 
 .leaflet-control-window .key_container {
   display: flex;
+  opacity: 1;
   //column-gap: 0;
   margin: 5px auto;
   width: 100%;
   align-items: center; /* Align Items Vertically */
   justify-content: center; /* Align Items Horizontally (with equal space in between each of them */
-  background: rgba(255, 255, 255, 0.5);
+  //background: rgba(255, 255, 255, 0.5);
   text-align: center;
   border-radius: 100%;
   pointer-events: all;
@@ -224,6 +233,7 @@ iframe{
   border-style: solid;
   border-width: 2px;
   border-color: #c6c6c6;
+  background-color: white;
   // box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
   //   0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
 }

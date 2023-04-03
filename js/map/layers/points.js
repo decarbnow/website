@@ -40,7 +40,8 @@ let layersList = {
             },
             pointToLayer: function(feature, latlng) {
                 let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(4/Math.pow(feature.properties.rank_world, 1/4)))
-                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/200000)), fillColor: '#ad76ff'});
+                let fill_opacity = Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/200000))
+                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: fill_opacity, fillColor: '#ad76ff'});
                 return circle;
             },
             onEachFeature: function (feature, layer) {
@@ -68,7 +69,8 @@ let layersList = {
             },
             pointToLayer: function(feature, latlng) {
                 let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(4/Math.pow(feature.properties.rank_world, 1/4)))
-                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/20000000)), fillColor: getColor(feature.properties.asset_type)});
+                let fill_opacity = Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/20000000))
+                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: fill_opacity, fillColor: getColor(feature.properties.asset_type)});
                 return circle;
             },
             onEachFeature: function (feature, layer) {
@@ -96,7 +98,8 @@ let layersList = {
             },
             pointToLayer: function(feature, latlng) {
                 let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(4/Math.pow(feature.properties.rank_world, 1/4)))
-                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/20000000)), fillColor: '#FCB500'});
+                let fill_opacity = Math.min(0.85, Math.max(0.3, feature.properties.emissions_quantity/20000000))
+                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: fill_opacity, fillColor: '#FCB500'});
                 return circle;
             },
             onEachFeature: function (feature, layer) {
@@ -124,7 +127,8 @@ let layersList = {
             pointToLayer: function(feature, latlng) {
                 //let circle = new L.CircleMarker(latlng, {radius: 2, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
                 let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(4/Math.pow(feature.properties.rank, 1/4)))//20000/base.radius_zoom()[base.map.getZoom()]
-                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000)), fillColor: getColor(feature.properties.primary_fuel)});
+                let fill_opacity = Math.min(0.85, Math.max(0.3, feature.properties.capacity_mw/2000))
+                let circle = new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: fill_opacity, fillColor: getColor(feature.properties.primary_fuel)});
                 //circle._orgRadius = circle.getRadius();
           			//circle.setRadius(calcRadius(circle._orgRadius,base.map.getZoom()))
                 return circle;
@@ -167,7 +171,8 @@ let layersList = {
             pointToLayer: function(feature, latlng) {
                 if(feature.properties.TotalQuantityCO2/1000000000 > 0.1){
                   let radius_size = base.radius_zoom()[base.map.getZoom()]
-                  return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.1, fillOpacity: Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000)), fillColor: '#6600ff'});
+                  let fill_opacity = Math.min(0.85, Math.max(0.3, feature.properties.TotalQuantityCO2/1000000000))
+                  return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.1, fillOpacity: fill_opacity, fillColor: '#6600ff'});
                 } else {
                   return;
                 }
@@ -192,7 +197,8 @@ let layersList = {
             },
             pointToLayer: function(feature, latlng) {
                 let radius_size = Math.max(base.radius_zoom()[base.map.getZoom()], base.radius_zoom()[base.map.getZoom()]*(Math.pow(feature.properties.population, 1/4)/20))
-                return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: Math.min(0.8, Math.max(0.25, feature.properties.population/3000000))});
+                let fill_opacity = Math.min(0.8, Math.max(0.25, feature.properties.population/3000000))
+                return new L.CircleMarker(latlng, {radius: radius_size, stroke: false, weight: 0.3, fillOpacity: fill_opacity});
             },
             onEachFeature: function (feature, layer) {
                 layer.bindPopup('<table class="styled-table"><thead><tr><td>Name:</td><td>' + feature.properties.city + '</td></tr></thead>' +

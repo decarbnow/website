@@ -1,3 +1,21 @@
+.my-custom-icon{
+  //width: 24px !important;
+  //height: 24px !important;
+  margin-left: 12px;
+  margin-top: -12px;
+  border-radius: 100%;
+  //border: 2px solid #3F51B5;
+  text-align: center;
+  color: "white";
+  background-color: #6600ff;
+  font-size: 10px;
+  font-family: "Verdana", "Arial", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  //padding-top: 15px !important;
+}
+
 .marker-pin {
     width: 20px;
     height: 20px;

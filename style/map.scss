@@ -13,18 +13,27 @@
 @import '../node_modules/leaflet-easybutton/src/easy-button.css';
 @import '../node_modules/leaflet-control-window/src/L.Control.Window.css';
 @import '../node_modules/leaflet.control.layers.tree/L.Control.Layers.Tree.css';
+@import '../node_modules/leaflet-minimap/dist/Control.MiniMap.min.css';
 
 html {
     font-family: Helvetica, Arial;
 }
 
-html, body, #map {
-    width: 100%;
-    height: 100%;
+body {
+    padding: 0;
     margin: 0;
+}
+
+html, body, #map {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
 }
 
 @import 'map/controlwindow.scss';
 @import 'map/icons.scss';
 @import 'map/popup.scss';
 @import 'map/controls.scss';
+
+@import 'map/scripts/Control.MagnifyingGlass.scss';

@@ -1,6 +1,7 @@
 import base from "./base.js";
 require('leaflet.control.layers.tree');
 import { layerSets, layers } from './layers/sets.js';
+import './controls/LayerSelectionControl';
 
 let controls = {
   layersControls: null,
@@ -87,7 +88,8 @@ let controls = {
                 collapsed: true,
                 children: [
                   { label: layerSets.points.layers["e-prtr"].options.name, layer: layerSets.points.layers["e-prtr"]},
-                  { label: layerSets.points.layers["power-plants"].options.name, layer: layerSets.points.layers["power-plants"]}
+                  { label: layerSets.points.layers["power-plants"].options.name, layer: layerSets.points.layers["power-plants"]},
+                  { label: layerSets.points.layers["big-cities"].options.name, layer: layerSets.points.layers["big-cities"]}
                 ]},
             ]
         }
@@ -118,7 +120,11 @@ let controls = {
     //     collapsed: width < 1800
     // }).addTo(base.map);
 
-
+    // L.control.layerSelectionControl(layerSets.countries.layers, {
+    //             position: 'bottomleft',
+    //             collapsed: true,
+    //             name: 'Countries'
+    // }).addTo(base.map);
   }
 }
 

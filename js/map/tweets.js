@@ -8,6 +8,16 @@ import 'twitter-widgets';
 import api from './api/proxy.js';
 import twitter from './twitter.js';
 
+window.toggleFunction=function(){
+  let x = $('iframe').css( "display" )
+    if (x === "none") {
+      $("iframe").css("display", "block")
+    } else {
+      $("iframe").css("display", "none")
+    }
+};
+
+
 window.gotoLastStoryTweet=function(id){
     return manager.show(id);
 };
@@ -44,6 +54,8 @@ let manager = {
     activeTweet: null,
     activeStory: null,
     autoScrolling: false,
+    connectedDots: null,
+    storyline: null,
     data: {
         tweets: [],
         stories: [],
@@ -165,6 +177,7 @@ let manager = {
           let text = "<div class=\"sidebar-container\"><div style=\"text-align:center\">"
 
           if (tweetInfo.story){
+              //manager.loadStoryLines(id)
               text = text + "<div class=\"key_container\">"
               let ids_story = manager.data.stories[tweetInfo.story];
 
@@ -178,7 +191,7 @@ let manager = {
               page_arr[ids_story.length-1] = 1
               page_arr[ids_story.indexOf(ids[0])] = 1
 
-              title = "Story - " + id + " - " + (ids_story.indexOf(ids[0])+1) + " of " + ids_story.length
+              title = "Story - Twitter thread - " + (ids_story.indexOf(ids[0])+1) + " of " + ids_story.length
 
               if(ids_story.indexOf(ids[0]) == 0 & ids_story.length >= 3){
                   page_arr[1] = 1
@@ -235,15 +248,17 @@ let manager = {
               }
 
               text = text + "</div>"
-            } else {
-              title = "Tweet-ID: " + id
-            };
+          } else {
+            title = "Tweet: " + id
+          };
 
           text = text + "</div>"
 
           text = text + entries.join('');
 
           text = text + "</div>"
+
+          title = title + "<a class=\"minimize\" onclick='toggleFunction()'>" + "_" + "</a>"
 
           base.showControlwindow(manager, text, title)
           listenForTwitFrameResizes()
@@ -258,6 +273,8 @@ let manager = {
         let class_ch = document.querySelector('.crosshair')
         class_ch.classList.add('hidden')
         class_ch.classList.remove('hidden')
+        if(manager.storyline)
+            manager.storyline.remove()
     },
 
     addGeoJson: function() {
@@ -269,12 +286,40 @@ let manager = {
 
     },
 
+    connectTheDots: function(tweetid){
+        var c = [];
+        for (var i=0; i < manager.data.storiesarray.length; i++) {
+            if(manager.data.stories[manager.data.storiesarray[i]].indexOf(tweetid) > -1){
+                for (var j=0; j < manager.data.stories[manager.data.storiesarray[i]].length-1; j++) {
+
+                    var x = manager.data.tweets[manager.data.stories[manager.data.storiesarray[i]][j]].state.center
+                    var y = manager.data.tweets[manager.data.stories[manager.data.storiesarray[i]][j+1]].state.center
+                    c.push([x, y]);
+                }
+            }
+        }
+
+        // for(i in data._layers) {
+        //     var x = data._layers[i]._latlng.lat;
+        //     var y = data._layers[i]._latlng.lng;
+        //     c.push([x, y]);
+        // }
+        return c;
+    },
+
+    loadStoryLines: function(id) {
+        manager.storyline = L.polyline(manager.connectTheDots(id)).addTo(base.map)
+        //console.log(manager.data.tweets)
+    },
+
     loadMarkers: function() {
+        manager.data.storiesarray = []
         api.getTweets().then(function(data) {
             manager.data.tweets = data;
             let tweetOpacity = 0.3
 
             Object.keys(manager.data.tweets).forEach((id) => {
+
 
                 let tweetInfo = manager.data.tweets[id];
 
@@ -286,9 +331,13 @@ let manager = {
 
                 manager.data.tweets[id] = tweetInfo;
                 if (tweetInfo.story) {
-                    if (!manager.data.stories[tweetInfo.story])
-                        manager.data.stories[tweetInfo.story] = [];
+                    if (!manager.data.stories[tweetInfo.story]){
+                      manager.data.stories[tweetInfo.story] = [];
+                      manager.data.storiesarray.push(id);
+                    }
+
                     manager.data.stories[tweetInfo.story].push(id);
+
                 }
 
                 if (tweetInfo.state.zoom >= 2){
@@ -310,7 +359,6 @@ let manager = {
                 }
 
             });
-
             $(manager).trigger('loaded');
         })
     },

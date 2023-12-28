@@ -7,9 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "map": "webpack-dev-server --config webpack.config.dev.map.js",
     "intro": "webpack-dev-server --config webpack.config.dev.intro.js",
-    "build": "webpack --config webpack.config.prod.js",
-    "live": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.space:/var/www/html/decarbnow/live/",
-    "dev": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.abteil.org:/var/www/html/decarbnow/dev/"
+    "build": "rm -rf dist && webpack --config webpack.config.prod.js",
+    "live-abteil": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.space:/var/www/html/decarbnow/live/",
+    "live": "rsync -arv dist/ --delete nebula@spica.uberspace.de:~/map2.decarbnow.space/",
+    "dev": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.abteil.org:/var/www/html/decarbnow/dev/",
+    "deploy": "npm run build && npm run live"
   },
   "author": "decarbnow group",
   "license": "MIT",
@@ -54,6 +56,7 @@
     "leaflet-geotiff-2": "^1.1.0",
     "leaflet-minimap": "^3.6.1",
     "leaflet.control.layers.tree": "^1.1.0",
+    "leaflet.locatecontrol": "^0.79.0",
     "minimist": "^1.2.6",
     "sharp": "^0.31.1",
     "topojson-simplify": "^3.0.3",

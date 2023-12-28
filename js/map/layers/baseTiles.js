@@ -5,17 +5,15 @@ let layersList = {
                              '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
                              '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>',
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }),
         name: 'Google Satellite'
     },
     satellite_minimap: {
-        layer: L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-            attribution: '© <a href="https://maps.google.com">Google Maps</a>, '+
-                             '<a href="https://disc.gsfc.nasa.gov/datasets/OMNO2d_003/summary?keywords=omi">NASA</a>, '+
-                             '<a href="https://earth.esa.int/web/guest/missions/esa-eo-missions/sentinel-5p">ESA/Copernicus</a>',
+        layer: L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://maps.google.com">Google Maps</a>',
             maxZoom: 20,
-            subdomains:['mt0','mt1','mt2','mt3']
+            subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
         }),
         name: 'Google Satellite for MiniMap',
         hidden: true

@@ -47,6 +47,7 @@ window.SwitchLayer = function(event) {
     base.showLayer(res);
 }
 
+
 let twitter = {
     sidebar: null,
     controlwindow: null,
@@ -55,6 +56,7 @@ let twitter = {
         twitter.controlwindow = L.control.window(base.map, {title:'', content:'', visible: false})
         twitter.addEventHandlers();
     },
+    
     showTweetBox: function(e) {
         // update marker
         twitter.marker.setLatLng(e.latlng);
@@ -66,17 +68,15 @@ let twitter = {
         }
 
         let text = '<div class=\"sidebar-container twitterwindowmenu"><div style=\"text-align:left; width:220px;"><label>Set appearance:</label>' +
-        '<form  method=get>'+
+        '<form  id="tootform">'+
         '<select id="selectLayer" onchange="window.SwitchLayer(this)"></select><br><br>'
         for (let i = 1; i < url.getState().layers.length; i++) {
             text = text + '<div id="layercontrol"><label><input id="layers-' + url.getState().layers[i] + '" type="checkbox" data-layer="' + url.getState().layers[i] + '" checked>' + base.layers[url.getState().layers[i]].options.name + '</label></div>'
         };
         text = text + '<label><br>What\'s happening here?</label>'+
-        '<textarea id="tweetText" style="resize:vertical; width:270px; height:150px;"></textarea>' +
+        '<textarea id="toot" name="toot" style="resize:vertical; width:270px; height:150px;"></textarea>' +
         '</form>'+
-        '<div id="tweetBtn" style="height: 25px;">'+
-        '<left><a target="_blank" href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-text=""></left>' +
-        '</div></div></div>';
+        '<input type="submit" value="Send"></div></div>';        
 
         twitter.controlwindow.content(text)
         twitter.controlwindow.title("Create Tweet @ (" + e.latlng.lat.toFixed(1) + ", " + e.latlng.lng.toFixed(1) + ")")

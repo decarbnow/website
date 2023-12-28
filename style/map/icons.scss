@@ -20,7 +20,7 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #fff !important;
+    background: #c5c9d4 !important;
     position: absolute;
     left: 62%;
     top: 50%;
@@ -94,6 +94,7 @@
     padding-top: 2px;
 }
 
+
 .custom-div-icon i.transition {
     color: rgb(255, 240, 20) !important;
     margin: 12px auto;
@@ -107,10 +108,27 @@
     padding-top: 0px;
 }
 
+@keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  
+
 .selected .marker-pin {
     &::after {
         background: rgb(200, 100, 10);
         opacity: 1;
+        border-color: red;
+        border-width: 2px;
+        border-style: solid;
+        animation: blink 2s infinite;
     }
 }
 

@@ -1,20 +1,43 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>#decarbnow</title>
-        <meta charset="UTF-8">
-        <meta name="twitter:card" content="summary">
-        <meta name="twitter:description" content="Community-driven map to expose fossil fuel polluters">
-        <meta name="twitter:title" content="This location on #decarbnow">
-        <meta property="og:image" content="<%= htmlWebpackPlugin.options.environment.url.list.live %>/static/preview.jpg">
-        <link rel="manifest" href="manifest.json">
-        <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1.0, user-scalable=no" />
-    </head>
-    <body>
-        <div id="map"><div class="crosshair">+</div></div>
 
-        <div id="show-tweet-sidebar"></div>
-        <%if (false) {%>
+<head>
+    <title>#decarbnow</title>
+    <meta charset="UTF-8">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:description" content="Community-driven map to map news">
+    <meta name="twitter:title" content="This location on sn-live-map">
+    <meta property="og:image" content="<%= htmlWebpackPlugin.options.environment.url.list.live %>/static/preview.jpg">
+    <link rel="manifest" href="manifest.json">
+    <meta name="viewport" content="width=device-width, initial-scale=0.6, maximum-scale=1.0, user-scalable=no" />
+</head>
+
+<body>
+    <script>
+        function clearSearch() {
+            const searchInput = document.getElementById('term-search');
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            // var sidebar = document.getElementById('sidebar');
+            // sidebar.scrollTop = 0;
+        }
+    </script>
+    <div id="map">
+        <div class="crosshair">+</div>
+    </div>
+
+    <div id="sidebar">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="term-search" placeholder="Search by #hashtag or ID..." />
+                <button class="clear-btn" onclick="clearSearch()">Clear</button>
+            </div>
+            <div id="tweets" class="tweet-container"></div>
+            <!-- <button class="top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Top</button> -->
+        </div>
+    </div>
+
+    <!-- <%if (false) {%>
         <div id='new-tweet-sidebar'>
             <h3>Tweet about</h3>
             <div class="select">
@@ -31,6 +54,7 @@
                 <a class="twitter-share-button" href="http://twitter.com/share" data-url="null" data-text="#decarbnow">Tweet</a>
             </div>
         </div>
-        <%}%>
-    </body>
+        <%}%> -->
+</body>
+
 </html>

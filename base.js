@@ -13,8 +13,6 @@ import 'jquery';
 import 'leaflet-easybutton';
 import './scripts/leaflet.magnifyingglass.js';
 import 'leaflet-minimap';
-import 'leaflet.locatecontrol';
-import sidebar from './sidebar.js';
 
 let GeoJSON = require('geojson');
 
@@ -33,6 +31,7 @@ const iconDefault = icon({
   shadowSize: [41, 41]
 });
 
+
 Marker.prototype.options.icon = iconDefault;
 
 let defaultState = {
@@ -42,12 +41,12 @@ let defaultState = {
         lng: 0,
     },
     layers: [
-        'streets',
-        //'energy',
-        //'manufacturing',
-        //'fossil-fuel-operations',
+        'light',
+        'energy',
+        'manufacturing',
+        'fossil-fuel-operations',
         //'power-plants',
-        //'no2_2021_test',
+        'no2_2021_test',
         'tweets'
     ],
 }
@@ -90,8 +89,7 @@ let base = {
         base.map = map('map', {
             ...defaultOptions,
         });
-        
-        sidebar.init();
+
         tweets.init();
         tweets.loadMarkers();
         twitter.init();
@@ -145,6 +143,14 @@ let base = {
         base.addControls();
         controls.addControls();
 
+        // let miniMap = new L.Control.MiniMap(layerSets.baseTiles.layers.satellite_minimap, {
+        //     position: "topleft",
+        //     zoomLevelOffset: 0,
+        //     toggleDisplay: true,
+        //     minimized: true,
+        //     width: 400,
+        //     height: 490,
+        // }).addTo(base.map);
         // var map = L.map('map', {
         //     center: [0, 0],
         //     zoom: 5,
@@ -197,7 +203,7 @@ let base = {
         base.showLayers(layers);
 
         if(base.slowFlyTo){
-            base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 2});
+            base.map.flyTo(state.center, state.zoom, {noMoveStart: true});
         } else {
             base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 1});
             base.slowFlyTo = true
@@ -242,41 +248,9 @@ let base = {
 
         module.controlwindow.show('topRight')
 
-
         return module.controlwindow;
     },
 
-    showSidebarContent: function(module, content = null, title = null) {
-        let sbs = [tweets];
-    
-        sbs.forEach((m) => {
-            if (m != module) {
-                m.controlwindow.hide();
-            }
-        });
-    
-        const showSidebarElement = document.getElementById('sidebar');
-    
-        if (!showSidebarElement) {
-            console.error('Element with id "idebar" not found.');
-            return null;
-        }
-    
-        if (content !== null) {
-            // Update the content of the specified element
-            showSidebarElement.innerHTML = content;
-        }
-        console.log(showSidebarElement)
-        if (title !== null) {
-            // Optionally update the title of the specified element
-            // document.getElementById('show-sidebar-title').innerHTML = title;
-        }
-    
-        // Optionally, you might have other logic related to showing/hiding elements
-    
-        return module.controlwindow;
-    },
-    
 
     showPopup: function(module, content = null) {
         let sbs = [tweets]
@@ -469,28 +443,50 @@ let base = {
         }).addTo(base.map)
 
         L.control.zoom({
-            position: 'topright'
+            position: 'bottomleft'
         }).addTo(base.map);
 
         L.Control.geocoder({
-            position: 'topright',
-            defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
-            var bbox = e.geocode.bbox;
-            var location = e.geocode.center;
-        
-            // Calculate the zoom level based on the bounding box and map size
-            var zoom = base.map.getBoundsZoom(bbox);
-        
-            // Set the view to the location with the calculated zoom level
-            base.map.setView(location, zoom);
+            position: 'bottomleft'
         }).addTo(base.map);
 
-        L.control.locate({
-            position: 'topright',
-            drawCircle: false,
-            drawMarker: false
-        }).addTo(base.map);
+        let shareUrlButton = L.easyButton({
+            states: [{
+                    stateName: 'toggle-tweets',        // name the state
+                    icon:      'nf nf-fa-share',               // and define its properties
+                    title:     'Share Link',      // like its title
+                    onClick: function(btn, map) {       // and its callback
+                        let link = 'https://map.decarbnow.space' + url.getPath()
+                        navigator.clipboard.writeText(link)
+                            .then(() => {
+                                alert('Map link copied to clipboard. Tweet this link to add the tweet to the map.');
+                            })
+                                .catch(err => {
+                                alert('Error in copying URL: ', err);
+                            });
+                        //url.pushState();
+                        //btn.state('fa-cleared-trash');    // change state on click!
+                    }
+            }]
+        });
+
+        shareUrlButton.setPosition('bottomleft').addTo( base.map );
+
+        let homeButton = L.easyButton({
+            states: [{
+                    stateName: 'go-home',        // name the state
+                    icon:      'nf nf-fa-home',               // and define its properties
+                    title:     'Overview',      // like its title
+                    onClick: function(btn, map) {       // and its callback
+                        //base.map.flyTo(base.getState().center, 5.0);
+                        base.map.setView(defaultState.center, defaultState.zoom);
+                        base.setState({...defaultState});
+                        tweets.closeSidebar()
+                    }
+            }]
+        });
+
+        homeButton.setPosition('bottomleft').addTo( base.map );
 
         let removePolygonsButton = L.easyButton({
             states: [{
@@ -522,53 +518,6 @@ let base = {
 
         let drawControl = new L.Control.Draw(drawOptions);
         base.map.addControl(drawControl);
-
-        let miniMap = new L.Control.MiniMap(layerSets.baseTiles.layers.satellite_minimap, {
-            position: "bottomright",
-            zoomLevelOffset: -6,
-            toggleDisplay: false,
-            minimized: false,
-            width: 180,
-            height: 180,
-        }).addTo(base.map);
-
-        let shareUrlButton = L.easyButton({
-            states: [{
-                    stateName: 'toggle-tweets',        // name the state
-                    icon:      'nf nf-fa-share',               // and define its properties
-                    title:     'Share Link',      // like its title
-                    onClick: function(btn, map) {       // and its callback
-                        let link = 'https://map.decarbnow.space' + url.getPath()
-                        navigator.clipboard.writeText(link)
-                            .then(() => {
-                                alert('Map link copied to clipboard. Share this link to pin it to the map.');
-                            })
-                                .catch(err => {
-                                alert('Error in copying URL: ', err);
-                            });
-                        //url.pushState();
-                        //btn.state('fa-cleared-trash');    // change state on click!
-                    }
-            }]
-        });
-
-        shareUrlButton.setPosition('bottomright').addTo( base.map );
-
-        let homeButton = L.easyButton({
-            states: [{
-                    stateName: 'go-home',        // name the state
-                    icon:      'nf nf-fa-home',               // and define its properties
-                    title:     'Overview',      // like its title
-                    onClick: function(btn, map) {       // and its callback
-                        //base.map.flyTo(base.getState().center, 5.0);
-                        base.map.setView(defaultState.center, defaultState.zoom);
-                        base.setState({...defaultState});
-                        tweets.closeSidebar()
-                    }
-            }]
-        });
-
-        homeButton.setPosition('bottomright').addTo( base.map );
     },
 
     addEventHandlers: function() {
@@ -651,12 +600,12 @@ let base = {
         });
 
         base.map.on("contextmenu", function(e) {
-            //base.tweetBoxActive = true;
-            //tweets.closeSidebar();
+            base.tweetBoxActive = true;
+            tweets.closeSidebar();
             base.map.flyTo(e.latlng);
-            //twitter.showTweetBox(e);
-            //let class_ch = document.querySelector('.crosshair')
-            //class_ch.classList.add('hidden')
+            twitter.showTweetBox(e);
+            let class_ch = document.querySelector('.crosshair')
+            class_ch.classList.add('hidden')
         });
 
         base.map.on("zoomend", function () {

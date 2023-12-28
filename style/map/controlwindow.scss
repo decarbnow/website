@@ -62,7 +62,7 @@
 }
 
 .leaflet-control-window .content{
-    padding: 8px;
+    padding: 0;
     //opacity: 0.9;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 0 0 8px 8px;
@@ -129,8 +129,6 @@
 .leaflet-control-window .minimize:active {
     background-color: rgba(0, 0, 0, 0.65);
 }
-
-
 
 .twitterwindowmenu {
     color: black;

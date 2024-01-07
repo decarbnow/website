@@ -51,7 +51,7 @@ document.getElementById('term-search').addEventListener('input', (event) => {
 
 let sidebar = {
     init: function () {
-        api.init();
+        
 
         let class_bb = document.querySelector('.back-btn')
         class_bb.classList.add('hidden')
@@ -362,11 +362,11 @@ let sidebar = {
 
         // Clear previous tweets only if it's the first page
         tweetsContainer.innerHTML = '';
-
+        tweets.invisibleMarker();
         // Append new tweets instead of clearing and re-rendering all tweets
         tweetsToDisplay.forEach(([id, tweet]) => {
-            //console.log(id)
-            //tweets.visibleMarker(id)
+            
+            tweets.visibleMarker(id);
             tweetsContainer.appendChild(sidebar.createTweetElement(id, tweet, true));
             const storyTweets = sidebar.getTweetsOfStory(tweetData, id);
             storyTweets.forEach(([storyId, storyTweet]) => {

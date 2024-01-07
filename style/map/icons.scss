@@ -16,35 +16,65 @@
   //padding-top: 15px !important;
 }
 
+/* Default styles for .fab and .fab.fa-twitter */
+/* Default styles for .fab and .fab.fa-twitter */
+/* Default styles for .fab and .fab.fa-twitter */
+.fab,
+.fab.fa-twitter {
+    opacity: 0.4 !important;
+
+    &.visible-after {
+        /* Styles for .fab.visible-after and .fab.fa-twitter.visible-after */
+        color: white;
+        opacity: 1 !important;
+    }
+}
+
+/* Default styles for .marker-pin */
 .marker-pin {
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #c5c9d4 !important;
+    background-color: rgba(255, 255, 255, 0.2);
     position: absolute;
     left: 62%;
+    opacity: 0.4;
     top: 50%;
     margin: -13px 0 0 -13px;
     z-index: -1;
     -webkit-touch-callout: none;
+
     &::after {
         content: '';
         width: 18px;
         height: 18px;
+        background: rgb(29, 161, 242);
         margin: 1px 0 0 1px;
         position: absolute;
         border-radius: 50%;
+        opacity: 0.4; /* Set initial opacity for the ::after pseudo-element */
     }
-    &.action::after {
-        background: rgb(29, 161, 242)
+
+    &.visible-after {
+        /* Styles for .marker-pin.visible-after */
+        background: rgb(29, 161, 242);
+        color: white;
+        opacity: 1 !important;
     }
+
     &.transition::after {
+        /* Other styles for ::after in .transition */
         background: rgb(57, 219, 113) !important;
     }
+
     &.pollution::after {
+        /* Other styles for ::after in .pollution */
         background: rgba(226, 57, 66, 1) !important;
     }
 }
+
+
+
 
 .leaflet-container {-webkit-touch-callout: none;
                     -webkit-user-select: none;}
@@ -132,12 +162,11 @@
     }
 }
 
-.visible .marker-pin {
-    ::after {
-        opacity: 0.5;
-        border-color: black !important;
-    }
+
+.visible .marker-pin::after {
+    opacity: 1 !important;
 }
+
 .noTweets{
     opacity: 0.4 !important;
 }

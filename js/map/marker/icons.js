@@ -29,7 +29,7 @@ Object.keys(iconsInfo).forEach((k) => {
     let i = iconsInfo[k];
     icons[k] = L.divIcon({
         className: 'custom-div-icon',
-        html: `<div class='marker-pin ${i.cssname}'></div><i class='${i.fonticon} ${i.cssname}'>`,
+        html: `<div class='marker-pin ${i.cssname}'></div><i class='${i.fonticon} ${i.cssname}'></i>`,
         iconSize: [20, 34],
         iconAnchor: [10, 10]
     });

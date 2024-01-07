@@ -121,6 +121,7 @@ let manager = {
         tweetDiv.parent().find('.tweet.selected').removeClass('selected');
         tweetDiv.addClass('selected');
     },
+
     activateMarker: function(id) {
         let marker = manager.data.tweetIdToMarker[id.toString()];
 
@@ -156,15 +157,22 @@ let manager = {
 
     visibleMarker: function(id) {
         let marker = manager.data.tweetIdToMarker[id.toString()];
-        manager.deactivateMarkers();
-        if (marker && marker._icon)
-            L.DomUtil.addClass(marker._icon, 'visible');
+        
+        if (marker && marker._icon) {
+            L.DomUtil.addClass(marker._icon.querySelector('.marker-pin.action'), 'visible-after');
+            L.DomUtil.addClass(marker._icon.querySelector('.fab'), 'visible-after');
+        }
+    },
+    
+    
 
+    invisibleMarker: function() {
+        $('.marker-pin').removeClass('visible-after');
+        $('.fab.fa-twitter').removeClass('visible-after');
     },
 
     deactivateMarkers: function() {
         $('.leaflet-marker-icon.selected').removeClass('selected');
-        $('.leaflet-marker-icon.selected').removeClass('visible');
     },
 
     show: function(id, updateState = true) {

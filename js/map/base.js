@@ -15,6 +15,7 @@ import './scripts/leaflet.magnifyingglass.js';
 import 'leaflet-minimap';
 import 'leaflet.locatecontrol';
 import sidebar from './sidebar.js';
+import api from './api/proxy.js';
 
 let GeoJSON = require('geojson');
 
@@ -90,12 +91,12 @@ let base = {
         base.map = map('map', {
             ...defaultOptions,
         });
+        api.init();
         
-        sidebar.init();
         tweets.init();
         tweets.loadMarkers();
         twitter.init();
-
+        sidebar.init();
         base.addEventHandlers();
 
         base.layerSets = layerSets;

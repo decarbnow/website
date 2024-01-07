@@ -15,6 +15,8 @@
 @import '../node_modules/leaflet.control.layers.tree/L.Control.Layers.Tree.css';
 @import '../node_modules/leaflet-minimap/dist/Control.MiniMap.min.css';
 @import '../node_modules/leaflet.locatecontrol/dist/L.Control.Locate.min.css';
+@import '../node_modules/zoom-vanilla.js/css/zoom.css';
+
 
 html {
     font-family: Verdana, Arial;
@@ -32,6 +34,12 @@ html, body {
     overflow: hidden;
 }
 
+img {
+    max-width: inherit;
+    width: inherit;
+    object-fit: cover;
+  }
+
 #map {
     height: 50vh;
     width: 100vw;
@@ -47,7 +55,7 @@ html, body {
     top: 0;
     left: 0;
     /* Align the left side of the map with the left side of the viewport */
-    //filter: drop-shadow(0px 3px 6px rgba(0, 0, 0, 0.85));
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.85);
 }
 
 #sidebar {
@@ -62,11 +70,32 @@ html, body {
     padding: 0px;
     box-sizing: border-box;
     overflow-y: auto;
+    overflow-x: hidden;
     position: fixed;
     /* Align the top of the sidebar with the top of the viewport */
     right: 0;
     /* Adjust the left position of the sidebar */
 }
+
+.loading-message {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    top: 0;
+    background-color: white;
+    left: 0;
+    position: absolute;   /* Fixed/sticky position */
+    width: 100%;
+    height: 100%;
+    z-index: 5000;    /* Sit on top */
+    overflow: auto;   /* Enable scroll if needed */
+    transition: 0.1s; /* Half a second transition effect */
+    flex-direction: column;
+
+}
+
+
 @media screen and (min-width: 768px) {
 
     #map {
@@ -121,11 +150,16 @@ html, body {
 
 
 
+
+
 .container {
+    position: relative;
     margin: 8px auto;
+    max-width: 90vw; /* 80% of the viewport's width */
     padding-top: 10px;
     padding-left: 20px;
     padding-right: 10px;
+    padding-bottom: 40px;
 }
 
 .search-container {
@@ -147,17 +181,6 @@ html, body {
 }
 
 
-
-// .tweet-container::before {
-//     content: '';
-//     position: absolute;
-//     bottom: 0;
-//     left: 0;
-//     width: 100%;
-//     height: 2px;
-//     //background-color: #ececec; /* Color of the bottom border */
-// }
-
 .tweet-icon {
     font-size: 24px;
     color: #1da1f2;
@@ -166,22 +189,34 @@ html, body {
 }
 
 .tweet-container {
-    margin-top: 30px;
+    font-size: 16px;
+    margin-top: 10px;
     margin-right: 10px;
     position: relative; /* Needed for the pseudo-element */
     transition: background-color 0.3s;
 }
 
 
+.tweet-container .story-head {
+    border-top: 1px solid rgb(226, 229, 230) !important;
+    margin-top: 10px;
+    margin-right: 10px;
+    position: relative; /* Needed for the pseudo-element */
+    transition: background-color 0.3s;
+    border-bottom-left-radius: 140px;
+}
 
 .tweet-container .story-indent {
+    border-top: none !important;
+    font-size: 14px;
     display: flex;
     margin-top: 0 !important;
     align-items: start;
-    border-left: 2px solid #a8a8a8;
+    //border-left: 2px solid #a8a8a8;
+    border-left: 2px solid rgb(226, 229, 230);
     padding-top: 0px;
     position: relative;   
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 #sidebar a {
@@ -224,33 +259,50 @@ html, body {
 }
 
 .message {
-    border-right: 5px solid transparent; /* Add a black border around the content */
+    border-right: 2px solid transparent; /* Add a black border around the content */
     padding: 14px; /* Optional: Add padding for better visual appearance */
     //padding-bottom: 0px;
-    padding-top: 5px;
+    padding-top: 15px;
     padding-bottom: 5px;
     //border-radius: 4px;
-    background-color: #fff;
-    cursor: pointer !important;
+    //background-color: #fff;
+    pointer-events:none;
 }
 
-.message:hover {
-    background-color: #e7e7e7 !important; /* Change the background color on hover */
-    //border-radius: 4px;
-    transition: background-color 0.3s;
-}
+
 
 .message.active {
-    background-color: #f5f5f5;
-    border-right: 5px solid rgb(92, 92, 92); /* Add a black border around the content */
+    //background-color: #f5f5f5;
+    background-color: rgb(226, 229, 230);
+    border-right: 2px solid rgb(92, 92, 92); /* Add a black border around the content */
     //border-radius: 4px;
     border-top-right-radius: 0px !important;
     border-bottom-right-radius: 0px !important;
     border-color: #0060df;
     cursor: default !important;
+    pointer-events: all;
+}
+
+.message-container {
+    //margin-top: 10px;
+    background-color: #fff;
+    cursor: pointer !important;
+}
+
+.hashtag{
+    color: red !important;
+}
+
+.account{
+    color: #555 !important;
 }
 
 .top-btn {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    cursor: pointer;
     background-color: #4CAF50;
     color: white;
     padding: 10px;
@@ -265,6 +317,57 @@ html, body {
     background-color: #45a049;
 }
 
+.back-btn {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #45a049;
+}
+
+#prev-button {
+    width: 80px;
+    transition: background-color 0.3s;
+}
+
+#next-button {
+    width: 80px;
+    transition: background-color 0.3s;
+}
+
+#prev-button:hover {
+    background-color: #45a049;
+}
+#next-button:hover {
+    background-color: #45a049;
+}
+
+
+.navigation-button {
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+
+
+#tweets-navigation{
+    padding: 14px;
+}
+
 .tweet-header {
     display: flex;
     //justify-content: space-between;
@@ -273,7 +376,13 @@ html, body {
     //padding-top: 5px;
 }
 
+.tweet-media{
+    padding: 5px;
+}
 
+.invisible {
+    display: none;
+}
 
 .tweet-header {
     display: flex;
@@ -283,6 +392,15 @@ html, body {
 .tweet-avatar img {
     width: 50px; /* Adjust the size as needed */
     height: 50px; /* Adjust the size as needed */
+    border-radius: 50%; /* To create a circular avatar */
+}
+
+.tweet-avatar.story img {
+    position: absolute;
+    left: -19px;
+    top: 12px;
+    width: 36px; /* Adjust the size as needed */
+    height: 36px; /* Adjust the size as needed */
     border-radius: 50%; /* To create a circular avatar */
 }
 

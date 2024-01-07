@@ -11,7 +11,8 @@
     "live-abteil": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.space:/var/www/html/decarbnow/live/",
     "live": "rsync -arv dist/ --delete nebula@spica.uberspace.de:~/map2.decarbnow.space/",
     "dev": "rsync -arv -e 'ssh -p 21022' dist/ decarbnow@decarbnow.abteil.org:/var/www/html/decarbnow/dev/",
-    "deploy": "npm run build && npm run live"
+    "deploy": "npm run build && npm run live",
+    "deploy-abteil": "npm run build && npm run live-abteil"
   },
   "author": "decarbnow group",
   "license": "MIT",
@@ -62,6 +63,7 @@
     "topojson-simplify": "^3.0.3",
     "twitter-widgets": "^2.0.0",
     "webpack-fix-style-only-entries": "^0.6.1",
-    "webpack-remove-empty-scripts": "^1.0.1"
+    "webpack-remove-empty-scripts": "^1.0.1",
+    "zoom-vanilla.js": "^2.0.6"
   }
 }

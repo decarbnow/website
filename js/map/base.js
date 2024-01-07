@@ -564,6 +564,7 @@ let base = {
                         base.map.setView(defaultState.center, defaultState.zoom);
                         base.setState({...defaultState});
                         tweets.closeSidebar()
+                        sidebar.back(false);
                     }
             }]
         });
@@ -666,7 +667,7 @@ let base = {
         base.map.on("click", function (e) {
             //tweets.loadStoryLines()
             base.tweetBoxActive = false;
-            tweets.closeSidebar();
+            sidebar.back(false);
             //base.slowFlyTo = false;
             twitter.marker.remove();
             twitter.controlwindow.hide();

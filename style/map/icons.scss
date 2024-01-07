@@ -132,6 +132,12 @@
     }
 }
 
+.visible .marker-pin {
+    ::after {
+        opacity: 0.5;
+        border-color: black !important;
+    }
+}
 .noTweets{
     opacity: 0.4 !important;
 }

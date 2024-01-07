@@ -10,6 +10,8 @@ import twitter from './twitter.js';
 import './scripts/embed-post.js';
 import sidebar from './sidebar.js';
 
+
+
 window.toggleFunction = function () {
     let x = $('embed-post').css("display")
     if (x === "none") {
@@ -53,6 +55,7 @@ window.onmessage = (oe) => {
 
 
 let manager = {
+    previousTweetId: null,
     controlwindow: null,
     activeTweet: null,
     activeStory: null,
@@ -151,8 +154,17 @@ let manager = {
             L.DomUtil.addClass(marker._icon, 'selected');
     },
 
+    visibleMarker: function(id) {
+        let marker = manager.data.tweetIdToMarker[id.toString()];
+        manager.deactivateMarkers();
+        if (marker && marker._icon)
+            L.DomUtil.addClass(marker._icon, 'visible');
+
+    },
+
     deactivateMarkers: function() {
         $('.leaflet-marker-icon.selected').removeClass('selected');
+        $('.leaflet-marker-icon.selected').removeClass('visible');
     },
 
     show: function(id, updateState = true) {
@@ -176,6 +188,7 @@ let manager = {
         let class_ch = document.querySelector('.crosshair')
         class_ch.classList.add('hidden')
         sidebar.selectTweet(id);
+        manager.previousTweetId = id
     },
 
     openSidebar: function(id) {
@@ -307,14 +320,24 @@ let manager = {
         manager.deactivateMarkers();
         manager.activeTweet = null;
         manager.activeStory = null;
-        var sidebar = document.getElementById('sidebar');
-        sidebar.scrollTop = 0;
+        //var sidebar = document.getElementById('sidebar');
+        //sidebar.scrollTop = 0;
         clearSearch();
+        //console.log(previousTweetId)
+
+        //document.getElementById('sidebar').scrollTop = 0;
         url.pushState();
         base.showLayer("tweets");
         let class_ch = document.querySelector('.crosshair')
         class_ch.classList.add('hidden')
         class_ch.classList.remove('hidden')
+
+        let class_bb = document.querySelector('.back-btn')
+        class_bb.classList.add('hidden')
+
+        let class_nb = document.querySelectorAll('.navigation-button')
+        class_nb.forEach(button => button.classList.remove('hidden'));
+
         if(manager.storyline)
             manager.storyline.remove()
     },
@@ -388,8 +411,7 @@ let manager = {
 
                   //manager.clusters.addLayer(marker);
 
-                  if(tweetOpacity < 1)
-                    tweetOpacity = tweetOpacity + 0.006
+                
                   //base.map.addLayer(manager.clusters);
                   marker.addTo(base.layerSets.tweets.layers.tweets)
                   marker.on('click', function () {

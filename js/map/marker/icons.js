@@ -16,7 +16,7 @@ let iconsInfo = {
         desc: "Locate climate action to accelerate change."
     },
     transition: {
-        fonticon: "nf nf-mdi-lightbulb_on",
+        fonticon: "fab fa-mastodon",
         cssname: "transition",
         title: "Transition",
         question: "Who takes the first step?",

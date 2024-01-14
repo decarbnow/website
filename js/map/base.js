@@ -24,14 +24,14 @@ const iconRetinaUrl = '../../../static/leaflet/dist/images/marker-icon-2x.png';
 const iconUrl = '../../../static/leaflet/dist/images/marker-icon.png';
 const shadowUrl = '../../../static/leaflet/dist/images/marker-shadow.png';
 const iconDefault = icon({
-  iconRetinaUrl,
-  iconUrl,
-  shadowUrl,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  tooltipAnchor: [16, -28],
-  shadowSize: [41, 41]
+    iconRetinaUrl,
+    iconUrl,
+    shadowUrl,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    tooltipAnchor: [16, -28],
+    shadowSize: [41, 41]
 });
 
 Marker.prototype.options.icon = iconDefault;
@@ -50,7 +50,7 @@ let defaultState = {
         //'power-plants',
         //'no2_2021_test',
         'tweets'
-    ],
+    ]
 }
 
 let defaultOptions = {
@@ -61,7 +61,7 @@ let defaultOptions = {
     //drawControl: true
 }
 
-let popupoptions = {maxWidth : 700}
+let popupoptions = { maxWidth: 700 }
 
 L.Circle.include({
     contains: function (latLng) {
@@ -71,7 +71,7 @@ L.Circle.include({
 
 let tweetBoxActive = false;
 
-let radius_zoom = [1,1,1,1,2.5,4,5.5,7.5,9.8,12.5,15.4,19,23,27.2,32,37.2,40,40,40,40,40];
+let radius_zoom = [1, 1, 1, 1, 2.5, 4, 5.5, 7.5, 9.8, 12.5, 15.4, 19, 23, 27.2, 32, 37.2, 40, 40, 40, 40, 40];
 
 let base = {
     map: null,
@@ -86,13 +86,13 @@ let base = {
     country_n: 4,
     editableLayers: new L.FeatureGroup(),
 
-    init: function() {
+    init: function () {
         // init leaflet map
         base.map = map('map', {
             ...defaultOptions,
         });
         api.init();
-        
+
         tweets.init();
         tweets.loadMarkers();
         twitter.init();
@@ -105,33 +105,35 @@ let base = {
         base.setInitialState();
     },
 
-    getState: function() {
+    getState: function () {
         return {
             center: base.map.getCenter(),
             zoom: base.map.getZoom(),
             layers: base.getVisibleLayers(),
             tweet: tweets.activeTweet,
+            account: tweets.data.account,
+            hashtag: tweets.data.hashtag,
             polygons: tweets.data.polygons
         }
     },
 
-    radius_zoom: function() {
+    radius_zoom: function () {
         return radius_zoom
     },
 
-    setInitialState: function() {
+    setInitialState: function () {
         base.map.setView(defaultState.center, defaultState.zoom);
 
         let state = url.getState();
 
-        if (!state.center){
+        if (!state.center) {
             state.center = defaultState.center
         }
-        base.setState({...defaultState, ...state});
+        base.setState({ ...defaultState, ...state });
 
         let tweet = state.tweet;
 
-        $(tweets).on("loaded", function() {
+        $(tweets).on("loaded", function () {
             if (!state.tweet) {
                 let path = url.getPath()
 
@@ -166,27 +168,66 @@ let base = {
         // }).addTo(base.map);
     },
 
-    setState: function(state){
+    disableMapInteraction: function () {
+        base.map.dragging.disable();
+        base.map.touchZoom.disable();
+        base.map.doubleClickZoom.disable();
+        base.map.scrollWheelZoom.disable();
+        base.map.boxZoom.disable();
+        base.map.keyboard.disable();
+        if (base.map.tap) base.map.tap.disable(); // Needed for mobile devices
+      },
+
+    enableMapInteraction: function () {
+        base.map.dragging.enable();
+        base.map.touchZoom.enable();
+        base.map.doubleClickZoom.enable();
+        base.map.scrollWheelZoom.enable();
+        base.map.boxZoom.enable();
+        base.map.keyboard.enable();
+        if (base.map.tap) base.map.tap.enable(); // Needed for mobile devices
+    },      
+
+    setState: function (state) {
         base.pushState = false;
+
         base.flyTo(state);
         $(base.map).one('moveend', function () {
-            console.log(state.layers)
+
+            // $(tweets).on("loaded", function () {
+                
+            // });
+
             base.showLayers(state.layers);
             base.pushState = true;
+            url.pushState();
 
-            if(state.polygons){
+            if (state.account) {
+                tweets.data.account = state.account
+                sidebar.displayTweets("@" + state.account);
+                
+            }
+
+            if (state.hashtag) {
+                tweets.data.hashtag = state.hashtag
+                sidebar.displayTweets("#" + state.hashtag);
+                
+            }
+
+            if (state.polygons) {
                 tweets.data.polygons = state.polygons
                 base.showPolygons(state)
                 base.showLayer("polygons")
             }
-            url.pushState();
+            
 
             base.updateCircleSize();
         })
 
     },
 
-    flyTo: function(state) {
+    flyTo: function (state) {
+        base.disableMapInteraction()
         // Only show tile layer in fly-to animation
         let tileLayers = Object.keys(base.layerSets.baseTiles.layers)
         let layers = state.layers.filter(x => tileLayers.includes(x))
@@ -197,20 +238,35 @@ let base = {
 
         base.showLayers(layers);
 
-        if(base.slowFlyTo){
-            base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 2});
+        if (base.slowFlyTo) {
+            base.map.flyTo(state.center, state.zoom, { noMoveStart: true, duration: 2 });
         } else {
-            base.map.flyTo(state.center, state.zoom, {noMoveStart: true, duration: 1});
+            base.map.flyTo(state.center, state.zoom, { noMoveStart: true, duration: 1 });
             base.slowFlyTo = true
         }
     },
 
-    getWindowCorrectedCenter: function(center, zoom) {
+    setView: function (state) {
+        // Only show tile layer in fly-to animation
+        let tileLayers = Object.keys(base.layerSets.baseTiles.layers)
+        let layers = state.layers.filter(x => tileLayers.includes(x))
+
+        // Keep tweets layer
+        if (state.layers.includes('tweets'))
+            layers.push('tweets')
+
+        base.showLayers(layers);
+
+        base.map.setView(state.center, state.zoom);
+
+    },
+
+    getWindowCorrectedCenter: function (center, zoom) {
         let sidebarOffset = document.querySelector('.leaflet-sidebar').getBoundingClientRect().width;
         return base.map.unproject(base.map.project(center, zoom).add([sidebarOffset / 2, 0]), zoom); //substract when sidebar on the left
     },
 
-    showSidebar: function(module, content = null) {
+    showSidebar: function (module, content = null) {
         let sbs = [tweets]
         sbs.forEach((m) => {
             if (m != module) {
@@ -225,7 +281,7 @@ let base = {
         return module.sidebar;
     },
 
-    showControlwindow: function(module, content = null, title = null) {
+    showControlwindow: function (module, content = null, title = null) {
         let sbs = [tweets]
         sbs.forEach((m) => {
             if (m != module) {
@@ -233,11 +289,11 @@ let base = {
             }
         });
 
-        if (content){
+        if (content) {
             module.controlwindow.content(content)
         }
 
-        if (title){
+        if (title) {
             module.controlwindow.title(title)
         }
 
@@ -247,22 +303,22 @@ let base = {
         return module.controlwindow;
     },
 
-    showSidebarContent: function(module, content = null, title = null) {
+    showSidebarContent: function (module, content = null, title = null) {
         let sbs = [tweets];
-    
+
         sbs.forEach((m) => {
             if (m != module) {
                 m.controlwindow.hide();
             }
         });
-    
+
         const showSidebarElement = document.getElementById('sidebar');
-    
+
         if (!showSidebarElement) {
             console.error('Element with id "idebar" not found.');
             return null;
         }
-    
+
         if (content !== null) {
             // Update the content of the specified element
             showSidebarElement.innerHTML = content;
@@ -272,14 +328,14 @@ let base = {
             // Optionally update the title of the specified element
             // document.getElementById('show-sidebar-title').innerHTML = title;
         }
-    
+
         // Optionally, you might have other logic related to showing/hiding elements
-    
+
         return module.controlwindow;
     },
-    
 
-    showPopup: function(module, content = null) {
+
+    showPopup: function (module, content = null) {
         let sbs = [tweets]
         sbs.forEach((m) => {
             if (m != module) {
@@ -294,11 +350,11 @@ let base = {
         return module.popup;
     },
 
-    showLayers: function(ids) {
+    showLayers: function (ids) {
         let visibleLayers = base.getVisibleLayers()
         // Show
         ids.forEach((id) => {
-            if(!visibleLayers.includes(id))
+            if (!visibleLayers.includes(id))
                 base.showLayer(id);
         });
 
@@ -317,116 +373,116 @@ let base = {
             base.map.addLayer(base.layerSets.overlays.layers['empty'])
     },
 
-    showLayer: function(id) {
+    showLayer: function (id) {
         if (!base.map.hasLayer(base.layers[id]))
             base.map.addLayer(base.layers[id])
 
     },
 
-    showPolygons: function(state) {
-          base.layers["polygons"].clearLayers();
-          let colorIterator = 0
-          let color_arr = ["#FFF600", "#ff7800", "#FF0008", "#0088FF"]
+    showPolygons: function (state) {
+        base.layers["polygons"].clearLayers();
+        let colorIterator = 0
+        let color_arr = ["#FFF600", "#ff7800", "#FF0008", "#0088FF"]
 
-          let data = decodeURIComponent(state.polygons);
+        let data = decodeURIComponent(state.polygons);
 
-          function isValidHttpUrl(string) {
-              let url;
-              try {
+        function isValidHttpUrl(string) {
+            let url;
+            try {
                 url = new URL(string);
-              } catch (_) {
+            } catch (_) {
                 return false;
-              }
-              return url.protocol === "http:" || url.protocol === "https:";
-          }
+            }
+            return url.protocol === "http:" || url.protocol === "https:";
+        }
 
-          if(isValidHttpUrl(data)){
-              base.layers["polygons"].clearLayers();
-              $.getJSON(data, function(json){
-                    // add GeoJSON layer to the map once the file is loaded
-                    let datalayer = L.geoJson(json ,{
-                        onEachFeature: function ( feature, layer ){
-                          layer.setStyle({
-                              weight: 1.5,
-                              color: color_arr[3],
-                              opacity: 0.8,
-                              interactive: false,
-                              //fillColor: "#ff7800",
-                              stroke: true,
-                              fillOpacity: 0.1,
-                              dashArray: ''
-                          });
+        if (isValidHttpUrl(data)) {
+            base.layers["polygons"].clearLayers();
+            $.getJSON(data, function (json) {
+                // add GeoJSON layer to the map once the file is loaded
+                let datalayer = L.geoJson(json, {
+                    onEachFeature: function (feature, layer) {
+                        layer.setStyle({
+                            weight: 1.5,
+                            color: color_arr[3],
+                            opacity: 0.8,
+                            interactive: false,
+                            //fillColor: "#ff7800",
+                            stroke: true,
+                            fillOpacity: 0.1,
+                            dashArray: ''
+                        });
 
-                          base.layers["polygons"].addLayer( layer )
+                        base.layers["polygons"].addLayer(layer)
 
-                        }
-                  })
+                    }
+                })
 
-                  //base.map.fitBounds(datalayer.getBounds());
-              });
-              base.externalJSON = true
-          } else {
-              L.geoJSON(JSON.parse(data), {
-                  onEachFeature: function ( feature, layer ){
-                      if(colorIterator > 3)
-                          colorIterator = 0
+                //base.map.fitBounds(datalayer.getBounds());
+            });
+            base.externalJSON = true
+        } else {
+            L.geoJSON(JSON.parse(data), {
+                onEachFeature: function (feature, layer) {
+                    if (colorIterator > 3)
+                        colorIterator = 0
 
-                      layer.setStyle({
-                          weight: 3,
-                          color: color_arr[colorIterator],
-                          opacity: 0.8,
-                          interactive: false,
-                          //fillColor: "#ff7800",
-                          stroke: true,
-                          fillOpacity: 0.1,
-                          dashArray: ''
-                      });
+                    layer.setStyle({
+                        weight: 3,
+                        color: color_arr[colorIterator],
+                        opacity: 0.8,
+                        interactive: false,
+                        //fillColor: "#ff7800",
+                        stroke: true,
+                        fillOpacity: 0.1,
+                        dashArray: ''
+                    });
 
-                      base.layers["polygons"].addLayer( layer )
-                      colorIterator = colorIterator + 1
-                  }
-              });
-          }
-
-
-    },
-
-    hidePolygons: function() {
-
-          base.hideLayer("polygons")
+                    base.layers["polygons"].addLayer(layer)
+                    colorIterator = colorIterator + 1
+                }
+            });
+        }
 
 
     },
 
-    hideLayer: function(id) {
+    hidePolygons: function () {
+
+        base.hideLayer("polygons")
+
+
+    },
+
+    hideLayer: function (id) {
         if (base.map.hasLayer(base.layers[id]))
             base.map.removeLayer(base.layers[id])
     },
 
-    getVisibleLayers: function() {
+    getVisibleLayers: function () {
         return Object.keys(this.layers).filter(k => (base.map.hasLayer(this.layers[k])));
 
     },
 
-    updateCircleSize: function() {
+    updateCircleSize: function () {
         function calcRadius(val, zoom) {
-            if(val != radius_zoom()[zoom])
-                  return radius_zoom()[zoom]
+            if (val != radius_zoom()[zoom])
+                return radius_zoom()[zoom]
             else
-                  return
+                return
         }
 
         base.map.eachLayer(function (marker) {
             //console.log(marker)
-            if (marker._radius != undefined){
+            if (marker._radius != undefined) {
                 //console.debug(marker)
                 let size = null
-                if(marker.feature.properties.rank_world != undefined){
-                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(3/Math.pow(marker.feature.properties.rank_world, 1/4)))
-                } else if(marker.feature.properties.population != undefined) {
-                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(Math.pow(marker.feature.properties.population, 1/4)/20))
-                } else if(marker.feature.properties.rank != undefined) {
-                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()]*(3/Math.pow(marker.feature.properties.rank, 1/4)))
+                if (marker.feature.properties.rank_world != undefined) {
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()] * (3 / Math.pow(marker.feature.properties.rank_world, 1 / 4)))
+                } else if (marker.feature.properties.population != undefined) {
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()] * (Math.pow(marker.feature.properties.population, 1 / 4) / 20))
+                } else if (marker.feature.properties.rank != undefined) {
+                    size = Math.max(radius_zoom[base.map.getZoom()], radius_zoom[base.map.getZoom()] * (3 / Math.pow(marker.feature.properties.rank, 1 / 4)))
                 } else {
                     size = radius_zoom[base.map.getZoom()]
                 }
@@ -437,7 +493,7 @@ let base = {
         });
     },
 
-    addControls: function() {
+    addControls: function () {
         let drawOptions = {
             position: 'bottomleft',
             draw: {
@@ -457,12 +513,12 @@ let base = {
                 marker: false,
                 circlemarker: false,
                 polyline: true
-                },
-                edit: {
-                    featureGroup: base.editableLayers,//base.layers["polygons"],//base.editableLayers, //REQUIRED!!
-                    remove: false,
-                    edit: false
-                }
+            },
+            edit: {
+                featureGroup: base.editableLayers,//base.layers["polygons"],//base.editableLayers, //REQUIRED!!
+                remove: false,
+                edit: false
+            }
         };
 
         L.control.scale({
@@ -476,13 +532,13 @@ let base = {
         L.Control.geocoder({
             position: 'topright',
             defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
+        }).on('markgeocode', function (e) {
             var bbox = e.geocode.bbox;
             var location = e.geocode.center;
-        
+
             // Calculate the zoom level based on the bounding box and map size
             var zoom = base.map.getBoundsZoom(bbox);
-        
+
             // Set the view to the location with the calculated zoom level
             base.map.setView(location, zoom);
         }).addTo(base.map);
@@ -495,31 +551,31 @@ let base = {
 
         let removePolygonsButton = L.easyButton({
             states: [{
-                    stateName: 'fa-clear-trash',        // name the state
-                    icon:      'fa-trash',               // and define its properties
-                    title:     'Clear drawlayer',      // like its title
-                    onClick: function(btn, map) {       // and its callback
-                        if(tweets.data.polygons){
-                            if (confirm('Are you sure you want to remove all your self-created drawings?')) {
-                                base.layers["polygons"].clearLayers();
-                                tweets.data.polygons = null
-                                url.pushState();
-                            } else {
-                                // Do nothing!
-                                return;
-                            }
+                stateName: 'fa-clear-trash',        // name the state
+                icon: 'fa-trash',               // and define its properties
+                title: 'Clear drawlayer',      // like its title
+                onClick: function (btn, map) {       // and its callback
+                    if (tweets.data.polygons) {
+                        if (confirm('Are you sure you want to remove all your self-created drawings?')) {
+                            base.layers["polygons"].clearLayers();
+                            tweets.data.polygons = null
+                            url.pushState();
                         } else {
+                            // Do nothing!
                             return;
                         }
-
-
-
-                        //btn.state('fa-cleared-trash');    // change state on click!
+                    } else {
+                        return;
                     }
+
+
+
+                    //btn.state('fa-cleared-trash');    // change state on click!
+                }
             }]
         });
 
-        removePolygonsButton.setPosition('bottomleft').addTo( base.map );
+        removePolygonsButton.setPosition('bottomleft').addTo(base.map);
 
         let drawControl = new L.Control.Draw(drawOptions);
         base.map.addControl(drawControl);
@@ -535,45 +591,51 @@ let base = {
 
         let shareUrlButton = L.easyButton({
             states: [{
-                    stateName: 'toggle-tweets',        // name the state
-                    icon:      'nf nf-fa-share',               // and define its properties
-                    title:     'Share Link',      // like its title
-                    onClick: function(btn, map) {       // and its callback
-                        let link = 'https://map.decarbnow.space' + url.getPath()
-                        navigator.clipboard.writeText(link)
-                            .then(() => {
-                                alert('Map link copied to clipboard. Share this link to pin it to the map.');
-                            })
-                                .catch(err => {
-                                alert('Error in copying URL: ', err);
-                            });
-                        //url.pushState();
-                        //btn.state('fa-cleared-trash');    // change state on click!
-                    }
+                stateName: 'toggle-tweets',        // name the state
+                icon: 'nf nf-fa-share',               // and define its properties
+                title: 'Share Link',      // like its title
+                onClick: function (btn, map) {       // and its callback
+                    let url_path = new URL('https://map.decarbnow.space' + url.getPath())
+                    let pathSegments = url_path.pathname.split('/').filter(segment => !segment.startsWith('t='));
+                    url_path.pathname = pathSegments.join('/');
+                    let modifiedUrl = url_path.href;
+                    let link = modifiedUrl
+                    navigator.clipboard.writeText(link)
+                        .then(() => {
+                            alert('Map link copied to clipboard. Share this link to pin it to the map.');
+                        })
+                        .catch(err => {
+                            alert('Error in copying URL: ', err);
+                        });
+                    //url.pushState();
+                    //btn.state('fa-cleared-trash');    // change state on click!
+                }
             }]
         });
 
-        shareUrlButton.setPosition('bottomright').addTo( base.map );
+        shareUrlButton.setPosition('bottomright').addTo(base.map);
 
         let homeButton = L.easyButton({
             states: [{
-                    stateName: 'go-home',        // name the state
-                    icon:      'nf nf-fa-home',               // and define its properties
-                    title:     'Overview',      // like its title
-                    onClick: function(btn, map) {       // and its callback
-                        //base.map.flyTo(base.getState().center, 5.0);
-                        base.map.setView(defaultState.center, defaultState.zoom);
-                        base.setState({...defaultState});
-                        tweets.closeSidebar()
-                        sidebar.back(false);
-                    }
+                stateName: 'go-home',        // name the state
+                icon: 'nf nf-fa-home',               // and define its properties
+                title: 'Overview',      // like its title
+                onClick: function (btn, map) {       // and its callback
+                    //base.map.flyTo(base.getState().center, 5.0);
+                    //base.map.setView(defaultState.center, defaultState.zoom);
+                    base.setState({ ...defaultState });
+                    tweets.closeSidebar()
+                    sidebar.clearSearch();
+                    sidebar.displayTweets('', 1, true);
+                    base.tweetBoxActive = false;
+                }
             }]
         });
 
-        homeButton.setPosition('bottomright').addTo( base.map );
+        homeButton.setPosition('bottomright').addTo(base.map);
     },
 
-    addEventHandlers: function() {
+    addEventHandlers: function () {
         base.map.on(L.Draw.Event.CREATED, function (e) {
             base.showLayer("polygons")
             var type = e.layerType,
@@ -584,7 +646,7 @@ let base = {
             }
 
             //Remove loaded JSON first
-            if(base.externalJSON){
+            if (base.externalJSON) {
                 base.layers["polygons"].clearLayers();
                 tweets.data.polygons = null
                 url.pushState();
@@ -597,18 +659,18 @@ let base = {
             let data = layer.toGeoJSON();
 
             // Stringify the GeoJson
-            if(tweets.data.polygons == null){
+            if (tweets.data.polygons == null) {
                 data = encodeURIComponent(JSON.stringify(data));
             } else {
                 let data_old = data
                 data = {
-                    "type" : "FeatureCollection",
+                    "type": "FeatureCollection",
                     "features": [JSON.parse(decodeURIComponent(tweets.data.polygons)), data]
                 }
                 data = encodeURIComponent(JSON.stringify(data))
 
             }
-            if(data.length > 3800){
+            if (data.length > 3800) {
                 alert("Polygon string too long. You cannot add more stuff.");
             } else {
                 tweets.data.polygons = data
@@ -627,13 +689,13 @@ let base = {
         });
 
         base.map.on("movestart", function () {
-          // if(base.layerSets.tweets){
-          //   base.stateArray = [].concat(base.layerSets.tweets.getVisibleLayers());
-          //
-          //   base.stateArray.forEach((item, i) => {
-          //       base.hideLayer(item)
-          //   });
-          // }
+            // if(base.layerSets.tweets){
+            //   base.stateArray = [].concat(base.layerSets.tweets.getVisibleLayers());
+            //
+            //   base.stateArray.forEach((item, i) => {
+            //       base.hideLayer(item)
+            //   });
+            // }
 
 
         });
@@ -652,7 +714,7 @@ let base = {
             //base.magnifyingGlass.setLatLng = base.map.getCenter()
         });
 
-        base.map.on("contextmenu", function(e) {
+        base.map.on("contextmenu", function (e) {
             //base.tweetBoxActive = true;
             //tweets.closeSidebar();
             base.map.flyTo(e.latlng);
@@ -663,12 +725,16 @@ let base = {
 
         base.map.on("zoomend", function () {
             base.updateCircleSize()
+            base.enableMapInteraction()
         });
 
         base.map.on("click", function (e) {
             //tweets.loadStoryLines()
             base.tweetBoxActive = false;
-            sidebar.back(false);
+            //sidebar.back(false,false);
+            tweets.closeSidebar()
+            sidebar.clearSearch();
+            sidebar.displayTweets('', 1, false);
             //base.slowFlyTo = false;
             twitter.marker.remove();
             twitter.controlwindow.hide();

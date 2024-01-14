@@ -13,15 +13,6 @@
 </head>
 
 <body>
-    <script>
-        function clearSearch() {
-            const searchInput = document.getElementById('term-search');
-            searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
-            // var sidebar = document.getElementById('sidebar');
-            // sidebar.scrollTop = 0;
-        }
-    </script>
     <div id="map">
         <div class="crosshair">+</div>
     </div>
@@ -31,10 +22,9 @@
             <div id="loading-message" class="loading-message">...</div>
             
             <div class="search-container">
-                <input type="text" id="term-search" placeholder="Search by #hashtag or ID..." />
-                <button class="clear-btn" onclick="clearSearch()">Clear</button>
+                <input type="text" id="term-search" placeholder="Filter: #hashtag @account" />
+                <button class="clear-btn">Clear</button>
             </div>
-            <div style="font-size: 17px; border: 5px red solid; border-radius: 8px; padding: 6px;" class="migration">Adding messages is not available.<br> We are migrating to Mastodon.<br> Please stay tuned.</div>
             <div id="tweets" class="tweet-container"></div>
             <button class="top-btn" onclick="sidebar.scrollTo({top: 0, behavior: 'smooth'});">Top</button>
 

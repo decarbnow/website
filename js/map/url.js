@@ -21,12 +21,24 @@ let url = {
             ls: layers.join(url.listDivider),
 
         }
-
-        if (s.tweet) {
+        
+        if (s.account) {
             vars = {...{
-                't': s.tweet,
+                'a': s.account,
             }, ...vars}
         }
+
+        if (s.hashtag) {
+            vars = {...{
+                'h': s.hashtag,
+            }, ...vars}
+        }
+
+        // if (s.tweet) {
+        //     vars = {...{
+        //         't': s.tweet,
+        //     }, ...vars}
+        // }
 
         if (url.geoHash) {
             vars = {...{
@@ -85,8 +97,14 @@ let url = {
         if (rs.ls)
             s.layers = rs.ls.split(url.listDivider);
 
-        if (rs.t)
-            s.tweet = rs.t;
+        // if (rs.t)
+        //     s.tweet = rs.t;
+
+        if (rs.a)
+            s.account = rs.a;
+
+        if (rs.h)
+            s.hashtag = rs.h;
 
         if (rs.polygons)
             s.polygons = rs.polygons;

@@ -16,19 +16,33 @@
   //padding-top: 15px !important;
 }
 
-/* Default styles for .fab and .fab.fa-twitter */
-/* Default styles for .fab and .fab.fa-twitter */
-/* Default styles for .fab and .fab.fa-twitter */
+
 .fab,
 .fab.fa-twitter {
-    opacity: 0.4 !important;
+    opacity: 0.7 !important;
+    z-index: -1;
 
     &.visible-after {
         /* Styles for .fab.visible-after and .fab.fa-twitter.visible-after */
         color: white;
         opacity: 1 !important;
+        z-index: 1;
     }
 }
+
+.fab,
+.fab.fa-mastodon {
+    opacity: 0.7 !important;
+    z-index: -1;
+
+    &.visible-after {
+        /* Styles for .fab.visible-after and .fab.fa-twitter.visible-after */
+        color: white;
+        opacity: 1 !important;
+        z-index: 1;
+    }
+}
+
 
 /* Default styles for .marker-pin */
 .marker-pin {
@@ -43,6 +57,7 @@
     margin: -13px 0 0 -13px;
     z-index: -1;
     -webkit-touch-callout: none;
+    z-index: -1;
 
     &::after {
         content: '';
@@ -57,20 +72,49 @@
 
     &.visible-after {
         /* Styles for .marker-pin.visible-after */
-        background: rgb(29, 161, 242);
+        background: rgb(159, 218, 255);
         color: white;
         opacity: 1 !important;
+        z-index: 1;
     }
 
     &.transition::after {
         /* Other styles for ::after in .transition */
-        background: rgb(57, 219, 113) !important;
+        background: #6600ff !important;
     }
 
     &.pollution::after {
         /* Other styles for ::after in .pollution */
         background: rgba(226, 57, 66, 1) !important;
     }
+}
+
+/* Styles for .marker-pin.action when it's visible */
+.marker-pin.action.visible-after {
+    opacity: 1;
+    z-index: 1;
+    /* Other styles to make action pin visible */
+}
+
+/* Styles for .marker-pin.transition when it's visible */
+.marker-pin.transition.visible-after {
+    opacity: 1;
+    z-index: 1;
+    /* Other styles to make transition pin visible */
+}
+
+/* Styles for .marker-pin.action::after when it's visible */
+.marker-pin.action.visible-after::after {
+    opacity: 1; /* Set desired opacity */
+    background: rgb(29, 161, 242); /* Action pin color */
+    /* Other styles for the visible state of the action pin's ::after */
+}
+
+/* Styles for .marker-pin.transition::after when it's visible */
+.marker-pin.transition.visible-after::after {
+    opacity: 1; /* Set desired opacity */
+    background: #6600ff; /* Transition pin color */
+    /* Other styles for the visible state of the transition pin's ::after */
 }
 
 
@@ -126,9 +170,9 @@
 
 
 .custom-div-icon i.transition {
-    color: rgb(255, 240, 20) !important;
+    color: rgb(255, 255, 255) !important;
     margin: 12px auto;
-    padding-top: 1px;
+    padding-top: 2px;
 }
 
 .custom-div-icon i.pollution {
@@ -153,11 +197,11 @@
 
 .selected .marker-pin {
     &::after {
-        background: rgb(200, 100, 10);
+        //background: rgb(200, 100, 10);
         opacity: 1;
-        border-color: red;
-        border-width: 2px;
-        border-style: solid;
+        //border-color: red;
+        //border-width: 2px;
+        //border-style: solid;
         animation: blink 2s infinite;
     }
 }

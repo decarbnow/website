@@ -96,7 +96,6 @@ let base = {
         tweets.init();
         tweets.loadMarkers();
         twitter.init();
-        sidebar.init();
         base.addEventHandlers();
 
         base.layerSets = layerSets;
@@ -147,6 +146,7 @@ let base = {
 
         base.addControls();
         controls.addControls();
+        sidebar.init();
 
         // var map = L.map('map', {
         //     center: [0, 0],
@@ -623,11 +623,15 @@ let base = {
                 onClick: function (btn, map) {       // and its callback
                     //base.map.flyTo(base.getState().center, 5.0);
                     //base.map.setView(defaultState.center, defaultState.zoom);
-                    base.setState({ ...defaultState });
                     tweets.closeSidebar()
                     sidebar.clearSearch();
+                    sidebar.currentPage = 1
+                    
+                    base.setState({ ...defaultState });
+                    
                     sidebar.displayTweets('', 1, true);
                     base.tweetBoxActive = false;
+                    
                 }
             }]
         });
@@ -735,6 +739,7 @@ let base = {
             tweets.closeSidebar()
             sidebar.clearSearch();
             sidebar.displayTweets('', 1, false);
+            sidebar.currentPage = 1
             //base.slowFlyTo = false;
             twitter.marker.remove();
             twitter.controlwindow.hide();

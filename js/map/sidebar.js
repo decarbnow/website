@@ -8,13 +8,11 @@ let searchTerm = '';
 let history = [];
 let lastVisibleTweets = 0;
 
-let currentPage = 1;
-
 const tweetsPerPage = 20;
 
 document.getElementById('next-button').addEventListener('click', function () {
-    currentPage++;
-    sidebar.displayTweets(searchTerm, currentPage, true);
+    sidebar.currentPage++;
+    sidebar.displayTweets('', sidebar.currentPage, true);
     let sidebarElement = document.getElementById('sidebar');
     if (sidebarElement) {
         sidebarElement.scrollTop = 0;
@@ -22,9 +20,9 @@ document.getElementById('next-button').addEventListener('click', function () {
 });
 
 document.getElementById('prev-button').addEventListener('click', function () {
-    if (currentPage > 1) {
-        currentPage--;
-        sidebar.displayTweets(searchTerm, currentPage, true);
+    if (sidebar.currentPage > 1) {
+        sidebar.currentPage--;
+        sidebar.displayTweets(searchTerm, sidebar.currentPage, true);
     }
     let sidebarElement = document.getElementById('sidebar');
     if (sidebarElement) {
@@ -34,11 +32,12 @@ document.getElementById('prev-button').addEventListener('click', function () {
 
 document.getElementById('back-button').addEventListener('click', function () {
     tweets.closeSidebar()
-    sidebar.clearSearch();
-    sidebar.displayTweets('', currentPage, true);
+    //sidebar.clearSearch();
+    sidebar.displayTweets('', sidebar.currentPage, true);
     base.tweetBoxActive = false;
+    
     let lastId = history[history.length - 1]; // Get last id
-    sidebar.scrollToHeadTweet(lastId, 500)
+    sidebar.scrollToHeadTweet(lastId)
 });
 
 // Function to handle the search
@@ -71,27 +70,36 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 });
 
-
 let tweetDataPromise;
+
 let sidebar = {
+    currentPage: 1,
+
     init: function () {
         let class_bb = document.querySelector('.back-btn');
         class_bb.classList.add('hidden');
 
-        // Store the promise from api.getTweets so other functions can wait on it
-        tweetDataPromise = api.getTweets();
+        tweetDataPromise = new Promise((resolve) => {
+            // Set up an event listener for the 'loaded' event
+            $(tweets).on("loaded", function () {
+                // When the event is triggered, resolve the promise
+                console.log("Data loaded via event");
+                resolve(tweets.data.tweets);
+            });
+        });
+        
         tweetDataPromise.then(function (data) {
-            console.log("API loaded")
+            console.log("Data is available now");
             tweetData = data;
-
+        
             const idFromUrl = tweets.activeTweet;
-
+        
             if (!idFromUrl) {
                 sidebar.displayTweets();
             }
-
+        
         }).catch(function (error) {
-            console.error('Error fetching tweets:', error);
+            console.error('Error with data loading:', error);
             // Handle the error appropriately
         });
     },
@@ -131,32 +139,38 @@ let sidebar = {
     //     });
     // },
 
-    scrollToHeadTweet: function (id, delay = 0) {
-        const lastElement = document.getElementById(sidebar.getHeadTweetById(id, tweetData));
-        const loadingMessage = document.getElementById('loading-message');
+    scrollToHeadTweet: async function (id, delay = 0) {
+        try {
+            const tweetData = await tweetDataPromise; // Assuming you need data from the promise
 
-        if (loadingMessage) {
-            loadingMessage.style.display = 'block';
-        }
+            const lastElement = document.getElementById(sidebar.getHeadTweetById(id, tweetData));
+            const loadingMessage = document.getElementById('loading-message');
 
-        if (lastElement) {
-            setTimeout(function () {
-                lastElement.scrollIntoView({
-                    block: 'start',
-                    behavior: 'instant'
-                });
+            if (loadingMessage) {
+                loadingMessage.style.display = 'block';
+            }
+
+            if (lastElement) {
+                setTimeout(function () {
+                    lastElement.scrollIntoView({
+                        block: 'start',
+                        behavior: 'instant'
+                    });
+                    if (loadingMessage) {
+                        loadingMessage.style.display = 'none';
+                    }
+                }, delay); // Delay might be needed to wait for tweets to load
+            } else {
+                const sidebarElement = document.getElementById('sidebar'); // Replace 'sidebar' with the actual ID or class of your sidebar element
+                if (sidebarElement) {
+                    sidebarElement.scrollTop = 0;
+                }
                 if (loadingMessage) {
                     loadingMessage.style.display = 'none';
                 }
-            }, delay); // Delay might be needed to wait for tweets to load
-        } else {
-            const sidebarElement = document.getElementById('sidebar'); // Replace 'sidebar' with the actual ID or class of your sidebar element
-            if (sidebarElement) {
-                sidebarElement.scrollTop = 0;
             }
-            if (loadingMessage) {
-                loadingMessage.style.display = 'none';
-            }
+        } catch (error) {
+            console.error('Error waiting for tweet data:', error);
         }
     },
 
@@ -176,15 +190,22 @@ let sidebar = {
         }
 
         visibleTweets = 10;
-        searchTerm = id;
+        //searchTerm = id;
         //document.getElementById('tweets').innerHTML = '';
 
-        try {
-            await tweetDataPromise; // Wait for the tweet data to be loaded
-            this.displayTweets(id); // Now safe to call displayTweets
-        } catch (error) {
-            console.error('Error waiting for tweet data:', error);
-        }
+        await this.displayTweets(id);  
+        
+        // Wait for tweet images to load before scrolling
+        const images = document.querySelectorAll('.post-image');
+        await Promise.all(Array.from(images).map(img => {
+            if (img.complete) {
+                return Promise.resolve(); // Image is already loaded
+            }
+            return new Promise(resolve => {
+                img.addEventListener('load', resolve, { once: true });
+                img.addEventListener('error', resolve, { once: true }); // Also resolve on error
+            });
+        }));
 
         const headlineElement = document.getElementById(id);
         if (headlineElement) {
@@ -238,13 +259,12 @@ let sidebar = {
 
         function getMediaHTML(media, galleryId) {
             // Check if media is an array of strings
-            const imageWidth = 100 / media.length; // Calculate the width based on the number of images
 
             if (Array.isArray(media) && media.length > 0 && typeof media[0] === 'string') {
                 // Generate HTML for a single string URL
                 const mediaHTML = media.map((item, index) => `
                 <div id="media-${id}" style="max-width: 100%; padding: 1px;">
-                    <img src="${media[index]}" data-action="zoom"  alt="Zoom ${galleryId}">
+                    <img src="${media[index]}" data-action="zoom"  alt="Zoom ${galleryId}" class="post-image">
                 </div>
                 `
                 ).join('');
@@ -395,81 +415,81 @@ let sidebar = {
     },
 
     displayTweets: async function (searchTerm = '', page = 1, centerMap = false) {
-        const tweetsContainer = document.getElementById('tweets');
-        let filteredTweets;
+        try {
+            const tweetData = await tweetDataPromise; // Assuming you need data from the promise
 
-        if (searchTerm.startsWith('#')) {
-            // Hashtag search
-            centerMap = true
-            tweets.data.hashtag = searchTerm.slice(1)
-            //let state = base.getState()
-            //state.hashtag = searchTerm.slice(1)
-            //base.setState(state);
-            filteredTweets = sidebar.filterTweetsByHashtag(tweetData, searchTerm.slice(1));
-        } else if (searchTerm.startsWith('@')){
-            centerMap = true
-            tweets.data.account = searchTerm.slice(1)
-            //let state = base.getState()
-            //state.account = searchTerm.slice(1)
-            //base.setState(state);
-            filteredTweets = sidebar.filterTweetsByAccount(tweetData, searchTerm.slice(1));
-        } else if (searchTerm) {
-            // ID search
-            centerMap = false
-            filteredTweets = sidebar.filterTweetsById(tweetData, searchTerm);
-        } else {
-            filteredTweets = sidebar.extractHeadTweets(tweetData);
-        }
+            const tweetsContainer = document.getElementById('tweets');
+            let filteredTweets;
 
-        let class_nb = document.querySelectorAll('.navigation-button')
-        class_nb.forEach(button => button.classList.remove('hidden'));
-
-        const startIndex = (page - 1) * tweetsPerPage;
-
-        const headTweetsToDisplay = filteredTweets.slice(startIndex, startIndex + tweetsPerPage);
-
-
-
-        if (page === 1) {
-            sidebar.hideID('prev-button')
-        } else {
-            sidebar.showID('prev-button')
-        }
-
-
-        if (headTweetsToDisplay.length < tweetsPerPage) {
-            // If there are no more tweets on the next page, hide the "next" button
-            sidebar.hideID('next-button')
-        } else {
-            sidebar.showID('next-button')
-        }
-
-
-        // Clear previous tweets only if it's the first page
-        tweetsContainer.innerHTML = '';
-        tweets.invisibleMarker();
-        let tweetsToDisplay = []
-        // Append new tweets instead of clearing and re-rendering all tweets
-        headTweetsToDisplay.forEach(([id, tweet]) => {
-
-            tweetsToDisplay.push(id)
-            tweets.visibleMarker(id);
-            tweetsContainer.appendChild(sidebar.createTweetElement(id, tweet, true));
-            const storyTweets = sidebar.getTweetsOfStory(tweetData, id);
-            storyTweets.forEach(([storyId, storyTweet]) => {
-                tweetsToDisplay.push(storyId)
-                tweets.visibleMarker(storyId);
-                tweetsContainer.appendChild(sidebar.createTweetElement(storyId, storyTweet, false));
-            });
-        });
-        if (centerMap) {
-            try {
-                await tweetDataPromise; // Wait for the tweet data to be loaded
-                tweets.centerAroundMarkers(tweetsToDisplay)
-            } catch (error) {
-                console.error('Error waiting for tweet data:', error);
+            if (searchTerm.startsWith('#')) {
+                // Hashtag search
+                centerMap = true
+                tweets.data.hashtag = searchTerm.slice(1)
+                //let state = base.getState()
+                //state.hashtag = searchTerm.slice(1)
+                //base.setState(state);
+                filteredTweets = sidebar.filterTweetsByHashtag(tweetData, searchTerm.slice(1));
+            } else if (searchTerm.startsWith('@')) {
+                centerMap = true
+                tweets.data.account = searchTerm.slice(1)
+                //let state = base.getState()
+                //state.account = searchTerm.slice(1)
+                //base.setState(state);
+                filteredTweets = sidebar.filterTweetsByAccount(tweetData, searchTerm.slice(1));
+            } else if (searchTerm) {
+                // ID search
+                centerMap = false
+                filteredTweets = sidebar.filterTweetsById(tweetData, searchTerm);
+            } else {
+                filteredTweets = sidebar.extractHeadTweets(tweetData);
             }
-            
+
+            let class_nb = document.querySelectorAll('.navigation-button')
+            class_nb.forEach(button => button.classList.remove('hidden'));
+
+            const startIndex = (page - 1) * tweetsPerPage;
+
+            const headTweetsToDisplay = filteredTweets.slice(startIndex, startIndex + tweetsPerPage);
+
+
+
+            if (page === 1) {
+                sidebar.hideID('prev-button')
+            } else {
+                sidebar.showID('prev-button')
+            }
+
+
+            if (headTweetsToDisplay.length < tweetsPerPage) {
+                // If there are no more tweets on the next page, hide the "next" button
+                sidebar.hideID('next-button')
+            } else {
+                sidebar.showID('next-button')
+            }
+
+
+            // Clear previous tweets only if it's the first page
+            tweetsContainer.innerHTML = '';
+            tweets.invisibleMarker();
+            let tweetsToDisplay = []
+            // Append new tweets instead of clearing and re-rendering all tweets
+            headTweetsToDisplay.forEach(([id, tweet]) => {
+
+                tweetsToDisplay.push(id)
+                tweets.visibleMarker(id);
+                tweetsContainer.appendChild(sidebar.createTweetElement(id, tweet, true));
+                const storyTweets = sidebar.getTweetsOfStory(tweetData, id);
+                storyTweets.forEach(([storyId, storyTweet]) => {
+                    tweetsToDisplay.push(storyId)
+                    tweets.visibleMarker(storyId);
+                    tweetsContainer.appendChild(sidebar.createTweetElement(storyId, storyTweet, false));
+                });
+            });
+            if (centerMap) {
+                tweets.centerAroundMarkers(tweetsToDisplay)
+            }
+        } catch (error) {
+            console.error('Error waiting for tweet data:', error);
         }
 
     },
@@ -477,14 +497,14 @@ let sidebar = {
     back: function (goToTweet = true, centerMap = false) {
         tweets.closeSidebar();
         if (!goToTweet)
-            currentPage = 1
+            sidebar.currentPage = 1
 
         base.tweetBoxActive = false;
 
         visibleTweets = lastVisibleTweets; // Restore visible tweets count
 
         document.getElementById('tweets').innerHTML = ''; // Clear current tweets
-        sidebar.displayTweets(searchTerm, currentPage, centerMap);
+        sidebar.displayTweets(searchTerm, sidebar.currentPage, centerMap);
 
         let currentZoom = base.map.getZoom(); // Get current zoom level
         if (currentZoom > 7)
@@ -511,21 +531,6 @@ let sidebar = {
             }
         }
 
-    },
-
-    handleScroll: function () {
-        const sidebarElement = document.getElementById('sidebar');
-
-        if (sidebarElement) {
-            const scrollTop = sidebarElement.scrollTop;
-            const scrollHeight = sidebarElement.scrollHeight;
-            const clientHeight = sidebarElement.clientHeight;
-
-            if (scrollTop + clientHeight >= scrollHeight - 100) {
-                // User has reached the bottom of the sidebar
-                sidebar.displayTweets(searchTerm);
-            }
-        }
     },
 
     clearSearch: function () {

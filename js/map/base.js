@@ -227,7 +227,7 @@ let base = {
     },
 
     flyTo: function (state) {
-        base.disableMapInteraction()
+        //base.disableMapInteraction()
         // Only show tile layer in fly-to animation
         let tileLayers = Object.keys(base.layerSets.baseTiles.layers)
         let layers = state.layers.filter(x => tileLayers.includes(x))
@@ -729,7 +729,7 @@ let base = {
 
         base.map.on("zoomend", function () {
             base.updateCircleSize()
-            base.enableMapInteraction()
+            //base.enableMapInteraction()
         });
 
         base.map.on("click", function (e) {

@@ -291,16 +291,16 @@ let sidebar = {
             tweet.formattedContent = tweet.content;
         }
 
-        if (tweet.display_name == "decarbnow") {
+        if (tweet.account == "decarbnow") {
             tweet.avatar = "https://pbs.twimg.com/profile_images/1661680048456310787/GAUbAfaq_200x200.jpg"
         }
 
-        if (tweet.display_name == "ExposePolluters") {
-            tweet.avater = "https://pbs.twimg.com/profile_images/1727839247653089281/9XVjm12k_200x200.jpg"
+        if (tweet.account == "ExposePolluters") {
+            tweet.avatar = "https://pbs.twimg.com/profile_images/1727839247653089281/9XVjm12k_200x200.jpg"
         }
 
-        if (tweet.display_name == "PolluterRod") {
-            tweet.avater = "https://pbs.twimg.com/profile_images/1366487335232299014/nn2P7XYz_200x200.jpg"
+        if (tweet.account == "PolluterRod") {
+            tweet.avatar = "https://pbs.twimg.com/profile_images/1366487335232299014/nn2P7XYz_200x200.jpg"
         }
 
         let link; // Declare `link` outside the if-else blocks to have a broader scope
